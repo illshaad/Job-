@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import AutocompletCorrespondant from './Autocomplet'
 import Informations from './informations'
-import { Form, Container, Grid, Segment, Button } from 'semantic-ui-react'
+import { Form, Container, Grid, Segment, Button, Message } from 'semantic-ui-react'
 
 export default function Presentation() {
     const [informations, setInformations] = useState({
@@ -9,6 +10,7 @@ export default function Presentation() {
         nom: "",
         genre: "",
         operateur: "",
+        correspondant: "",
         carnetVaccination: "",
         carteIdentitePassport: "",
         carteVital: "",
@@ -17,8 +19,9 @@ export default function Presentation() {
         assuranceAutomobile: "",
         photo: "",
         RIB: "",
-        correspondant: ""
     })
+
+    const [message, setMessage] = useState('')
 
 
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
@@ -29,12 +32,37 @@ export default function Presentation() {
 
     const sendData = () => {
         const data = new FormData()
-        data.append('file', informations)
+        data.append('prenom', informations.prenom)
+        data.append('nom', informations.nom)
+        data.append('genre', informations.genre)
+        data.append('operateur', informations.operateur)
+        data.append('correspondant', informations.correspondant)
+        data.append('carnetVaccination', informations.carnetVaccination)
+        data.append('carteIdentitePassport', informations.carteIdentitePassport)
+        data.append('carteVital', informations.carteVital)
+        data.append('CV', informations.CV)
+        data.append('permisConduire', informations.permisConduire)
+        data.append('assuranceAutomobile', informations.assuranceAutomobile)
+        data.append('photo', informations.photo)
+        data.append('RIB', informations.RIB)
+        axios({
+            method: 'post',
+            url: 'http://localhost:3000/upload',
+            data: data
+        })
+            .then(function (reponse) {
+                setMessage('Donnée enregistrer')
+            })
+            .catch(function (erreur) {
+                console.log(erreur);
+            });
     }
-
 
     return (
         <Container>
+            {message ? <Message positive>
+                <Message.Header>Donnée enregistrer</Message.Header>
+            </Message> : null}
             <Grid columns='equal'>
                 <Grid.Row>
                     <Grid.Column>
@@ -102,7 +130,7 @@ export default function Presentation() {
                 <Form.Group >
                 </Form.Group>
             </Form>
-            <Button primary>Enregistrer</Button>
+            <Button primary onClick={sendData}>Enregistrer</Button>
         </Container >
 
     )

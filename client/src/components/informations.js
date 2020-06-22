@@ -12,6 +12,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='carnetVaccination'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -20,6 +21,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='carteIdentitePassport'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -28,6 +30,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='carteVital'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -36,6 +39,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='CV'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -46,6 +50,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='permisConduire'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -54,6 +59,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='assuranceAutomobile'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -62,6 +68,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='photo'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -70,6 +77,7 @@ export default function Informations({ handleChangeFile }) {
                         <input
                             type="file"
                             name='RIB'
+
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
