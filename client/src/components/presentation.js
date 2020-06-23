@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, setError } from 'react'
 import axios from 'axios'
 import AutocompletCorrespondant from './Autocomplet'
 import Informations from './informations'
@@ -45,17 +45,18 @@ export default function Presentation() {
         data.append('assuranceAutomobile', informations.assuranceAutomobile)
         data.append('photo', informations.photo)
         data.append('RIB', informations.RIB)
-        axios({
-            method: 'post',
-            url: 'http://localhost:3000/upload',
-            data: data
-        })
-            .then(function (reponse) {
+        try {
+            axios({
+                method: 'post',
+                url: 'http://localhost:3000/upload',
+                data: data
+            }).then(function (reponse) {
                 setMessage('Donnée enregistrer')
             })
-            .catch(function (erreur) {
-                console.log(erreur);
-            });
+        } catch (error) {
+            setError(error.message);
+            console.log(error);
+        }
     }
 
     return (
