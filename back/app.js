@@ -11,6 +11,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const cors = require('cors')
 const app = express();
+const { body, validationResult } = require('express-validator');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -44,43 +45,51 @@ var storage = multer.diskStorage({
 // SAVE FILE MY LOCAL STORAGE //
 let upload = multer({ storage: storage });
 
-app.post("/upload", upload.any(), async function (req, res) {
-  let dataFront = {
-    data: req.body,
-    files: req.files
-  }
-  const { nom, prenom } = req.body
+app.post("/upload", upload.any(), [
+  body('prenom').isLength({ min: 2 }),
+  body('nom').isLength({ min: 2 }),
+  body('numerosecurite').isLength({ min: 1, max: 12 }),
+  body('email').isEmail(),
+], async function (req, res) {
   console.log(req.body);
 
-
-  // await fs.mkdir(`./public/uploads/${nom}_${prenom}`)
-  // for (let i = 0; i < req.files.length; i++) {
-  //   await fs.rename(`/public/uploads/${req.files[i].filename}`, `/public/uploads/${nom}_${prenom}`)
-  // }
-
-  let objectError = {};
-
-  if (validator.isLength(req.body.prenom[{ min: 2 }])) {
-    objectError.prenom = "S'il vous plait, le doit prenom n'est pas correct ou pas renseigner !";
+  const errors = validationResult(req);
+  console.log(errors)
+  if (!errors.isEmpty()) {
+    let errorsObject = {};
+    errors.array().forEach((e) => {
+      if (e.param === "prenom") errorsObject.prenom = "Ce prenom n'est pas assez long !"
+      if (e.param === "nom") errorsObject.nom = "Ce nom n'est pas assez long !"
+      if (e.param === "numerosecurite") errorsObject.numerosecurite = "Merci de saisir le N°Securite Social !"
+      if (e.param === "email") errorsObject.email = "Ce email n'est pas bon !"
+    })
+    return res.status(422).json({ errors: errorsObject });
   }
-  if (validator.isLength(req.body.nom[{ min: 2 }])) {
-    objectError.nom = "S'il vous plait, le doit nom n'est pas correct ou pas renseigner !";
-  }
-
-  if (validator.isLength(req.body.gender[{ min: 0 }])) {
-    objectError.genre = "S'il vous plait, merci de préciser votre genre !";
-  }
-  if (validator.isLength(req.body.operateur[{ min: 2 }])) {
-    objectError.operateur = "S'il vous plait, merci de préciser votre l'operateur !";
-  }
-  if (validator.isLength(req.body.correspondant[{ min: 3 }])) {
-    objectError.correspondant = "S'il vous plait, merci de préciser votre correspondant !";
-  }
-  // if (validator.isEmail(req.body.email)) {
-  //   objectError.email = "L'email n'est pas valide";
-  // }
-  res.status(400).json(objectError);
+  res.status(200).json({ Sauvegarde: 'ok' });
 });
+
+//Verification rh
+app.get('/verificationRh', function (req, res, next) {
+  res.render('rh ok');
+});
+//Recuperation information Save BDD
+app.post('/recuperationInformations', function (req, res, next) {
+  res.render('Verification Rh');
+});
+
+app.get('/recuperationInformationCollaborateur', function (req, res, next) {
+  res.render('Verification Rh');
+});
+
+// Tabeleau
+app.get('/recuperationTousCollaborateur', function (req, res, next) {
+  res.render('Verification TousCollaborateur Ok');
+});
+
+app.post('/ajouterDocumentRH', function (req, res, next) {
+  res.render('ajouterOk');
+});
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

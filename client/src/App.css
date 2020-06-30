@@ -1,0 +1,9 @@
+.principal.ui.segment{
+    background-color: #007bff !important;
+    color: white;
+    font-weight: bold;
+}
+
+.home.ui.container{
+    margin-top: 350px;
+}
