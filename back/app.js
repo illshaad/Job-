@@ -6,11 +6,11 @@ const logger = require('morgan');
 const multer = require("multer");
 const moment = require('moment');
 const fs = require('fs').promises
-const validator = require('validator')
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const cors = require('cors')
 const app = express();
+const db = require('./models/db');
 const { body, validationResult } = require('express-validator');
 
 // view engine setup
@@ -52,7 +52,6 @@ app.post("/upload", upload.any(), [
   body('email').isEmail(),
 ], async function (req, res) {
   console.log(req.body);
-
   const errors = validationResult(req);
   console.log(errors)
   if (!errors.isEmpty()) {
