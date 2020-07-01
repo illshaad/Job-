@@ -1,13 +1,12 @@
 import React, { useState, setError } from 'react'
 import axios from 'axios'
 import Informations from './informations'
-import { Icon } from 'semantic-ui-react'
 import {
     BrowserRouter as Router,
     Link
 } from "react-router-dom";
 
-import { Form, Container, Grid, Segment, Button, Message, Header } from 'semantic-ui-react'
+import { Icon, Form, Container, Grid, Segment, Button, Message, Header, Label } from 'semantic-ui-react'
 
 export default function Presentation() {
     const [informations, setInformations] = useState({
@@ -119,9 +118,13 @@ export default function Presentation() {
             {message ? <Message positive>
                 <Message.Header>Donnée enregistrer</Message.Header>
             </Message> : null}
-            <br />
-            <Segment className='principal' textAlign='center'>1°) Informations personnelles </Segment>
-            <br />
+
+            <Grid columns={2}>
+                <Grid.Row>
+                    <Label circular color='blue' size='massive'>1</Label>
+                    <h3>Informations personnelles</h3>
+                </Grid.Row>
+            </Grid>
             <Grid columns='equal'>
                 <Grid.Row>
                     <Grid.Column>
@@ -180,9 +183,7 @@ export default function Presentation() {
             </Grid>
             <Form>
                 <br />
-
-                <Segment textAlign='center'>Réservé aux praticiens</Segment>
-
+                <Segment className='segmentPerso' size='small'>Réservé aux praticiens</Segment>
                 <Grid columns='equal'>
                     <Grid.Row>
                         <Grid.Column>
@@ -200,6 +201,109 @@ export default function Presentation() {
                     </Grid.Row>
                 </Grid>
                 <br />
+                <Segment className='segmentPerso' size='small'>Réservé aux Rh</Segment>
+                <Grid columns='equal'>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Form.Input fluid name='titre' onChange={handleChange} label='Titre' placeholder='Titre' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='typedecollaborateur' onChange={handleChange} label='Type de collaborateur' placeholder='Type de collaborateur' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='adressee-mailduresponsable' onChange={handleChange} label='Adresse e-mail du responsable' placeholder='Adresse e-mail du responsable' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='activité' onChange={handleChange} label='Activité' placeholder='Activité' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='fonctiondigitaleprincipale' onChange={handleChange} label='Fonction digitale principale' placeholder='Fonction digitale principale' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='fonction(s)digitale(s)secondaire(s)' onChange={handleChange} label='Fonction(s) digitale(s) secondaire(s)' placeholder='Fonction(s) digitale(s) secondaire(s)' />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                <Grid columns='equal'>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Form.Input fluid name='structurejuridique' onChange={handleChange} label='Structure Juridique' placeholder='Structure Juridique' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='etablissementdigital' onChange={handleChange} label='Etablissement digital' placeholder='Etablissement digital' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid type='date' name=' datedeprisedefonction' onChange={handleChange} label='Date de prise de fonction' placeholder='Date de prise de fonction' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='téléphone(travail)' onChange={handleChange} label='Téléphone (Travail)' placeholder='Téléphone (Travail)' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='téléphone(mobile)' onChange={handleChange} label='Téléphone (Mobile)' placeholder='Téléphone (Mobile)' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='adresse(travail)' onChange={handleChange} label='Adresse (Travail)' placeholder='Adresse (Travail)' />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                <Grid columns='equal'>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Form.Input fluid name='naturedelarelationdetravail' onChange={handleChange} label='Nature de la relation de travail' placeholder='Nature de la relation de travail' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='etablissementdigital' onChange={handleChange} label='Etablissement digital' placeholder='Etablissement digital' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='tempsdetravail' onChange={handleChange} label='Temps de travail' placeholder='Temps de travail' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='conventioncollective' onChange={handleChange} label='Convention collective' placeholder='Convention collective' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='classification' onChange={handleChange} label='Classification' placeholder='Classification' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='niveau' onChange={handleChange} label='Niveau' placeholder='Niveau' />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                <Grid columns='equal'>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Form.Input fluid name='coefficient' onChange={handleChange} label='Coefficient' placeholder='Coefficient' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='indice' onChange={handleChange} label='Indice' placeholder='Indice' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='rémunérationbrutemensuelle' onChange={handleChange} label='Rémunération brute mensuelle' placeholder='Rémunération brute mensuelle' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='rémunérationbrutejournalière' onChange={handleChange} label='Rémunération brute journalière' placeholder='Rémunération brute journalière' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='rémunérationbruteannuelle' onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='rémunérationbrutehoraire' onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                <Grid columns='equal'>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Form.Input fluid name='Nombreheureshebdomadairedusalarié' onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='Nombreheuresmensueldusalarié' onChange={handleChange} label="Nombre d'heures mensuel du salarié" placeholder="Nombre d'heures mensuel du salarié" />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Input fluid name='Formationerpsécuritéincendie' onChange={handleChange} label='Formation ERP Sécurité Incendie' placeholder='Formation ERP Sécurité Incendie' />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+
                 <Form.Group>
                     <Informations handleChangeFile={handleChangeFile} />
                 </Form.Group>

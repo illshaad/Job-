@@ -1,11 +1,17 @@
 import React from 'react'
-import { Grid, Container, Segment } from 'semantic-ui-react'
+import { Grid, Container, Segment, Label } from 'semantic-ui-react'
 
 export default function Informations({ handleChangeFile }) {
     return (
         <Container>
             <br />
-            <Segment className='principal' textAlign='center'>2°) Documents à fournir</Segment>
+            <br />
+            <Grid columns={2}>
+                <Grid.Row>
+                    <Label circular color='blue' size='massive'>2</Label>
+                    <h3>Documents à fournir</h3>
+                </Grid.Row>
+            </Grid>
             <br />
             <Grid columns={4} divided>
                 <Grid.Row>
@@ -77,7 +83,7 @@ export default function Informations({ handleChangeFile }) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            <Segment textAlign='center'>Réservé aux praticiens</Segment>
+            <Segment className='segmentPerso' size='small'>Réservé aux praticiens</Segment>
             <Grid columns={4} divided>
                 <Grid.Row>
                     <Grid.Column>
