@@ -9,7 +9,7 @@ export default function Informations({ handleChangeFile }) {
             <Grid columns={2}>
                 <Grid.Row>
                     <Label circular color='blue' size='massive'>2</Label>
-                    <h3>Documents à fournir</h3>
+                    <h3>Documents à fournir (10/30)</h3>
                 </Grid.Row>
             </Grid>
             <br />

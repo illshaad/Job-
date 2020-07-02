@@ -7,6 +7,9 @@ import {
 } from "react-router-dom";
 
 import { Icon, Form, Container, Grid, Segment, Button, Message, Header, Label } from 'semantic-ui-react'
+import AutocompletEtablissement from './autocomplet/etablissement';
+import AutocompletCollaborateur from './autocomplet/typeCollaborateur'
+import AutocompletActivité from './autocomplet/activite'
 
 export default function Presentation() {
     const [informations, setInformations] = useState({
@@ -113,7 +116,7 @@ export default function Presentation() {
                 <p>{error[e]}</p>
             ))}
             <Link to='/'><Icon name='arrow left' size='large'></Icon></Link>
-            <Header as='h1' textAlign='center'>Renseigner les informations d'un futur collaborateur</Header>
+            <Header as='h1' textAlign='center'>Renseigner les informations d'un nouveau collaborateur</Header>
             <Header as='h4' textAlign='center'>Vous allez renjoindre le groupe Doctegestio, pour préparer au mieux votre intégration merci de renseigner le formulaire ci-dessous.</Header>
             {message ? <Message positive>
                 <Message.Header>Donnée enregistrer</Message.Header>
@@ -122,13 +125,13 @@ export default function Presentation() {
             <Grid columns={2}>
                 <Grid.Row>
                     <Label circular color='blue' size='massive'>1</Label>
-                    <h3>Informations personnelles</h3>
+                    <h3>Informations personnelles (5/40)</h3>
                 </Grid.Row>
             </Grid>
             <Grid columns='equal'>
                 <Grid.Row>
                     <Grid.Column>
-                        <Form.Input fluid type='text' name='prenom' onChange={handleChange} label='Prenom' placeholder='Prenom' />
+                        <Form.Input fluid type='text' name='prenom' onChange={handleChange} label='Prénom' placeholder='Prénom' />
                     </Grid.Column>
                     <Grid.Column>
                         <Form.Input fluid type='text' name='nom' onChange={handleChange} label='Nom' placeholder='Nom' />
@@ -154,7 +157,7 @@ export default function Presentation() {
                         <Form.Input fluid type='date' name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='lieunaissance' onChange={handleChange} label='Lieu de naissance' placeholder='Lieu de naissance' />
+                        <Form.Input fluid name='lieunaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -165,7 +168,7 @@ export default function Presentation() {
                         <Form.Input fluid type='text' name='nationalité' onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='numerosecurite' onChange={handleChange} label='N°securite social' placeholder='n°securite social' />
+                        <Form.Input fluid name='numerosecurite' onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
                     </Grid.Column>
                     <Grid.Column>
                         <Form.Input fluid name='addresse' onChange={handleChange} label='Addresse' placeholder='Addresse' />
@@ -201,20 +204,22 @@ export default function Presentation() {
                     </Grid.Row>
                 </Grid>
                 <br />
-                <Segment className='segmentPerso' size='small'>Réservé aux Rh</Segment>
+                <Segment className='segmentPerso' size='small'>A remplir par les RH</Segment>
+                <br />
+                <br />
                 <Grid columns='equal'>
                     <Grid.Row>
                         <Grid.Column>
                             <Form.Input fluid name='titre' onChange={handleChange} label='Titre' placeholder='Titre' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='typedecollaborateur' onChange={handleChange} label='Type de collaborateur' placeholder='Type de collaborateur' />
+                            <AutocompletCollaborateur handleChange={handleChange} />
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Input fluid name='adressee-mailduresponsable' onChange={handleChange} label='Adresse e-mail du responsable' placeholder='Adresse e-mail du responsable' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='activité' onChange={handleChange} label='Activité' placeholder='Activité' />
+                            <AutocompletActivité handleChange={handleChange} />
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Input fluid name='fonctiondigitaleprincipale' onChange={handleChange} label='Fonction digitale principale' placeholder='Fonction digitale principale' />
@@ -230,7 +235,7 @@ export default function Presentation() {
                             <Form.Input fluid name='structurejuridique' onChange={handleChange} label='Structure Juridique' placeholder='Structure Juridique' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='etablissementdigital' onChange={handleChange} label='Etablissement digital' placeholder='Etablissement digital' />
+                            <AutocompletEtablissement handleChange={handleChange} />
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Input fluid type='date' name=' datedeprisedefonction' onChange={handleChange} label='Date de prise de fonction' placeholder='Date de prise de fonction' />
@@ -250,9 +255,6 @@ export default function Presentation() {
                     <Grid.Row>
                         <Grid.Column>
                             <Form.Input fluid name='naturedelarelationdetravail' onChange={handleChange} label='Nature de la relation de travail' placeholder='Nature de la relation de travail' />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='etablissementdigital' onChange={handleChange} label='Etablissement digital' placeholder='Etablissement digital' />
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Input fluid name='tempsdetravail' onChange={handleChange} label='Temps de travail' placeholder='Temps de travail' />

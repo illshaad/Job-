@@ -15,3 +15,21 @@
 .segmentPerso.ui.segment{
     font-weight: bold;
 }
+
+.ui.form .field>label {
+    display: block;
+    margin: 0 0 .28571429rem 0;
+    color: rgba(0,0,0,.87);
+    font-size: .92857143em;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.autoCompletTitre{
+    display: block;
+    margin: 0 0 .28571429rem 0;
+    color: rgba(0,0,0,.87);
+    font-size: .92857143em;
+    font-weight: 400;
+    text-transform: none;
+}
