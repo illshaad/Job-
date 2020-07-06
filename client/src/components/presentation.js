@@ -7,9 +7,16 @@ import {
 } from "react-router-dom";
 
 import { Icon, Form, Container, Grid, Segment, Button, Message, Header, Label } from 'semantic-ui-react'
+import AutocompletEmailResponsable from './autocomplet/emailResponsable'
 import AutocompletEtablissement from './autocomplet/etablissement';
 import AutocompletCollaborateur from './autocomplet/typeCollaborateur'
 import AutocompletActivité from './autocomplet/activite'
+import AutocompletFonctionDigital from './autocomplet/fonctionDigital';
+import AutocompletJuridique from './autocomplet/juridique';
+import RelationTravail from './menuDeroulant/natureTravail'
+import TempsTravail from './menuDeroulant/tempsTravail'
+import Convention from './menuDeroulant/convention'
+import ERP from './menuDeroulant/erp'
 
 export default function Presentation() {
     const [informations, setInformations] = useState({
@@ -39,9 +46,24 @@ export default function Presentation() {
         conseildelordre: "",
         ONCD: "",
         diplômes: "",
+        diplômescollaborateurs: "",
         RCP: "",
         Radioprotectionpatients: "",
         Radioprotectiontravailleurs: "",
+        matériels: "",
+        contrat: "",
+        déclaration: "",
+        fichedeposte: "",
+        fichesynthetique: "",
+        avantagesennature: "",
+        mutuelle: "",
+        onboarding: "",
+        adli: "",
+
+
+
+
+
 
     })
 
@@ -93,9 +115,20 @@ export default function Presentation() {
         data.append('conseildelordre', informations.conseildelordre)
         data.append('ONCD', informations.ONCD)
         data.append('diplomes', informations.diplômes)
+        data.append('diplomescollaborateurs', informations.diplômescollaborateurs)
         data.append('RCP', informations.RCP)
         data.append('Radioprotectionpatients', informations.Radioprotectionpatients)
         data.append('Radioprotectiontravailleurs', informations.Radioprotectiontravailleurs)
+        data.append('matériels', informations.matériels)
+        data.append('contrat', informations.contrat)
+        data.append('déclaration', informations.déclaration)
+        data.append('fichedeposte', informations.fichedeposte)
+        data.append('fichesynthetique', informations.fichesynthetique)
+        data.append('avantagesennature', informations.avantagesennature)
+        data.append('mutuelle', informations.mutuelle)
+        data.append('onboarding', informations.onboarding)
+        data.append('adli', informations.adli)
+
         try {
             const response = await axios({
                 method: 'post',
@@ -128,15 +161,12 @@ export default function Presentation() {
                     <h3>Informations personnelles (5/40)</h3>
                 </Grid.Row>
             </Grid>
-            <Grid columns='equal'>
+
+            <Grid columns={3}>
                 <Grid.Row>
                     <Grid.Column>
                         <Form.Input fluid type='text' name='prenom' onChange={handleChange} label='Prénom' placeholder='Prénom' />
-                    </Grid.Column>
-                    <Grid.Column>
                         <Form.Input fluid type='text' name='nom' onChange={handleChange} label='Nom' placeholder='Nom' />
-                    </Grid.Column>
-                    <Grid.Column>
                         Genre
                         <Form.Radio
                             name="genre"
@@ -155,27 +185,19 @@ export default function Presentation() {
                     </Grid.Column>
                     <Grid.Column>
                         <Form.Input fluid type='date' name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
-                    </Grid.Column>
-                    <Grid.Column>
                         <Form.Input fluid name='lieunaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-
-            <Grid columns='equal'>
-                <Grid.Row>
-                    <Grid.Column>
                         <Form.Input fluid type='text' name='nationalité' onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
                     </Grid.Column>
                     <Grid.Column>
                         <Form.Input fluid name='numerosecurite' onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
-                    </Grid.Column>
-                    <Grid.Column>
                         <Form.Input fluid name='addresse' onChange={handleChange} label='Addresse' placeholder='Addresse' />
-                    </Grid.Column>
-                    <Grid.Column>
                         <Form.Input fluid name='cp' onChange={handleChange} label='Code postal' placeholder='Code postal' />
                     </Grid.Column>
+                </Grid.Row>
+            </Grid>
+
+            <Grid columns={2} >
+                <Grid.Row>
                     <Grid.Column>
                         <Form.Input fluid name='email' onChange={handleChange} label='Email' placeholder='Email' />
                     </Grid.Column>
@@ -187,18 +209,14 @@ export default function Presentation() {
             <Form>
                 <br />
                 <Segment className='segmentPerso' size='small'>Réservé aux praticiens</Segment>
-                <Grid columns='equal'>
+                <Grid columns={2}>
                     <Grid.Row>
                         <Grid.Column>
                             <Form.Input fluid name='rpps' onChange={handleChange} label='N° RPPS' placeholder='N° RPPS' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='numerodepartementalconseil' onChange={handleChange} label='N° Départemental Conseil de l’Ordre' placeholder='N° Départemental Conseil de l’Ordre' />
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Input fluid name='departementconseil' onChange={handleChange} label='Département Conseil de l’Ordre' placeholder='Département Conseil de l’Ordre' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='specialitepratiquee' onChange={handleChange} label='Spécialité pratiquée au centre' placeholder='Spécialité pratiquée au centre' />
                         </Grid.Column>
                     </Grid.Row>
@@ -207,105 +225,59 @@ export default function Presentation() {
                 <Segment className='segmentPerso' size='small'>A remplir par les RH</Segment>
                 <br />
                 <br />
-                <Grid columns='equal'>
+                <Grid columns={3}>
                     <Grid.Row>
                         <Grid.Column>
-                            <Form.Input fluid name='titre' onChange={handleChange} label='Titre' placeholder='Titre' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <AutocompletCollaborateur handleChange={handleChange} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='adressee-mailduresponsable' onChange={handleChange} label='Adresse e-mail du responsable' placeholder='Adresse e-mail du responsable' />
-                        </Grid.Column>
-                        <Grid.Column>
+                            <AutocompletEmailResponsable handleChange={handleChange} />
                             <AutocompletActivité handleChange={handleChange} />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='fonctiondigitaleprincipale' onChange={handleChange} label='Fonction digitale principale' placeholder='Fonction digitale principale' />
-                        </Grid.Column>
-                        <Grid.Column>
+                            <AutocompletFonctionDigital handleChange={handleChange} />
                             <Form.Input fluid name='fonction(s)digitale(s)secondaire(s)' onChange={handleChange} label='Fonction(s) digitale(s) secondaire(s)' placeholder='Fonction(s) digitale(s) secondaire(s)' />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <Grid columns='equal'>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Form.Input fluid name='structurejuridique' onChange={handleChange} label='Structure Juridique' placeholder='Structure Juridique' />
+                            <AutocompletJuridique handleChange={handleChange} />
                         </Grid.Column>
                         <Grid.Column>
                             <AutocompletEtablissement handleChange={handleChange} />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid type='date' name=' datedeprisedefonction' onChange={handleChange} label='Date de prise de fonction' placeholder='Date de prise de fonction' />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='téléphone(travail)' onChange={handleChange} label='Téléphone (Travail)' placeholder='Téléphone (Travail)' />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='téléphone(mobile)' onChange={handleChange} label='Téléphone (Mobile)' placeholder='Téléphone (Mobile)' />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='adresse(travail)' onChange={handleChange} label='Adresse (Travail)' placeholder='Adresse (Travail)' />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Grid columns='equal'>
+                <Grid columns={3}>
                     <Grid.Row>
                         <Grid.Column>
-                            <Form.Input fluid name='naturedelarelationdetravail' onChange={handleChange} label='Nature de la relation de travail' placeholder='Nature de la relation de travail' />
+                            <Form.Input fluid name='téléphone(travail)' onChange={handleChange} label='Téléphone (Travail)' placeholder='Téléphone (Travail)' />
+                            <Form.Input fluid name='téléphone(mobile)' onChange={handleChange} label='Téléphone (Mobile)' placeholder='Téléphone (Mobile)' />
+                            <Form.Input fluid name='adresse(travail)' onChange={handleChange} label='Adresse (Travail)' placeholder='Adresse (Travail)' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='tempsdetravail' onChange={handleChange} label='Temps de travail' placeholder='Temps de travail' />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='conventioncollective' onChange={handleChange} label='Convention collective' placeholder='Convention collective' />
+                            <RelationTravail onChange={handleChange} />
+                            <TempsTravail onChange={handleChange} />
+                            <Convention onChange={handleChange} />
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Input fluid name='classification' onChange={handleChange} label='Classification' placeholder='Classification' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='niveau' onChange={handleChange} label='Niveau' placeholder='Niveau' />
+                            <Form.Input fluid name='coefficient' onChange={handleChange} label='Coefficient' placeholder='Coefficient' />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Grid columns='equal'>
+                <Grid columns={2}>
                     <Grid.Row>
                         <Grid.Column>
-                            <Form.Input fluid name='coefficient' onChange={handleChange} label='Coefficient' placeholder='Coefficient' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='indice' onChange={handleChange} label='Indice' placeholder='Indice' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='rémunérationbrutemensuelle' onChange={handleChange} label='Rémunération brute mensuelle' placeholder='Rémunération brute mensuelle' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='rémunérationbrutejournalière' onChange={handleChange} label='Rémunération brute journalière' placeholder='Rémunération brute journalière' />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='rémunérationbruteannuelle' onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' />
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Input fluid name='rémunérationbrutehoraire' onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <Grid columns='equal'>
-                    <Grid.Row>
-                        <Grid.Column>
                             <Form.Input fluid name='Nombreheureshebdomadairedusalarié' onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" />
-                        </Grid.Column>
-                        <Grid.Column>
                             <Form.Input fluid name='Nombreheuresmensueldusalarié' onChange={handleChange} label="Nombre d'heures mensuel du salarié" placeholder="Nombre d'heures mensuel du salarié" />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='Formationerpsécuritéincendie' onChange={handleChange} label='Formation ERP Sécurité Incendie' placeholder='Formation ERP Sécurité Incendie' />
+                            <ERP onChange={handleChange} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-
                 <Form.Group>
                     <Informations handleChangeFile={handleChangeFile} />
                 </Form.Group>
