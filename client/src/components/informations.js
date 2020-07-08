@@ -50,18 +50,10 @@ export default function Informations({ handleChangeFile }) {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <Segment textAlign='center'>Permis de conduire</Segment>
+                        <Segment textAlign='center'>Diplômes</Segment>
                         <input
                             type="file"
-                            name='permisConduire'
-                            onChange={handleChangeFile}
-                        />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Segment textAlign='center'>Assurance automobile</Segment>
-                        <input
-                            type="file"
-                            name='assuranceAutomobile'
+                            name='diplômescollaborateurs'
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -84,10 +76,20 @@ export default function Informations({ handleChangeFile }) {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <Segment textAlign='center'>Diplômes</Segment>
+                        <div className='autoCompletTitre'>Pour les postes nécessitant une voiture</div>
+                        <Segment textAlign='center'>Permis de conduire</Segment>
                         <input
                             type="file"
-                            name='diplômescollaborateurs'
+                            name='permisConduire'
+                            onChange={handleChangeFile}
+                        />
+                    </Grid.Column>
+                    <Grid.Column>
+                        <div className='autoCompletTitre'>Pour les postes nécessitant une voiture</div>
+                        <Segment textAlign='center'>Assurance automobile</Segment>
+                        <input
+                            type="file"
+                            name='assuranceAutomobile'
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -96,27 +98,23 @@ export default function Informations({ handleChangeFile }) {
             <Segment className='segmentPerso' size='small'>Réservé aux praticiens</Segment>
             <Grid columns={4} divided>
                 <Grid.Row>
+
+
                     <Grid.Column>
-                        <Segment textAlign='center'>Attestation d’inscription au tableau du conseil de l’Ordre</Segment>
+                        <Segment textAlign='center'>RCP</Segment>
                         <input
                             type="file"
-                            name='conseildelordre'
+                            name='RCP'
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
+
+
                     <Grid.Column>
                         <Segment textAlign='center'>ONCD</Segment>
                         <input
                             type="file"
                             name='ONCD'
-                            onChange={handleChangeFile}
-                        />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Segment textAlign='center'>Diplômes</Segment>
-                        <input
-                            type="file"
-                            name='diplômes'
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -131,10 +129,10 @@ export default function Informations({ handleChangeFile }) {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <Segment textAlign='center'>RCP</Segment>
+                        <Segment textAlign='center'>Attestation d’inscription au tableau du conseil de l’Ordre</Segment>
                         <input
                             type="file"
-                            name='RCP'
+                            name='conseildelordre'
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -156,7 +154,7 @@ export default function Informations({ handleChangeFile }) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            <Segment className='segmentPerso' size='small'>Réservé aux RH</Segment>
+            <Segment className='segmentPerso' size='small'>A remplir par les RH</Segment>
             <Grid columns={4} divided>
                 <Grid.Row>
                     <Grid.Column>
@@ -229,6 +227,6 @@ export default function Informations({ handleChangeFile }) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-        </Container>
+        </Container >
     )
 }

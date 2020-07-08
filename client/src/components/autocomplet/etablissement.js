@@ -18,10 +18,10 @@ export default function AutocompletEtablissement({ handleChange }) {
 
     return (
         <Grid>
-            <div className='autoCompletTitre'>Etablissement Digital</div>
+            <div className='autoCompletTitre'>Etablissement digital</div>
             <Dropdown
                 onChange={handleChange}
-                placeholder='Etablissement'
+                placeholder='Etablissement digital'
                 fluid
                 search
                 name='etablissement'

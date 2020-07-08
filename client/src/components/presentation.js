@@ -27,6 +27,7 @@ export default function Presentation() {
         lieunaissance: "",
         nationalité: "",
         numerosecurite: "",
+        ville: '',
         addresse: "",
         cp: "",
         email: '',
@@ -97,6 +98,7 @@ export default function Presentation() {
         data.append('nationalite', informations.nationalité)
         data.append('numerosecurite', informations.numerosecurite)
         data.append('addresse', informations.addresse)
+        data.append('ville', informations.ville)
         data.append('cp', informations.cp)
         data.append('email', informations.email)
         data.append('tel', informations.tel)
@@ -166,9 +168,12 @@ export default function Presentation() {
                 <Grid.Row>
                     <Grid.Column>
                         <Form.Input fluid type='text' name='prenom' onChange={handleChange} label='Prénom' placeholder='Prénom' />
+                        <br />
                         <Form.Input fluid type='text' name='nom' onChange={handleChange} label='Nom' placeholder='Nom' />
+                        <br />
                         Genre
                         <Form.Radio
+                            fluid
                             name="genre"
                             label='Homme'
                             value='homme'
@@ -176,6 +181,7 @@ export default function Presentation() {
                             onChange={handleChange}
                         />
                         <Form.Radio
+                            fluid
                             name="genre"
                             label='Femme'
                             value='femme'
@@ -184,25 +190,33 @@ export default function Presentation() {
                         />
                     </Grid.Column>
                     <Grid.Column>
+
                         <Form.Input fluid type='date' name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
+                        <br />
                         <Form.Input fluid name='lieunaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
+                        <br />
                         <Form.Input fluid type='text' name='nationalité' onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='numerosecurite' onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
+                        <Form.Input fluid name='ville' onChange={handleChange} label='Ville' placeholder='Ville' />
+                        <br />
                         <Form.Input fluid name='addresse' onChange={handleChange} label='Addresse' placeholder='Addresse' />
+                        <br />
                         <Form.Input fluid name='cp' onChange={handleChange} label='Code postal' placeholder='Code postal' />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
 
-            <Grid columns={2} >
+            <Grid columns={3} >
                 <Grid.Row>
                     <Grid.Column>
                         <Form.Input fluid name='email' onChange={handleChange} label='Email' placeholder='Email' />
                     </Grid.Column>
                     <Grid.Column>
                         <Form.Input fluid name='tel' onChange={handleChange} label='Téléphone' placeholder='Téléphone' />
+                    </Grid.Column>
+                    <Grid.Column>
+                        <Form.Input fluid name='numerosecurite' onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -262,17 +276,19 @@ export default function Presentation() {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Grid columns={2}>
+                <Grid columns={3}>
                     <Grid.Row>
                         <Grid.Column>
                             <Form.Input fluid name='indice' onChange={handleChange} label='Indice' placeholder='Indice' />
                             <Form.Input fluid name='rémunérationbrutemensuelle' onChange={handleChange} label='Rémunération brute mensuelle' placeholder='Rémunération brute mensuelle' />
                             <Form.Input fluid name='rémunérationbrutejournalière' onChange={handleChange} label='Rémunération brute journalière' placeholder='Rémunération brute journalière' />
-                            <Form.Input fluid name='rémunérationbruteannuelle' onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' />
                         </Grid.Column>
                         <Grid.Column>
+                            <Form.Input fluid name='rémunérationbruteannuelle' onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' />
                             <Form.Input fluid name='rémunérationbrutehoraire' onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' />
                             <Form.Input fluid name='Nombreheureshebdomadairedusalarié' onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" />
+                        </Grid.Column>
+                        <Grid.Column>
                             <Form.Input fluid name='Nombreheuresmensueldusalarié' onChange={handleChange} label="Nombre d'heures mensuel du salarié" placeholder="Nombre d'heures mensuel du salarié" />
                             <ERP onChange={handleChange} />
                         </Grid.Column>

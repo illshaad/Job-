@@ -18,10 +18,10 @@ export default function AutocompletFonctionDigital({ handleChange }) {
 
     return (
         <Grid>
-            <div className='autoCompletTitre'>Fonction Digital</div>
+            <div className='autoCompletTitre'>Fonction digitale principale</div>
             <Dropdown
                 onChange={handleChange}
-                placeholder='Fonction Digital'
+                placeholder='Fonction digitale principale'
                 fluid
                 search
                 name='fonctiondigital'

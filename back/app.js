@@ -178,23 +178,20 @@ app.get("/etablissementData", async function (req, res) {
       })
       const rows = response.data.values;
       if (rows.length) {
-        var names = rows[2];
+        var names = rows;
         for (const i in names) {
-          if (names[i] == "ETABLISSEMENT") {
-            var ID = i;
-          }
-
           let object = {
             key: i,
-            value: rows[i][ID],
-            text: rows[i][ID]
+            value: rows[i][1],
+            text: rows[i][1]
           }
           arrayData.push(object)
+          console.log(arrayData);
         };
       } else {
         console.log('No data found.');
       }
-      res.status(200).json(arrayData)
+      res.status(200).json(arrayData.slice(3))
     } catch (error) {
       console.log("error dans listMajor")
     }
@@ -291,7 +288,7 @@ app.get("/fonctionData", async function (req, res) {
       } else {
         console.log('No data found.');
       }
-      res.status(200).json(arrayData)
+      res.status(200).json(arrayData.slice(1))
     } catch (error) {
       console.log("error dans listMajor")
     }
@@ -388,7 +385,7 @@ app.get("/emailData", async function (req, res) {
       } else {
         console.log('No data found.');
       }
-      res.status(200).json(arrayData.slice(0, 100))//limite
+      res.status(200).json(arrayData.slice(1, 100))//limite
     } catch (error) {
       console.log("error dans listMajor")
     }
@@ -484,7 +481,7 @@ app.get("/juridiqueData", async function (req, res) {
       } else {
         console.log('No data found.');
       }
-      res.status(200).json(arrayData)
+      res.status(200).json(arrayData.slice(1))
     } catch (error) {
       console.log("error dans listMajor")
     }
