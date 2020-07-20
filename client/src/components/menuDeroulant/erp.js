@@ -20,6 +20,7 @@ export default function ERP({ handleChange }) {
             <div className='autoCompletTitre'>Formation ERP Sécurité Incendie</div>
             <Dropdown
                 placeholder='Formation ERP Sécurité Incendie'
+                name="erp"
                 onChange={handleChange}
                 fluid
                 selection

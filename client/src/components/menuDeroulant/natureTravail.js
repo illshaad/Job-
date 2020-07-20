@@ -57,6 +57,7 @@ export default function RelationTravail({ handleChange }) {
             <div className='autoCompletTitre'>Nature de la relation de travail</div>
             <Dropdown
                 placeholder='Relation de travail'
+                name='naturetravail'
                 onChange={handleChange}
                 fluid
                 selection

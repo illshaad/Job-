@@ -97,6 +97,7 @@ export default function Convention({ handleChange }) {
             <div className='autoCompletTitre'>Convention Collective</div>
             <Dropdown
                 placeholder='Convention Collective'
+                name='convention'
                 onChange={handleChange}
                 fluid
                 selection

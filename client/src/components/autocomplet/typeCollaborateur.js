@@ -32,9 +32,9 @@ export default function AutocompletCollaborateur({ handleChange }) {
 
     return (
         <Grid>
-            <div className='autoCompletTitre'>Titre du collaborateur</div>
+            <div className='autoCompletType'>Type de collaborateur</div>
             <Dropdown
-                name='Collaborateur'
+                name='collaborateur'
                 onChange={handleChange}
                 placeholder='Type'
                 fluid

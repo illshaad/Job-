@@ -47,6 +47,7 @@ export default function TempsTravail({ handleChange }) {
             <div className='autoCompletTitre'>Temps travail</div>
             <Dropdown
                 placeholder='Temps travail'
+                name='tempstravail'
                 onChange={handleChange}
                 fluid
                 selection

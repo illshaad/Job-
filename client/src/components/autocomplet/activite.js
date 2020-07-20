@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dropdown, Grid } from 'semantic-ui-react'
+import { Dropdown, Grid, Label } from 'semantic-ui-react'
 
 
 export default function AutocompletActivite({ handleChange }) {
@@ -43,7 +43,7 @@ export default function AutocompletActivite({ handleChange }) {
                 placeholder='Activite'
                 fluid
                 search
-                name='Activite'
+                name='activite'
                 selection
                 options={data}
             />
