@@ -161,7 +161,7 @@ export default function Presentation() {
                     <Grid.Column>
                         <Form.Input fluid name='prenom' onChange={handleChange} label='Prénom' placeholder='Prénom' />
                         <br />
-                        <Form.Input fluid name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
+                        <Form.Input fluid type='date' name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
                         <br />
                         <Form.Input fluid name='addresse' onChange={handleChange} label='Addresse' placeholder='Addresse' />
                         <br />

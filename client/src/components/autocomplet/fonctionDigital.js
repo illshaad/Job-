@@ -31,6 +31,4 @@ export default function AutocompletFonctionDigital({ handleChange }) {
         </Grid>
 
     )
-
-
 }

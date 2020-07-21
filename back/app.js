@@ -71,26 +71,8 @@ app.post("/upload", upload.any(), [
   res.status(200).json({ Sauvegarde: 'ok' });
 });
 
-//Verification rh
-app.get('/verificationRh', function (req, res, next) {
-  res.render('rh ok');
-});
-//Recuperation information Save BDD
-app.post('/recuperationInformations', function (req, res, next) {
-  res.render('Verification Rh');
-});
-
-app.get('/recuperationInformationCollaborateur', function (req, res, next) {
-  res.render('Verification Rh');
-});
-
-// Tabeleau
-app.get('/recuperationTousCollaborateur', function (req, res, next) {
-  res.render('Verification TousCollaborateur Ok');
-});
-
-app.post('/ajouterDocumentRH', function (req, res, next) {
-  res.render('ajouterOk');
+app.post("/uploadRH", upload.any(), async function (req, res) {
+  console.log(req.body);
 });
 
 //GOOGLE API//

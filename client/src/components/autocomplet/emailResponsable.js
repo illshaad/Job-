@@ -24,7 +24,7 @@ export default function AutocompletEmailResponsable({ handleChange }) {
                 placeholder='Adresse e-mail du responsable'
                 fluid
                 search
-                name='emailduresponsable'
+                name='emailresponsable'
                 selection
                 options={data}
             />

@@ -24,12 +24,26 @@ export default function InputRh() {
         avantagesennature: "",
         mutuelle: "",
         onboarding: "",
-        adli: "",
+        telephonetravail: "",
+        telephonemobile: "",
+        adressetravail: "",
+        classification: "",
+        niveau: "",
+        coefficient: "",
+        indice: "",
+        rémunérationbrutemensuelle: "",
+        rémunérationbrutejournalière: "",
+        rémunérationbruteannuelle: "",
+        rémunérationbrutehoraire: "",
+        nombreheureshebdomadairedusalarie: "",
+        nombreheuresmensueldusalarié: "",
         /* COMPONENT 'autocomplet' */
         activite: "",
         emailresponsable: "",
+        etablissement: "",
         juridique: "",
-        collaborteur: "",
+        collaborateur: "",
+        fonctiondigital: "",
         /* COMPONENT 'menuderoulant' */
         convention: "",
         erp: "",
@@ -67,17 +81,28 @@ export default function InputRh() {
         data.append('mutuelle', informations.mutuelle)
         data.append('onboarding', informations.onboarding)
         data.append('activite', informations.activite)
-        data.append('emailduresponsable', informations.emailresponsable)
+        data.append('emailresponsable', informations.emailresponsable)
+        data.append('etablissement', informations.etablissement)
+        data.append('fonctiondigital', informations.fonctiondigital)
         data.append('juridique', informations.juridique)
         data.append('collaborateur', informations.collaborteur)
         data.append('convention', informations.convention)
         data.append('erp', informations.erp)
         data.append('naturetravail', informations.naturetravail)
         data.append('tempstravail', informations.tempstravail)
+        data.append('classification', informations.classification)
+        data.append('niveau', informations.niveau)
+        data.append('indice', informations.indice)
+        data.append('rémunérationbrutemensuelle', informations.rémunérationbrutemensuelle)
+        data.append('rémunérationbrutejournalière', informations.rémunérationbrutejournalière)
+        data.append('rémunérationbruteannuelle', informations.rémunérationbruteannuelle)
+        data.append('rémunérationbrutehoraire', informations.rémunérationbrutehoraire)
+        data.append('nombreheureshebdomadairedusalarié', informations.nombreheureshebdomadairedusalarie)
+        data.append('nombreheuresmensueldusalarié', informations.nombreheuresmensueldusalarié)
         try {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:3000/upload',
+                url: 'http://localhost:3000/uploadRH',
                 data: data
             })
             setMessage('Donnée enregistrer')
@@ -108,13 +133,12 @@ export default function InputRh() {
                     <Grid.Column>
                         {/* COMPONENT 'FonctionDigital' */}
                         <AutocompletFonctionDigital handleChange={handleChange} />
-
+                        {/* COMPONENT 'Etablissement' */}
                         <AutocompletEtablissement handleChange={handleChange} />
                         {/* COMPONENT 'Juridique' */}
                         <AutocompletJuridique handleChange={handleChange} />
                     </Grid.Column>
                     <Grid.Column>
-                        {/* COMPONENT 'Etablissement' */}
                         <Form.Input fluid name='fonction(s)digitale(s)secondaire(s)' onChange={handleChange} label='Fonction(s) digitale(s) secondaire(s)' placeholder='Fonction(s) digitale(s) secondaire(s)' />
                         <br />
                         <Form.Input fluid type='date' name=' datedeprisedefonction' onChange={handleChange} label='Date de prise de fonction' placeholder='Date de prise de fonction' />
@@ -133,11 +157,11 @@ export default function InputRh() {
                     </Grid.Column>
                     <Grid.Column>
                         {/* COMPONENT 'RelationTravail' */}
-                        <RelationTravail onChange={handleChange} />
+                        <RelationTravail handleChange={handleChange} />
                         {/* COMPONENT 'TempsTravail' */}
-                        <TempsTravail onChange={handleChange} />
+                        <TempsTravail handleChange={handleChange} />
                         {/* COMPONENT 'Convention' */}
-                        <Convention onChange={handleChange} />
+                        <Convention handleChange={handleChange} />
                     </Grid.Column>
                     <Grid.Column>
                         <Form.Input fluid name='classification' onChange={handleChange} label='Classification' placeholder='Classification' />
@@ -162,10 +186,10 @@ export default function InputRh() {
                         <br />
                         <Form.Input fluid name='rémunérationbrutehoraire' onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' />
                         <br />
-                        <Form.Input fluid name='Nombreheureshebdomadairedusalarié' onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" />
+                        <Form.Input fluid name='nombreheureshebdomadairedusalarié' onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='Nombreheuresmensueldusalarié' onChange={handleChange} label="Nombre d'heures mensuel du salarié" placeholder="Nombre d'heures mensuel du salarié" />
+                        <Form.Input fluid name='nombreheuresmensueldusalarié' onChange={handleChange} label="Nombre d'heures mensuel du salarié" placeholder="Nombre d'heures mensuel du salarié" />
                         <br />
                         <ERP onChange={handleChange} />
                     </Grid.Column>

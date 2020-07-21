@@ -24,7 +24,7 @@ export default function AutocompletJuridique({ handleChange }) {
                 placeholder='Structure Juridique'
                 fluid
                 search
-                name='structurejuridique'
+                name='juridique'
                 selection
                 options={data}
             />
