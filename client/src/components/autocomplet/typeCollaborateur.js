@@ -4,7 +4,7 @@ import { Dropdown, Grid } from 'semantic-ui-react'
 
 export default function AutocompletCollaborateur({ handleChange }) {
     const data = [
-        { key: 'actionnaire', value: 'actionnaire', text: 'Actionnaire' },
+        { key: 'actionnaire-1', value: 'actionnaire', text: 'Actionnaire' },
         { key: 'administrateur', value: 'administrateur', text: 'Administrateur' },
         { key: 'Administration', value: 'Administration', text: 'Administration' },
         { key: 'Agent de maîtrise', value: 'Agent de maîtrise', text: 'Agent de maîtrise' },

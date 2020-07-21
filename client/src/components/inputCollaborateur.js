@@ -17,20 +17,20 @@ export default function Presentation() {
         nom: "",
         genre: "",
         datenaissance: "",
-        lieunaissance: "",
-        nationalité: "",
+        villedenaissance: "",
+        nationalite: "",
         numerosecurite: "",
         ville: '',
         addresse: "",
         cp: "",
         email: '',
-        tel: '',
-        teldomicil: '',
-        telurgence: '',
+        telephonePerso: '',
+        telephoneDomicile: '',
+        telephoneUrgence: '',
         rpps: '',
-        numerodepartementalconseil: '',
-        departementconseil: '',
-        specialitepratiquee: '',
+        numeroDepartemental: '',
+        departementConseil: '',
+        specialitePratiquee: '',
         carnetVaccination: "",
         carteIdentitePassport: "",
         carteVital: "",
@@ -89,18 +89,20 @@ export default function Presentation() {
         data.append('nom', informations.nom)
         data.append('genre', informations.genre)
         data.append('datenaissance', informations.datenaissance)
-        data.append('lieunaissance', informations.lieunaissance)
-        data.append('nationalite', informations.nationalité)
+        data.append('villedenaissance', informations.villedenaissance)
+        data.append('nationalite', informations.nationalite)
         data.append('numerosecurite', informations.numerosecurite)
         data.append('addresse', informations.addresse)
         data.append('ville', informations.ville)
         data.append('cp', informations.cp)
         data.append('email', informations.email)
-        data.append('tel', informations.tel)
+        data.append('telephonePerso', informations.telephonePerso)
+        data.append('telephoneDomicile', informations.telephoneDomicile)
+        data.append('telephoneUrgence', informations.telephoneUrgence)
         data.append('rpps', informations.rpps)
-        data.append('numerodepartementalconseil', informations.numerodepartementalconseil)
-        data.append('departementdepartementconseil', informations.departementconseil)
-        data.append('specialitespecialitepratiquee', informations.specialitepratiquee)
+        data.append('numeroDepartemental', informations.numeroDepartemental)
+        data.append('departementConseil', informations.departementConseil)
+        data.append('specialitePratiquee', informations.specialitePratiquee)
         {/* state component 'documentCollaborteur'*/ }
         data.append('carnetvaccination', informations.carnetVaccination)
         data.append('carteIdentitePassport', informations.carteIdentitePassport)
@@ -127,7 +129,7 @@ export default function Presentation() {
         try {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:3000/upload',
+                url: 'http://localhost:3000/uploadCollaborateur',
                 data: data
             })
             setMessage('Donnée enregistrer')
@@ -170,7 +172,7 @@ export default function Presentation() {
                     <Grid.Column>
                         <Form.Input fluid name='nom' onChange={handleChange} label='Nom' placeholder='Nom' />
                         <br />
-                        <Form.Input fluid name='lieunaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
+                        <Form.Input fluid name='villedenaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
                         <br />
                         <Form.Input fluid name='cp' onChange={handleChange} label='Code postal' placeholder='Code postal' />
                         <br />
@@ -199,20 +201,20 @@ export default function Presentation() {
                         <br />
                         <Form.Input fluid name='ville' onChange={handleChange} label='Ville' placeholder='Ville' />
                         <br />
-                        <Form.Input fluid name='nationalité' onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
+                        <Form.Input fluid name='nationalite' onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
             <Grid columns={3} >
                 <Grid.Row>
                     <Grid.Column>
-                        <Form.Input fluid name='telportable' onChange={handleChange} label='Téléphone portable (personnel)' placeholder='Téléphone portable (personnel)' />
+                        <Form.Input fluid name='telephonePerso' onChange={handleChange} label='Téléphone portable (personnel)' placeholder='Téléphone portable (personnel)' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='teldomicile' onChange={handleChange} label='Téléphone domicile' placeholder='Téléphone domicile' />
+                        <Form.Input fluid name='telephoneDomicile' onChange={handleChange} label='Téléphone domicile' placeholder='Téléphone domicile' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='telurgence' onChange={handleChange} label="Téléphone à appeler en cas d'urgence" placeholder="Téléphone à appeler en cas d'urgence" />
+                        <Form.Input fluid name='telephoneUrgence' onChange={handleChange} label="Téléphone à appeler en cas d'urgence" placeholder="Téléphone à appeler en cas d'urgence" />
                     </Grid.Column>
                     <Grid.Column>
                     </Grid.Column>
@@ -225,13 +227,13 @@ export default function Presentation() {
                     <Grid.Row>
                         <Grid.Column>
                             <Form.Input fluid name='rpps' onChange={handleChange} label='N° RPPS' placeholder='N° RPPS' />
-                            <Form.Input fluid name='numerodepartementalconseil' onChange={handleChange} label='N° Départemental Conseil de l’Ordre' placeholder='N° Départemental Conseil de l’Ordre' />
+                            <Form.Input fluid name='numeroDepartemental' onChange={handleChange} label='N° Départemental Conseil de l’Ordre' placeholder='N° Départemental Conseil de l’Ordre' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='departementconseil' onChange={handleChange} label='Département Conseil de l’Ordre' placeholder='Département Conseil de l’Ordre' />
+                            <Form.Input fluid name='departementConseil' onChange={handleChange} label='Département Conseil de l’Ordre' placeholder='Département Conseil de l’Ordre' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='specialitepratiquee' onChange={handleChange} label='Spécialité pratiquée au centre' placeholder='Spécialité pratiquée au centre' />
+                            <Form.Input fluid name='specialitePratiquee' onChange={handleChange} label='Spécialité pratiquée au centre' placeholder='Spécialité pratiquée au centre' />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

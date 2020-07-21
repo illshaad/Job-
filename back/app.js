@@ -15,6 +15,8 @@ const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 
+const collaborateurModel = require('../back/models/collaborteurs');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -47,7 +49,14 @@ var storage = multer.diskStorage({
 // SAVE FILE MY LOCAL STORAGE //
 let upload = multer({ storage: storage });
 
-app.post("/upload", upload.any(), [
+
+app.get('/uploadCollaborateur', function (req, res) {
+  collaborateurModel.find(function (error, data) {
+    res.json({ result: true, data });
+  });
+});
+
+app.post("/uploadCollaborateur", upload.any(), [
   body('prenom').isLength({ min: 2 }),
   body('nom').isLength({ min: 2 }),
   body('numerosecurite').isLength({ min: 1, max: 12 }),
@@ -57,9 +66,7 @@ app.post("/upload", upload.any(), [
   const errors = validationResult(req);
   console.log(errors)
   if (!errors.isEmpty()) {
-
     let errorsObject = {};
-
     errors.array().forEach((e) => {
       if (e.param === "prenom") errorsObject.prenom = "Ce prenom n'est pas assez long !"
       if (e.param === "nom") errorsObject.nom = "Ce nom n'est pas assez long !"
@@ -68,7 +75,31 @@ app.post("/upload", upload.any(), [
     })
     return res.status(422).json({ errors: errorsObject });
   }
-  res.status(200).json({ Sauvegarde: 'ok' });
+
+  const newCollaborateur = new collaborateurModel({
+    prenom: req.body.prenom,
+    nom: req.body.nom,
+    genre: req.body.genre,
+    dateDeNaissance: req.body.dateDeNaissance,
+    villeDeNaissance: req.body.villeDeNaissance,
+    nomDeNaissance: req.body.nomDeNaissance,
+    nationalite: req.body.nationalite,
+    numerosecurite: req.body.numerosecurite,
+    addresse: req.body.addresse,
+    cp: req.body.cp,
+    ville: req.body.ville,
+    email: req.body.email,
+    telephonePerso: req.body.telephonePerso,
+    telephoneDomicile: req.body.telephoneDomicile,
+    telephoneUrgence: req.body.telephoneUrgence,
+    rpps: req.body.rpps,
+    numeroDepartemental: req.body.numeroDepartemental,
+    departementConseil: req.body.departementConseil,
+    specialitePratiquee: req.body.specialitePratiquee
+  });
+  newCollaborateur.save(function (error, collaborateur) {
+    res.status(200).json({ Sauvegarde: 'ok', collaborateur });
+  });
 });
 
 app.post("/uploadRH", upload.any(), async function (req, res) {

@@ -4,21 +4,22 @@ const collaborateursSchema = db.mongoose.Schema({
     prenom: String,
     nom: String,
     genre: String,
-    date: Date,
-    lieuNaissance: String,
+    dateDeNaissance: Date,
+    villeDeNaissance: String,
+    nomDeNaissance: String,
     nationalite: String,
-    securiteSocial: Number,
+    numerosecurite: Number,
     addresse: String,
     cp: Number,
+    ville: String,
     email: String,
-    telephone: String,
-    praticiens: {
-        rpps: Number,
-        numeroDepartemental: Number,
-        departementConseil: Number,
-        specialitePratiquee: String
-    }
-
+    telephonePerso: Number,
+    telephoneDomicile: Number,
+    telephoneUrgence: Number,
+    rpps: Number,
+    numeroDepartemental: Number,
+    departementConseil: String,
+    specialitePratiquee: String
 });
 
 
