@@ -21,7 +21,7 @@ function App() {
           <CSSTransition timeout={900} classNames='fade'>
             <Switch>
               <Route exact path='/'><Home /></Route>
-              <Route exact path='/collaborateur'><InputCollaborateur /></Route>
+              <Route exact path='/collaborateur/:nom/:prenom'><InputCollaborateur /></Route>
               <Route exact path='/rh'><Rh /></Route>
             </Switch>
           </CSSTransition>

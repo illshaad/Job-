@@ -1,21 +1,29 @@
-import React, { useState, setError } from 'react'
+import React, { useState, setError, useEffect } from 'react'
 import axios from 'axios'
 import Collaborateur from './documentCollaborateur'
 import RH from './inputRH'
 
 import {
     BrowserRouter as Router,
-    Link
+    Link,
+    useParams
+
 } from "react-router-dom";
 
 import { Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
 
 
-export default function Presentation() {
+export default function Presentation(props) {
+    // recuperer les dernier parametres de l'url (nom, prenom)
+    // requete a la nouvelle route (params = nom, prenom)
+
+
+
     const [informations, setInformations] = useState({
         prenom: "",
         nom: "",
         genre: "",
+        nomnaissance: "",
         datenaissance: "",
         villedenaissance: "",
         nationalite: "",
@@ -65,10 +73,21 @@ export default function Presentation() {
 
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
+    let { prenom, nom } = useParams();
 
+    useEffect(() => {
+        const callInfo = async () => {
+            try {
+                const result = await axios.post(`http://localhost:3000/userCollaborateur`, { prenom, nom })
+                setInformations(result.data)
+            } catch (error) {
+                console.log("error");
+            }
+        }
+        callInfo()
+    }, [])
 
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
-
     const handleChangeFile = (e) => {
         // le regex N°securite Social//
         if (e.target.value !== "#^[12][0-9]{2}[0-1][0-9](2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$#") {
@@ -88,6 +107,7 @@ export default function Presentation() {
         data.append('prenom', informations.prenom)
         data.append('nom', informations.nom)
         data.append('genre', informations.genre)
+        data.append('nomnaissance', informations.nomnaissance)
         data.append('datenaissance', informations.datenaissance)
         data.append('villedenaissance', informations.villedenaissance)
         data.append('nationalite', informations.nationalite)
@@ -161,22 +181,22 @@ export default function Presentation() {
             <Grid columns={3}>
                 <Grid.Row>
                     <Grid.Column>
-                        <Form.Input fluid name='prenom' onChange={handleChange} label='Prénom' placeholder='Prénom' />
+                        <Form.Input fluid name='prenom' value={informations.prenom} onChange={handleChange} label='Prénom' placeholder='Prénom' />
                         <br />
-                        <Form.Input fluid type='date' name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
+                        <Form.Input fluid type='date' value={informations.name} name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
                         <br />
-                        <Form.Input fluid name='addresse' onChange={handleChange} label='Addresse' placeholder='Addresse' />
+                        <Form.Input fluid name='addresse' value={informations.addresse} onChange={handleChange} label='Addresse' placeholder='Addresse' />
                         <br />
-                        <Form.Input fluid name='email' onChange={handleChange} label='Email (personnel)' placeholder='Email (personnel)' />
+                        <Form.Input fluid name='email' value={informations.email} onChange={handleChange} label='Email (personnel)' placeholder='Email (personnel)' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='nom' onChange={handleChange} label='Nom' placeholder='Nom' />
+                        <Form.Input fluid name='nom' value={informations.nom} onChange={handleChange} label='Nom' placeholder='Nom' />
                         <br />
-                        <Form.Input fluid name='villedenaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
+                        <Form.Input fluid value={informations.villedenaissance} name='villedenaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
                         <br />
-                        <Form.Input fluid name='cp' onChange={handleChange} label='Code postal' placeholder='Code postal' />
+                        <Form.Input fluid name='cp' value={informations.cp} onChange={handleChange} label='Code postal' placeholder='Code postal' />
                         <br />
-                        <Form.Input fluid name='numerosecurite' onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
+                        <Form.Input fluid name='numerosecurite' value={informations.numerosecurite} onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
                     </Grid.Column>
                     <Grid.Column>
                         Genre
@@ -184,7 +204,7 @@ export default function Presentation() {
                             fluid
                             name="genre"
                             label='Homme'
-                            value='homme'
+                            value={informations.genre}
                             checked={informations.genre === 'homme'}
                             onChange={handleChange}
                         />
@@ -192,29 +212,29 @@ export default function Presentation() {
                             fluid
                             name="genre"
                             label='Femme'
-                            value='femme'
+                            value={informations.genre}
                             checked={informations.genre === 'femme'}
                             onChange={handleChange}
                         />
                         <br />
-                        <Form.Input fluid name='nomnaissance' onChange={handleChange} label='Nom de naissance' placeholder='Nom de naissance' />
+                        <Form.Input fluid name='nomnaissance' value={informations.nomnaissance} onChange={handleChange} label='Nom de naissance' placeholder='Nom de naissance' />
                         <br />
-                        <Form.Input fluid name='ville' onChange={handleChange} label='Ville' placeholder='Ville' />
+                        <Form.Input fluid name='ville' onChange={handleChange} value={informations.ville} label='Ville' placeholder='Ville' />
                         <br />
-                        <Form.Input fluid name='nationalite' onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
+                        <Form.Input fluid name='nationalite' onChange={handleChange} value={informations.nationalite} label='Nationalité' placeholder='Nationalité' />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
             <Grid columns={3} >
                 <Grid.Row>
                     <Grid.Column>
-                        <Form.Input fluid name='telephonePerso' onChange={handleChange} label='Téléphone portable (personnel)' placeholder='Téléphone portable (personnel)' />
+                        <Form.Input fluid name='telephonePerso' value={informations.telephonePerso} onChange={handleChange} label='Téléphone portable (personnel)' placeholder='Téléphone portable (personnel)' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='telephoneDomicile' onChange={handleChange} label='Téléphone domicile' placeholder='Téléphone domicile' />
+                        <Form.Input fluid name='telephoneDomicile' value={informations.telephoneDomicile} onChange={handleChange} label='Téléphone domicile' placeholder='Téléphone domicile' />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='telephoneUrgence' onChange={handleChange} label="Téléphone à appeler en cas d'urgence" placeholder="Téléphone à appeler en cas d'urgence" />
+                        <Form.Input fluid name='telephoneUrgence' value={informations.telephoneUrgence} onChange={handleChange} label="Téléphone à appeler en cas d'urgence" placeholder="Téléphone à appeler en cas d'urgence" />
                     </Grid.Column>
                     <Grid.Column>
                     </Grid.Column>
@@ -226,14 +246,14 @@ export default function Presentation() {
                 <Grid columns={3}>
                     <Grid.Row>
                         <Grid.Column>
-                            <Form.Input fluid name='rpps' onChange={handleChange} label='N° RPPS' placeholder='N° RPPS' />
-                            <Form.Input fluid name='numeroDepartemental' onChange={handleChange} label='N° Départemental Conseil de l’Ordre' placeholder='N° Départemental Conseil de l’Ordre' />
+                            <Form.Input fluid name='rpps' onChange={handleChange} value={informations.rpps} label='N° RPPS' placeholder='N° RPPS' />
+                            <Form.Input fluid name='numeroDepartemental' value={informations.numeroDepartemental} onChange={handleChange} label='N° Départemental Conseil de l’Ordre' placeholder='N° Départemental Conseil de l’Ordre' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='departementConseil' onChange={handleChange} label='Département Conseil de l’Ordre' placeholder='Département Conseil de l’Ordre' />
+                            <Form.Input fluid name='departementConseil' value={informations.departementConseil} onChange={handleChange} label='Département Conseil de l’Ordre' placeholder='Département Conseil de l’Ordre' />
                         </Grid.Column>
                         <Grid.Column>
-                            <Form.Input fluid name='specialitePratiquee' onChange={handleChange} label='Spécialité pratiquée au centre' placeholder='Spécialité pratiquée au centre' />
+                            <Form.Input fluid name='specialitePratiquee' value={informations.specialitePratiquee} onChange={handleChange} label='Spécialité pratiquée au centre' placeholder='Spécialité pratiquée au centre' />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

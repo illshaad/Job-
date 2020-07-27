@@ -51,8 +51,8 @@ let upload = multer({ storage: storage });
 
 
 app.get('/uploadCollaborateur', function (req, res) {
-  collaborateurModel.find(function (error, data) {
-    res.json({ result: true, data });
+  collaborateurModel.find(function (error, collaborateurs) {
+    res.json(collaborateurs);
   });
 });
 
@@ -62,9 +62,9 @@ app.post("/uploadCollaborateur", upload.any(), [
   body('numerosecurite').isLength({ min: 1, max: 12 }),
   body('email').isEmail(),
 ], async function (req, res) {
-  console.log(req.body);
+  // console.log(req.body);
   const errors = validationResult(req);
-  console.log(errors)
+  // console.log(errors)
   if (!errors.isEmpty()) {
     let errorsObject = {};
     errors.array().forEach((e) => {
@@ -76,35 +76,82 @@ app.post("/uploadCollaborateur", upload.any(), [
     return res.status(422).json({ errors: errorsObject });
   }
 
-  const newCollaborateur = new collaborateurModel({
-    prenom: req.body.prenom,
-    nom: req.body.nom,
-    genre: req.body.genre,
-    dateDeNaissance: req.body.dateDeNaissance,
-    villeDeNaissance: req.body.villeDeNaissance,
-    nomDeNaissance: req.body.nomDeNaissance,
-    nationalite: req.body.nationalite,
-    numerosecurite: req.body.numerosecurite,
-    addresse: req.body.addresse,
-    cp: req.body.cp,
-    ville: req.body.ville,
-    email: req.body.email,
-    telephonePerso: req.body.telephonePerso,
-    telephoneDomicile: req.body.telephoneDomicile,
-    telephoneUrgence: req.body.telephoneUrgence,
-    rpps: req.body.rpps,
-    numeroDepartemental: req.body.numeroDepartemental,
-    departementConseil: req.body.departementConseil,
-    specialitePratiquee: req.body.specialitePratiquee
-  });
-  newCollaborateur.save(function (error, collaborateur) {
-    res.status(200).json({ Sauvegarde: 'ok', collaborateur });
-  });
+  const isExist = collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
+  //SI le collaborateur n'existe pas je le créee dans la BDD //
+  if (isExist) {
+    const newCollaborateur = new collaborateurModel({
+      prenom: req.body.prenom,
+      nom: req.body.nom,
+      genre: req.body.genre,
+      dateDeNaissance: req.body.dateDeNaissance,
+      villeDeNaissance: req.body.villeDeNaissance,
+      nomDeNaissance: req.body.nomDeNaissance,
+      nationalite: req.body.nationalite,
+      numerosecurite: req.body.numerosecurite,
+      addresse: req.body.addresse,
+      cp: req.body.cp,
+      ville: req.body.ville,
+      email: req.body.email,
+      telephonePerso: req.body.telephonePerso,
+      telephoneDomicile: req.body.telephoneDomicile,
+      telephoneUrgence: req.body.telephoneUrgence,
+      rpps: req.body.rpps,
+      numeroDepartemental: req.body.numeroDepartemental,
+      departementConseil: req.body.departementConseil,
+      specialitePratiquee: req.body.specialitePratiquee
+    });
+    newCollaborateur.save(function (error, collaborateur) {
+      res.status(200).json({ Sauvegarde: 'ok', collaborateur });
+      // console.log(collaborateur, ' ??????')
+    });
+    //Sinon je le recherche dans la Bdd pour l'afficher dans le front //
+  } else {
+    collaborateurModel.findByIdAndUpdate(
+      req.body.id,
+      {
+        prenom: req.body.prenom,
+        nom: req.body.nom,
+        genre: req.body.genre,
+        dateDeNaissance: req.body.dateDeNaissance,
+        villeDeNaissance: req.body.villeDeNaissance,
+        nomDeNaissance: req.body.nomDeNaissance,
+        nationalite: req.body.nationalite,
+        numerosecurite: req.body.numerosecurite,
+        addresse: req.body.addresse,
+        cp: req.body.cp,
+        ville: req.body.ville,
+        email: req.body.email,
+        telephonePerso: req.body.telephonePerso,
+        telephoneDomicile: req.body.telephoneDomicile,
+        telephoneUrgence: req.body.telephoneUrgence,
+        rpps: req.body.rpps,
+        numeroDepartemental: req.body.numeroDepartemental,
+        departementConseil: req.body.departementConseil,
+        specialitePratiquee: req.body.specialitePratiquee
+      }, { new: true },
+      function (err, collaborateurModify) {
+        if (err) {
+          // console.log("error" + err);
+          res.status(200).json({
+            collaborateurModify
+          });
+        }
+        // console.log(collaborateurModify, 'Collaborateur');
+      }
+    )
+  }
 });
+//Recuperation la donnée d'un collaborateur sélectionner dans le tableau par les RH//
+app.post('/userCollaborateur', (req, res) => {
+  console.log("body", req.body)
+  collaborateurModel.findOne({ nom: req.body.prenom, prenom: req.body.nom }, function (err, doc) {
+    if (err) throw err;
+    console.log("doc", doc);
+    res.status(200).json(doc)
+  });
+})
 
-app.post("/uploadRH", upload.any(), async function (req, res) {
-  console.log(req.body);
-});
+
 
 //GOOGLE API//
 // If modifying these scopes, delete token.json.
@@ -116,7 +163,6 @@ const TOKEN_PATH = 'token.json';
 
 // Load client secrets from a local file.
 app.get("/etablissementData", async function (req, res) {
-
   fs.readFile('./public/credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.
@@ -199,7 +245,7 @@ app.get("/etablissementData", async function (req, res) {
             text: rows[i][1]
           }
           arrayData.push(object)
-          console.log(arrayData);
+          // console.log(arrayData);
         };
       } else {
         console.log('No data found.');
@@ -297,7 +343,7 @@ app.get("/fonctionData", async function (req, res) {
           }
           arrayData.push(object)
         };
-        console.log(arrayData, "DATA")
+        // console.log(arrayData, "DATA")
       } else {
         console.log('No data found.');
       }
@@ -394,7 +440,7 @@ app.get("/emailData", async function (req, res) {
           }
           arrayData.push(object)
         };
-        console.log(arrayData, "DATA")
+        // console.log(arrayData, "DATA")
       } else {
         console.log('No data found.');
       }
@@ -490,7 +536,7 @@ app.get("/juridiqueData", async function (req, res) {
           }
           arrayData.push(object)
         };
-        console.log(arrayData, "DATA")
+        // console.log(arrayData, "DATA")
       } else {
         console.log('No data found.');
       }

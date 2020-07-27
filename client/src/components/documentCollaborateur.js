@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Container, Segment } from 'semantic-ui-react'
+import { Grid, Container, Segment, Label } from 'semantic-ui-react'
 
 export default function DocumentsCollaborateur({ handleChangeFile }) {
     return (
@@ -79,7 +79,7 @@ export default function DocumentsCollaborateur({ handleChangeFile }) {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <div className='autoCompletTitre'>Pour les postes nécessitant une voiture</div>
+                        <Label basic color='red' size='tiny'>Pour les postes nécessitant une voiture</Label>
                         <Segment textAlign='center'>Permis de conduire</Segment>
                         <input
                             type="file"
@@ -88,7 +88,7 @@ export default function DocumentsCollaborateur({ handleChangeFile }) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <div className='autoCompletTitre'>Pour les postes nécessitant une voiture</div>
+                        <Label basic color='red' size='tiny'>Pour les postes nécessitant une voiture</Label>
                         <Segment textAlign='center'>Assurance automobile</Segment>
                         <input
                             type="file"
