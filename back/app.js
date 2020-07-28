@@ -49,14 +49,15 @@ var storage = multer.diskStorage({
 // SAVE FILE MY LOCAL STORAGE //
 let upload = multer({ storage: storage });
 
-
+//recuperer tous mes collaborateurs//
 app.get('/uploadCollaborateur', function (req, res) {
   collaborateurModel.find(function (error, collaborateurs) {
     res.json(collaborateurs);
   });
 });
 
-app.post("/uploadCollaborateur", upload.any(), [
+//: id pour faire des moficiations d'un collaborateur //
+app.post("/uploadCollaborateur/:id", upload.any(), [
   body('prenom').isLength({ min: 2 }),
   body('nom').isLength({ min: 2 }),
   body('numerosecurite').isLength({ min: 1, max: 12 }),
@@ -75,11 +76,12 @@ app.post("/uploadCollaborateur", upload.any(), [
     })
     return res.status(422).json({ errors: errorsObject });
   }
-
-  const isExist = collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
-  //SI le collaborateur n'existe pas je le créee dans la BDD //
-  if (isExist) {
-    const newCollaborateur = new collaborateurModel({
+  try {
+    const id = req.params.id;
+    const updates = req.body;
+    const options = { new: true }
+    console.log("id", req.params)
+    const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
       nom: req.body.nom,
       genre: req.body.genre,
@@ -99,16 +101,26 @@ app.post("/uploadCollaborateur", upload.any(), [
       numeroDepartemental: req.body.numeroDepartemental,
       departementConseil: req.body.departementConseil,
       specialitePratiquee: req.body.specialitePratiquee
-    });
-    newCollaborateur.save(function (error, collaborateur) {
-      res.status(200).json({ Sauvegarde: 'ok', collaborateur });
-      // console.log(collaborateur, ' ??????')
-    });
-    //Sinon je le recherche dans la Bdd pour l'afficher dans le front //
-  } else {
-    collaborateurModel.findByIdAndUpdate(
-      req.body.id,
-      {
+    }, { new: true }
+    )
+    res.status(200).json(result)
+    console.log(result, ' ??????');
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//Création d'un nouveau collaborateur dans la BDD et recuperation par son prenom et nom //
+app.post('/userCollaborateur', async (req, res) => {
+  console.log("body", req.body)
+  try {
+    const user = await collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
+    if (user) {
+      console.log("user")
+      return res.status(200).json(user)
+    } else {
+      console.log("no user")
+      const newCollaborateur = new collaborateurModel({
         prenom: req.body.prenom,
         nom: req.body.nom,
         genre: req.body.genre,
@@ -128,27 +140,14 @@ app.post("/uploadCollaborateur", upload.any(), [
         numeroDepartemental: req.body.numeroDepartemental,
         departementConseil: req.body.departementConseil,
         specialitePratiquee: req.body.specialitePratiquee
-      }, { new: true },
-      function (err, collaborateurModify) {
-        if (err) {
-          // console.log("error" + err);
-          res.status(200).json({
-            collaborateurModify
-          });
-        }
-        // console.log(collaborateurModify, 'Collaborateur');
-      }
-    )
+      });
+      newCollaborateur.save(function (error, collaborateur) {
+        res.status(200).json(collaborateur);
+      });
+    }
+  } catch (error) {
+    console.log("error")
   }
-});
-//Recuperation la donnée d'un collaborateur sélectionner dans le tableau par les RH//
-app.post('/userCollaborateur', (req, res) => {
-  console.log("body", req.body)
-  collaborateurModel.findOne({ nom: req.body.prenom, prenom: req.body.nom }, function (err, doc) {
-    if (err) throw err;
-    console.log("doc", doc);
-    res.status(200).json(doc)
-  });
 })
 
 

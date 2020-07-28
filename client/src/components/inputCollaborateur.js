@@ -14,12 +14,8 @@ import { Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } f
 
 
 export default function Presentation(props) {
-    // recuperer les dernier parametres de l'url (nom, prenom)
-    // requete a la nouvelle route (params = nom, prenom)
-
-
-
     const [informations, setInformations] = useState({
+        _id: "",
         prenom: "",
         nom: "",
         genre: "",
@@ -74,11 +70,12 @@ export default function Presentation(props) {
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
     let { prenom, nom } = useParams();
-
+    // use Params permet de ajouter un ou plusieurs paramettres dans l'url
+    // Post pour recuperer le prenom et nom et l'afficher dans l'url 
     useEffect(() => {
         const callInfo = async () => {
             try {
-                const result = await axios.post(`http://localhost:3000/userCollaborateur`, { prenom, nom })
+                const result = await axios.post(`http://localhost:3000/userCollaborateur/`, { prenom, nom })
                 setInformations(result.data)
             } catch (error) {
                 console.log("error");
@@ -149,7 +146,7 @@ export default function Presentation(props) {
         try {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:3000/uploadCollaborateur',
+                url: `http://localhost:3000/uploadCollaborateur/${informations._id}`, //recuperation de id pour envoyer dans le back permet de faire des mofications de collaborateur//
                 data: data
             })
             setMessage('Donnée enregistrer')
@@ -183,7 +180,7 @@ export default function Presentation(props) {
                     <Grid.Column>
                         <Form.Input fluid name='prenom' value={informations.prenom} onChange={handleChange} label='Prénom' placeholder='Prénom' />
                         <br />
-                        <Form.Input fluid type='date' value={informations.name} name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
+                        <Form.Input fluid value={informations.name} name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
                         <br />
                         <Form.Input fluid name='addresse' value={informations.addresse} onChange={handleChange} label='Addresse' placeholder='Addresse' />
                         <br />
