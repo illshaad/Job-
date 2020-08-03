@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,6 +9,7 @@ import InputCollaborateur from './components/inputCollaborateur';
 import Rh from './components/rh'
 import Home from './components/home'
 import Redirection from './components/redirection'
+
 
 function App() {
 
