@@ -14,8 +14,12 @@ const { body, validationResult } = require('express-validator');
 const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
+const passport = require('passport')
 
-const collaborateurModel = require('../back/models/collaborteurs');
+const collaborateurModel = require('./models/collaborteurs');
+
+//Config passport //
+require('./config/passport')(passport)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,6 +31,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
+app.use(passport.initialize())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
@@ -547,7 +552,10 @@ app.get("/juridiqueData", async function (req, res) {
 // TEST RECUPERATION GESTION PERSONEL//
 // Création un google sheeat personnaliser avec =query(importrange("https://docs.google.com/spreadsheets/d/16Qezk7i2fUz24ldDR_pbPUptliLwzmu-t0fFyOgYm00/edit#gid=123987456";"Users!a:v");"select * where (Col19='gestionpersonnel' OR Col20 ='gestionpersonnel')")
 
-app.get("/gestionPerso", async function (req, res) {
+app.post("/gestionPerso", async function (req, res) {
+  const emailToFront = req.body.email
+  console.log(emailToFront, 'MES DONNÉE DU FRONT ICI ');
+
   fs.readFile('./public/credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.
@@ -619,30 +627,28 @@ app.get("/gestionPerso", async function (req, res) {
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: '1ycPx2bgZH7OcoRNA3J-1tOTcUQOdoSSkjqjqQmDlSWI',
         range: 'Data',
-
       })
       const rows = response.data.values;
       if (rows.length) {
         var names = rows;
-        console.log(names);
         for (const i in names) {
           let object = {
             key: i,
             value: rows[i][2],
-            text: rows[i][2],
           }
           arrayData.push(object)
-          console.log(arrayData)
-          // arrayData = arrayData.filter(e => e.value === "gestionpersonnel")
-          // console.log(arrayData, ' TEST ')
+          // console.log(arrayData)
         }
       } else {
         console.log('No data found.');
       }
-      res.status(200).json(arrayData)
     } catch (error) {
       console.log("error dans listMajor")
     }
+    // Quand je me connecte par le front si mon email fait partie de ces cas je fais partie du gestion personnel sinon non//
+    const isCollabo = arrayData.filter((element, i) => element.value === emailToFront)
+    console.log(isCollabo)
+    res.status(200).json({ isCollabo: isCollabo.length ? true : false })
   };
 })
 

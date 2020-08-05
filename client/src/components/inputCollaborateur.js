@@ -14,6 +14,9 @@ import { Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } f
 
 
 export default function Presentation(props) {
+
+    const [response, setResponse] = useState('')
+
     const [informations, setInformations] = useState({
         _id: "",
         prenom: "",
@@ -83,6 +86,22 @@ export default function Presentation(props) {
         }
         callInfo()
     }, [])
+    //Envoie email au back , je verie en back si il email appartien au gestionpersonell //
+    useEffect(() => {
+        const email = localStorage.getItem("name");
+        const sendEmailToBack = async () => {
+            axios({
+                method: 'POST',
+                url: 'http://localhost:3000/gestionPerso',
+                data: {
+                    email: email
+                }
+            });
+        }
+        sendEmailToBack()
+    }, [])
+
+
 
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
     const handleChangeFile = (e) => {

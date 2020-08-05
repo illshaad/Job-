@@ -32,6 +32,7 @@ export default function Redirection() {
         const nomPrenom = email.split("@")[0].replace(".", "/")
         setUrl(nomPrenom)
     }, [])
+
     return (
         <>
             {url === undefined || url === '' ? <div>Redirection en cours...</div> : <Redirect to={`/collaborateur/${url}`} />}

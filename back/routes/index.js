@@ -1,10 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const passport = require('passport')
+const app = express();
 
 
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+app.get('/google', passport.authenticate('google', { scope: ['profile'] }))
+app.get('google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+  res.redirect('http://localhost:3001')
+})
 
-
-module.exports = router;
+module.exports = app;
