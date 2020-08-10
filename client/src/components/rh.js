@@ -20,6 +20,8 @@ export default function Rh() {
         fetchData();
     }, []);
 
+    console.log(dataCollaborateurs, '???????');
+
 
     return (
         <div>

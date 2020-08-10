@@ -1,7 +1,6 @@
-import React, { useState, setError } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react'
 import { Grid, Container, Form, Label, Button } from 'semantic-ui-react'
-import RH from './documentRH'
+import DocumentRH from './documentRH' // COMPONENT UPLOAD FILE RH
 import AutocompletEmailResponsable from './autocomplet/emailResponsable'
 import AutocompletEtablissement from './autocomplet/etablissement';
 import AutocompletCollaborateur from './autocomplet/typeCollaborateur'
@@ -12,6 +11,7 @@ import RelationTravail from './menuDeroulant/natureTravail'
 import TempsTravail from './menuDeroulant/tempsTravail'
 import Convention from './menuDeroulant/convention'
 import ERP from './menuDeroulant/erp'
+import axios from 'axios'
 
 export default function InputRh() {
 
@@ -196,7 +196,7 @@ export default function InputRh() {
                 </Grid.Row>
             </Grid>
             <Form.Group>
-                <RH handleChangeFile={handleChangeFile} />
+                <DocumentRH handleChangeFile={handleChangeFile} />
             </Form.Group>
             <Button primary onClick={sendDataRH}>Enregistrer les données</Button>
         </Container>

@@ -105,7 +105,7 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
     }, { new: true }
     )
     res.status(200).json(result)
-    console.log(result, ' ??????');
+    // console.log(result, ' ??????');
   } catch (error) {
     console.log(error);
   }
@@ -113,7 +113,7 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
 
 //Création d'un nouveau collaborateur dans la BDD et recuperation par son prenom et nom //
 app.post('/userCollaborateur', async (req, res) => {
-  console.log("body", req.body)
+  // console.log("body", req.body)
   try {
     const user = await collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
     if (user) {
@@ -637,7 +637,6 @@ app.post("/gestionPerso", async function (req, res) {
             value: rows[i][2],
           }
           arrayData.push(object)
-          // console.log(arrayData)
         }
       } else {
         console.log('No data found.');

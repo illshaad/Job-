@@ -1,7 +1,7 @@
 import React, { useState, setError, useEffect } from 'react'
 import axios from 'axios'
 import Collaborateur from './documentCollaborateur'
-import RH from './inputRH'
+import InputRH from './inputRH'
 
 import {
     BrowserRouter as Router,
@@ -14,8 +14,6 @@ import { Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } f
 
 
 export default function Presentation(props) {
-
-    const [response, setResponse] = useState('')
 
     const [informations, setInformations] = useState({
         _id: "",
@@ -72,7 +70,10 @@ export default function Presentation(props) {
 
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
+    const [collabo, setCollabo] = useState({})
+
     let { prenom, nom } = useParams();
+
     // use Params permet de ajouter un ou plusieurs paramettres dans l'url
     // Post pour recuperer le prenom et nom et l'afficher dans l'url 
     useEffect(() => {
@@ -86,6 +87,7 @@ export default function Presentation(props) {
         }
         callInfo()
     }, [])
+
     //Envoie email au back , je verie en back si il email appartien au gestionpersonell //
     useEffect(() => {
         const email = localStorage.getItem("name");
@@ -99,6 +101,20 @@ export default function Presentation(props) {
             });
         }
         sendEmailToBack()
+    }, [])
+
+    //Recuperation True ou false si je suis collabo ou pas//
+    useEffect(() => {
+        const collaboInfo = async () => {
+            try {
+                const result = await axios.post(`http://localhost:3000/gestionPerso`)
+                console.log(result);
+                setCollabo(result)
+            } catch (error) {
+                console.log("error");
+            }
+        }
+        collaboInfo()
     }, [])
 
 
@@ -281,7 +297,7 @@ export default function Presentation(props) {
                 </Form.Group>
                 <Button primary onClick={sendData}>Enregistrer les données</Button>
             </Form>
-            <RH />
+            {collabo === false ? <InputRH /> : null}
         </Container >
     )
 }
