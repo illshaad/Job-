@@ -5,8 +5,6 @@ import GoogleLogin from 'react-google-login'
 
 
 export default function Google() {
-
-
     let history = useHistory();
 
     //Envoie de la donnée au back//

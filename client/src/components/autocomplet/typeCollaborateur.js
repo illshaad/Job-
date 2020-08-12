@@ -2,7 +2,7 @@ import React from 'react'
 import { Dropdown, Grid } from 'semantic-ui-react'
 
 
-export default function AutocompletCollaborateur({ handleChange }) {
+export default function AutocompletCollaborateur({ handleChange, disable }) {
     const data = [
         { key: 'actionnaire-1', value: 'actionnaire', text: 'Actionnaire' },
         { key: 'administrateur', value: 'administrateur', text: 'Administrateur' },
@@ -40,6 +40,7 @@ export default function AutocompletCollaborateur({ handleChange }) {
                 fluid
                 search
                 selection
+                disabled={disable}
                 options={data}
             />
         </Grid>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Dropdown, Grid } from 'semantic-ui-react'
 import axios from 'axios'
 
-export default function AutocompletFonctionDigital({ handleChange }) {
+export default function AutocompletFonctionDigital({ handleChange, disable }) {
 
     const [data, setData] = useState([])
 
@@ -26,6 +26,8 @@ export default function AutocompletFonctionDigital({ handleChange }) {
                 search
                 name='fonctiondigital'
                 selection
+                disabled={disable}
+                value={data}
                 options={data}
             />
         </Grid>

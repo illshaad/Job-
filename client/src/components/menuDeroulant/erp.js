@@ -14,7 +14,7 @@ const data = [
     },
 ]
 
-export default function ERP({ handleChange }) {
+export default function ERP({ handleChange, disable }) {
     return (
         <Grid>
             <div className='autoCompletTitre'>Formation ERP Sécurité Incendie</div>
@@ -23,6 +23,7 @@ export default function ERP({ handleChange }) {
                 name="erp"
                 onChange={handleChange}
                 fluid
+                disabled={disable}
                 selection
                 options={data}
             />

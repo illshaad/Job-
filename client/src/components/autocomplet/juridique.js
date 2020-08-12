@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Dropdown, Grid } from 'semantic-ui-react'
 import axios from 'axios'
 
-export default function AutocompletJuridique({ handleChange }) {
+export default function AutocompletJuridique({ handleChange, disable }) {
 
     const [data, setData] = useState([])
 
@@ -25,6 +25,7 @@ export default function AutocompletJuridique({ handleChange }) {
                 fluid
                 search
                 name='juridique'
+                disabled={disable}
                 selection
                 options={data}
             />

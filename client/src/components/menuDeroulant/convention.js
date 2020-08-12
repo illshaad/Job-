@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dropdown, Grid } from 'semantic-ui-react'
 
-export default function Convention({ handleChange }) {
+export default function Convention({ handleChange, disable }) {
     const data = [
         { key: "CC FEHAP", value: "CC FEHAP", text: "CC FEHAP" },
         {
@@ -96,6 +96,7 @@ export default function Convention({ handleChange }) {
                 fluid
                 search
                 name='convention'
+                disabled={disable}
                 selection
                 options={data}
             />

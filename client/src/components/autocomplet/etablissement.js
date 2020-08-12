@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Dropdown, Grid } from 'semantic-ui-react'
 import axios from 'axios'
 
-export default function AutocompletEtablissement({ handleChange }) {
+export default function AutocompletEtablissement({ handleChange, disable }) {
 
     const [data, setData] = useState([])
 
@@ -25,6 +25,7 @@ export default function AutocompletEtablissement({ handleChange }) {
                 fluid
                 search
                 name='etablissement'
+                disabled={disable}
                 selection
                 options={data}
             />

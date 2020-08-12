@@ -51,7 +51,7 @@ const data = [
     },
 ]
 
-export default function RelationTravail({ handleChange }) {
+export default function RelationTravail({ handleChange, disable }) {
     return (
         <Grid>
             <div className='autoCompletTitre'>Nature de la relation de travail</div>
@@ -59,6 +59,7 @@ export default function RelationTravail({ handleChange }) {
                 placeholder='Relation de travail'
                 name='naturetravail'
                 onChange={handleChange}
+                disabled={disable}
                 fluid
                 selection
                 options={data}

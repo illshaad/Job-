@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Dropdown, Grid } from 'semantic-ui-react'
 import axios from 'axios'
 
-export default function AutocompletEmailResponsable({ handleChange }) {
+export default function AutocompletEmailResponsable({ handleChange, value, disable }) {
 
     const [data, setData] = useState([])
 
@@ -24,6 +24,8 @@ export default function AutocompletEmailResponsable({ handleChange }) {
                 placeholder='Adresse e-mail du responsable'
                 fluid
                 search
+                // defaultValue='test'
+                disabled={disable}
                 name='emailresponsable'
                 selection
                 options={data}

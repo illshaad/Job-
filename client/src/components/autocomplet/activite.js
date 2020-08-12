@@ -2,7 +2,7 @@ import React from 'react'
 import { Dropdown, Grid, Label } from 'semantic-ui-react'
 
 
-export default function AutocompletActivite({ handleChange }) {
+export default function AutocompletActivite({ handleChange, disable }) {
 
     const data = [
         { key: 'AUDITION', value: 'AUDITION', text: 'AUDITION' },
@@ -44,6 +44,7 @@ export default function AutocompletActivite({ handleChange }) {
                 fluid
                 search
                 name='activite'
+                disabled={disable}
                 selection
                 options={data}
             />

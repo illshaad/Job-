@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Container, Segment } from 'semantic-ui-react'
 
-export default function DocumentsRh({ handleChangeFile }) {
+export default function DocumentsRh({ handleChangeFile, disable }) {
     return (
         <Container>
             <br />
@@ -15,6 +15,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='matériels'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -23,6 +24,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='contrat'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -31,6 +33,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='déclaration'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -39,6 +42,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='fichedeposte'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -49,6 +53,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='fichesynthetique'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -57,6 +62,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='avantagesennature'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -65,6 +71,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='mutuelle'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>
@@ -73,6 +80,7 @@ export default function DocumentsRh({ handleChangeFile }) {
                         <input
                             type="file"
                             name='Onboarding'
+                            disabled={disable}
                             onChange={handleChangeFile}
                         />
                     </Grid.Column>

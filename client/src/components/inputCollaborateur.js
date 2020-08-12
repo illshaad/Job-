@@ -6,14 +6,13 @@ import InputRH from './inputRH'
 import {
     BrowserRouter as Router,
     Link,
-    useParams
-
+    useParams,
 } from "react-router-dom";
 
 import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
 
 
-export default function Presentation(props) {
+export default function Presentation() {
 
     const [informations, setInformations] = useState({
         _id: "",
@@ -91,7 +90,6 @@ export default function Presentation(props) {
     //J'envoie mon email et je recupere la response si je suis collaborateur ou pas //
     axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
         .then(response => {
-            console.log(response.data);
             setCollabo(response.data.isCollabo)
         })
 
@@ -175,12 +173,13 @@ export default function Presentation(props) {
             ))}
 
             {/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */}
-            {collabo !== false ?
-                <Menu icon='labeled' vertical>
+            {collabo !== true ?
+                null
+                : <Menu icon='labeled' vertical>
                     <Menu.Item>
                         <Link to='/rh'><Icon name='table' size='large'></Icon></Link>
                     </Menu.Item>
-                </Menu> : null
+                </Menu>
             }
 
             <Image src='/Embarquer.png' size='huge' centered='true' />
@@ -278,7 +277,8 @@ export default function Presentation(props) {
                 </Form.Group>
                 <Button primary onClick={sendData}>Enregistrer les données</Button>
             </Form>
-            {collabo === false ? null : <InputRH />}
+            {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
+            <InputRH disable={collabo !== true} />
             {message ? <Message positive>
                 <Message.Header>Donnée enregistrer</Message.Header>
             </Message> : null}

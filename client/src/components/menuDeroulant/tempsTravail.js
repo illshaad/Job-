@@ -41,7 +41,7 @@ const data = [
     },
 ]
 
-export default function TempsTravail({ handleChange }) {
+export default function TempsTravail({ handleChange, disable }) {
     return (
         <Grid>
             <div className='autoCompletTitre'>Temps travail</div>
@@ -49,6 +49,7 @@ export default function TempsTravail({ handleChange }) {
                 placeholder='Temps travail'
                 name='tempstravail'
                 onChange={handleChange}
+                disabled={disable}
                 fluid
                 selection
                 options={data}
