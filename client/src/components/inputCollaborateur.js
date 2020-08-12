@@ -10,7 +10,7 @@ import {
 
 } from "react-router-dom";
 
-import { Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
+import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
 
 
 export default function Presentation(props) {
@@ -88,36 +88,12 @@ export default function Presentation(props) {
         callInfo()
     }, [])
 
-    //Envoie email au back , je verie en back si il email appartien au gestionpersonell //
-    useEffect(() => {
-        const email = localStorage.getItem("name");
-        const sendEmailToBack = async () => {
-            axios({
-                method: 'POST',
-                url: 'http://localhost:3000/gestionPerso',
-                data: {
-                    email: email
-                }
-            });
-        }
-        sendEmailToBack()
-    }, [])
-
-    //Recuperation True ou false si je suis collabo ou pas//
-    useEffect(() => {
-        const collaboInfo = async () => {
-            try {
-                const result = await axios.post(`http://localhost:3000/gestionPerso`)
-                console.log(result);
-                setCollabo(result)
-            } catch (error) {
-                console.log("error");
-            }
-        }
-        collaboInfo()
-    }, [])
-
-
+    //J'envoie mon email et je recupere la response si je suis collaborateur ou pas //
+    axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
+        .then(response => {
+            console.log(response.data);
+            setCollabo(response.data.isCollabo)
+        })
 
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
     const handleChangeFile = (e) => {
@@ -197,12 +173,17 @@ export default function Presentation(props) {
             {Object.keys(error).map((e) => (
                 <p>{error[e]}</p>
             ))}
-            <Link to='/'><Icon name='arrow left' size='large'></Icon></Link>
-            <Image src='/Embarquer.png' size='huge' centered='true' />
-            {message ? <Message positive>
-                <Message.Header>Donnée enregistrer</Message.Header>
-            </Message> : null}
 
+            {/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */}
+            {collabo !== false ?
+                <Menu icon='labeled' vertical>
+                    <Menu.Item>
+                        <Link to='/rh'><Icon name='table' size='large'></Icon></Link>
+                    </Menu.Item>
+                </Menu> : null
+            }
+
+            <Image src='/Embarquer.png' size='huge' centered='true' />
             <Grid columns={2}>
                 <Grid.Row>
                     <Label circular size='massive'>1</Label>
@@ -297,7 +278,10 @@ export default function Presentation(props) {
                 </Form.Group>
                 <Button primary onClick={sendData}>Enregistrer les données</Button>
             </Form>
-            {collabo === false ? <InputRH /> : null}
+            {collabo === false ? null : <InputRH />}
+            {message ? <Message positive>
+                <Message.Header>Donnée enregistrer</Message.Header>
+            </Message> : null}
         </Container >
     )
 }

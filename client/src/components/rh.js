@@ -4,7 +4,7 @@ import {
     Link
 } from "react-router-dom";
 import axios from 'axios'
-import { Icon, Container, Table, Header } from 'semantic-ui-react'
+import { Container, Table, Header } from 'semantic-ui-react'
 
 
 export default function Rh() {
@@ -26,7 +26,6 @@ export default function Rh() {
     return (
         <div>
             <Container>
-                <Link to='/'><Icon name='arrow left' size='large'></Icon></Link>
                 <Header as='h1' textAlign='center'>Liste des nouveaux collaborateurs</Header>
                 <Table singleLine>
                     <Table.Header>

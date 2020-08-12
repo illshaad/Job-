@@ -555,12 +555,15 @@ app.get("/juridiqueData", async function (req, res) {
 app.post("/gestionPerso", async function (req, res) {
   const emailToFront = req.body.email
   console.log(emailToFront, 'MES DONNÉE DU FRONT ICI ');
-
   fs.readFile('./public/credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.
     authorize(JSON.parse(content), gestionPerso);
+
   });
+
+
+
 
   /**
    * Create an OAuth2 client with the given credentials, and then execute the
@@ -646,7 +649,6 @@ app.post("/gestionPerso", async function (req, res) {
     }
     // Quand je me connecte par le front si mon email fait partie de ces cas je fais partie du gestion personnel sinon non//
     const isCollabo = arrayData.filter((element, i) => element.value === emailToFront)
-    console.log(isCollabo)
     res.status(200).json({ isCollabo: isCollabo.length ? true : false })
   };
 })
