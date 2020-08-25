@@ -40,6 +40,7 @@ const collaborateursSchema = db.mongoose.Schema({
     juridique: String,
     collaborteur: String,
     convention: String,
+    coefficient: String,
     erp: String,
     naturetravail: String,
     tempstravail: String,

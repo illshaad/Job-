@@ -93,6 +93,7 @@ export default function Presentation() {
         })
 
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
+
     const handleChangeFile = (e) => {
         // le regex N°securite Social//
         if (e.target.value !== "#^[12][0-9]{2}[0-1][0-9](2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$#") {
@@ -274,7 +275,7 @@ export default function Presentation() {
                     {/* COMPONENT 'DocumentCollaborateur' */}
                     <Collaborateur handleChangeFile={handleChangeFile} />
                 </Form.Group>
-                <Button primary onClick={sendData}>Enregistrer les données</Button>
+                {collabo === false ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
             </Form>
             {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
             <InputRH id={informations._id} informationsRH={informations} disable={collabo !== true} />

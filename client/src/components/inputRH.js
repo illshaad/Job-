@@ -92,7 +92,6 @@ export default function InputRh({ disable, informationsRH }) {
             setError(error.response.data.errors);
         }
     }
-
     return (
         <Container>
             <Grid columns={2}>
@@ -129,11 +128,11 @@ export default function InputRh({ disable, informationsRH }) {
             <Grid columns={3}>
                 <Grid.Row>
                     <Grid.Column>
-                        <Form.Input fluid name='téléphone(travail)' value={informations.telephonetravail} onChange={handleChange} label='Téléphone (Travail)' placeholder='Téléphone (Travail)' disabled={disable} />
+                        <Form.Input fluid name='téléphone(travail)' value={informationsRH.telephonetravail} onChange={handleChange} label='Téléphone (Travail)' placeholder='Téléphone (Travail)' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='téléphone(mobile)' value={informations.telephonemobile} onChange={handleChange} label='Téléphone (Mobile)' placeholder='Téléphone (Mobile)' disabled={disable} />
+                        <Form.Input fluid name='téléphone(mobile)' value={informationsRH.telephonemobile} onChange={handleChange} label='Téléphone (Mobile)' placeholder='Téléphone (Mobile)' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='adresse(travail)' value={informations.adressetravail} onChange={handleChange} label='Adresse (Travail)' placeholder='Adresse (Travail)' disabled={disable} />
+                        <Form.Input fluid name='adresse(travail)' value={informationsRH.adressetravail} onChange={handleChange} label='Adresse (Travail)' placeholder='Adresse (Travail)' disabled={disable} />
                         <br />
                     </Grid.Column>
                     <Grid.Column>
@@ -145,32 +144,32 @@ export default function InputRh({ disable, informationsRH }) {
                         <Convention handleChange={handleChange} disable={disable} />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='classification' onChange={handleChange} value={informations.classification} label='Classification' placeholder='Classification' disabled={disable} />
+                        <Form.Input fluid name='classification' onChange={handleChange} value={informationsRH.classification} label='Classification' placeholder='Classification' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='niveau' onChange={handleChange} value={informations.niveau} label='Niveau' placeholder='Niveau' disabled={disable} />
+                        <Form.Input fluid name='niveau' onChange={handleChange} value={informationsRH.niveau} label='Niveau' placeholder='Niveau' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='coefficient' onChange={handleChange} value={informations.coefficient} label='Coefficient' placeholder='Coefficient' disabled={disable} />
+                        <Form.Input fluid name='coefficient' onChange={handleChange} value={informationsRH.coefficient} label='Coefficient' placeholder='Coefficient' disabled={disable} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
             <Grid columns={3}>
                 <Grid.Row>
                     <Grid.Column>
-                        <Form.Input fluid name='indice' onChange={handleChange} value={informations.indice} label='Indice' placeholder='Indice' disabled={disable} />
+                        <Form.Input fluid name='indice' onChange={handleChange} value={informationsRH.indice} label='Indice' placeholder='Indice' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='rémunérationbrutemensuelle' value={informations.rémunérationbrutemensuelle} onChange={handleChange} label='Rémunération brute mensuelle' placeholder='Rémunération brute mensuelle' disabled={disable} />
+                        <Form.Input fluid name='rémunérationbrutemensuelle' value={informationsRH.rémunérationbrutemensuelle} onChange={handleChange} label='Rémunération brute mensuelle' placeholder='Rémunération brute mensuelle' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='rémunérationbrutejournalière' value={informations.rémunérationbrutejournalière} onChange={handleChange} label='Rémunération brute journalière' placeholder='Rémunération brute journalière' disabled={disable} />
+                        <Form.Input fluid name='rémunérationbrutejournalière' value={informationsRH.rémunérationbrutejournalière} onChange={handleChange} label='Rémunération brute journalière' placeholder='Rémunération brute journalière' disabled={disable} />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='rémunérationbruteannuelle' value={informations.rémunérationbruteannuelle} onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' disabled={disable} />
+                        <Form.Input fluid name='rémunérationbruteannuelle' value={informationsRH.rémunérationbruteannuelle} onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='rémunérationbrutehoraire' value={informations.rémunérationbrutehoraire} onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' disabled={disable} />
+                        <Form.Input fluid name='rémunérationbrutehoraire' value={informationsRH.rémunérationbrutehoraire} onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='nombreheureshebdomadairedusalarié' value={informations.nombreheureshebdomadairedusalarie} onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" disabled={disable} />
+                        <Form.Input fluid name='nombreheureshebdomadairedusalarié' value={informationsRH.nombreheureshebdomadairedusalarie} onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" disabled={disable} />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='nombreheuresmensueldusalarié' value={informations.nombreheuresmensueldusalarié} onChange={handleChange} label="Nombre d'heures mensuel du salarié" placeholder="Nombre d'heures mensuel du salarié" disabled={disable} />
+                        <Form.Input fluid name='nombreheuresmensueldusalarié' value={informationsRH.nombreheuresmensueldusalarié} onChange={handleChange} label="Nombre d'heures mensuel du salarié" placeholder="Nombre d'heures mensuel du salarié" disabled={disable} />
                         <br />
                         <ERP onChange={handleChange} disable={disable} />
                     </Grid.Column>

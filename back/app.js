@@ -61,9 +61,6 @@ app.get('/uploadCollaborateur', function (req, res) {
   });
 });
 
-
-
-
 //: id pour faire des modificiations d'un collaborateur //
 app.post("/uploadCollaborateur/:id", upload.any(), [
   body('prenom').isLength({ min: 2 }),
@@ -145,6 +142,75 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
   }
 });
 
+//: id pour faire des modificiations d'un collaborateur et la partie remplire par les RH //
+
+app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
+  console.log(req.body);
+  try {
+    const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
+      prenom: req.body.prenom,
+      nom: req.body.nom,
+      genre: req.body.genre,
+      dateDeNaissance: req.body.dateDeNaissance,
+      villeDeNaissance: req.body.villeDeNaissance,
+      nomDeNaissance: req.body.nomDeNaissance,
+      nationalite: req.body.nationalite,
+      numerosecurite: req.body.numerosecurite,
+      addresse: req.body.addresse,
+      cp: req.body.cp,
+      ville: req.body.ville,
+      email: req.body.email,
+      telephonePerso: req.body.telephonePerso,
+      telephoneDomicile: req.body.telephoneDomicile,
+      telephoneUrgence: req.body.telephoneUrgence,
+      rpps: req.body.rpps,
+      numeroDepartemental: req.body.numeroDepartemental,
+      departementConseil: req.body.departementConseil,
+      specialitePratiquee: req.body.specialitePratiquee,
+      matériels: req.body.matériels,
+      contrat: req.body.contrat,
+      déclaration: req.body.déclaration,
+      fichedeposte: req.body.fichedeposte,
+      fichesynthetique: req.body.fichesynthetique,
+      avantagesennature: req.body.avantagesennature,
+      mutuelle: req.body.mutuelle,
+      onboarding: req.body.onboarding,
+      fonctiondigitalsecondaire: req.body.fonctiondigitalsecondaire,
+      datedeprisedefonction: req.body.datedeprisedefonction,
+      telephonetravail: req.body.telephonetravail,
+      telephonemobile: req.body.telephonemobile,
+      adressetravail: req.body.adressetravail,
+      activite: req.body.activite,
+      emailresponsable: req.body.emailresponsable,
+      etablissement: req.body.etablissement,
+      fonctiondigital: req.body.fonctiondigital,
+      juridique: req.body.juridique,
+      collaborteur: req.body.collaborateur,
+      convention: req.body.convention,
+      erp: req.body.erp,
+      naturetravail: req.body.naturetravail,
+      tempstravail: req.body.tempstravail,
+      classification: req.body.classification,
+      niveau: req.body.niveau,
+      indice: req.body.indice,
+      coefficient: req.body.coefficient,
+      rémunérationbrutemensuelle: req.body.rémunérationbrutemensuelle,
+      rémunérationbrutejournalière: req.body.rémunérationbrutejournalière,
+      rémunérationbruteannuelle: req.body.rémunérationbruteannuelle,
+      rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
+      nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
+      nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
+    }, { new: true }
+    )
+    res.status(200).json(result)
+    console.log(result, ' ??????');
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+
 //Création d'un nouveau collaborateur dans la BDD et recuperation par son prenom et nom //
 app.post('/userCollaborateur', async (req, res) => {
   // console.log("body", req.body)
@@ -185,57 +251,7 @@ app.post('/userCollaborateur', async (req, res) => {
   }
 })
 
-app.post('/userCollaborateurRh/:id', async (req, res) => {
-  console.log("body", req.body)
-  try {
-    const user = await collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
-    if (user) {
-      console.log("user")
-      return res.status(200).json(user)
-    } else {
-      console.log("no user")
-      const newCollaborateur = new collaborateurModel({
-        matériels: req.body.matériels,
-        contrat: req.body.contrat,
-        déclaration: req.body.déclaration,
-        fichedeposte: req.body.fichedeposte,
-        fichesynthetique: req.body.fichesynthetique,
-        avantagesennature: req.body.avantagesennature,
-        mutuelle: req.body.mutuelle,
-        onboarding: req.body.onboarding,
-        fonctiondigitalsecondaire: req.body.fonctiondigitalsecondaire,
-        datedeprisedefonction: req.body.datedeprisedefonction,
-        telephonetravail: req.body.telephonetravail,
-        telephonemobile: req.body.telephonemobile,
-        adressetravail: req.body.adressetravail,
-        activite: req.body.activite,
-        emailresponsable: req.body.emailresponsable,
-        etablissement: req.body.etablissement,
-        fonctiondigital: req.body.fonctiondigital,
-        juridique: req.body.juridique,
-        collaborteur: req.body.collaborateur,
-        convention: req.body.convention,
-        erp: req.body.erp,
-        naturetravail: req.body.naturetravail,
-        tempstravail: req.body.tempstravail,
-        classification: req.body.classification,
-        niveau: req.body.niveau,
-        indice: req.body.indice,
-        rémunérationbrutemensuelle: req.body.rémunérationbrutemensuelle,
-        rémunérationbrutejournalière: req.body.rémunérationbrutejournalière,
-        rémunérationbruteannuelle: req.body.rémunérationbruteannuelle,
-        rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
-        nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
-        nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
-      });
-      newCollaborateur.save(function (error, collaborateur) {
-        res.status(200).json(collaborateur);
-      });
-    }
-  } catch (error) {
-    console.log("error")
-  }
-})
+
 
 
 
