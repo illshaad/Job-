@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Container, Image, Segment } from 'semantic-ui-react'
 import { useHistory } from "react-router-dom";
 import GoogleLogin from 'react-google-login'
 
 
 export default function Google() {
+
     let history = useHistory();
 
     //Envoie de la donnée au back//
     // Utilisation du localStorage pour sauvergarder email apres le click du button google//
     const responseGoogle = (response) => {
-        const emailResponse = response.Ot.yu;
+        const emailResponse = response.rt.$t;
+        console.log(emailResponse);
         const nomPrenom = emailResponse.split("@")[0].replace(".", "/")
         localStorage.setItem('name', emailResponse)
         history.push(`/collaborateur/${nomPrenom}`)

@@ -66,7 +66,6 @@ export default function Presentation() {
         carteSejour: '',
         casierJudiciaire: '',
     })
-
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
     const [collabo, setCollabo] = useState({})
@@ -278,7 +277,7 @@ export default function Presentation() {
                 <Button primary onClick={sendData}>Enregistrer les données</Button>
             </Form>
             {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
-            <InputRH disable={collabo !== true} />
+            <InputRH id={informations._id} informationsRH={informations} disable={collabo !== true} />
             {message ? <Message positive>
                 <Message.Header>Donnée enregistrer</Message.Header>
             </Message> : null}

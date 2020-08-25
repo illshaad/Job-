@@ -61,6 +61,9 @@ app.get('/uploadCollaborateur', function (req, res) {
   });
 });
 
+
+
+
 //: id pour faire des modificiations d'un collaborateur //
 app.post("/uploadCollaborateur/:id", upload.any(), [
   body('prenom').isLength({ min: 2 }),
@@ -68,19 +71,18 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
   body('numerosecurite').isLength({ min: 1, max: 12 }),
   body('email').isEmail(),
 ], async function (req, res) {
-  // console.log(req.body);
-  const errors = validationResult(req);
-  // console.log(errors)
-  if (!errors.isEmpty()) {
-    let errorsObject = {};
-    errors.array().forEach((e) => {
-      if (e.param === "prenom") errorsObject.prenom = "Ce prenom n'est pas assez long !"
-      if (e.param === "nom") errorsObject.nom = "Ce nom n'est pas assez long !"
-      if (e.param === "numerosecurite") errorsObject.numerosecurite = "Merci de saisir le N°Securite Social !"
-      if (e.param === "email") errorsObject.email = "Ce email n'est pas bon !"
-    })
-    return res.status(422).json({ errors: errorsObject });
-  }
+  console.log(req.body);
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   let errorsObject = {};
+  //   errors.array().forEach((e) => {
+  //     if (e.param === "prenom") errorsObject.prenom = "Ce prenom n'est pas assez long !"
+  //     if (e.param === "nom") errorsObject.nom = "Ce nom n'est pas assez long !"
+  //     if (e.param === "numerosecurite") errorsObject.numerosecurite = "Merci de saisir le N°Securite Social !"
+  //     if (e.param === "email") errorsObject.email = "Ce email n'est pas bon !"
+  //   })
+  //   return res.status(422).json({ errors: errorsObject });
+  // }
   try {
     const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
@@ -173,6 +175,26 @@ app.post('/userCollaborateur', async (req, res) => {
         numeroDepartemental: req.body.numeroDepartemental,
         departementConseil: req.body.departementConseil,
         specialitePratiquee: req.body.specialitePratiquee,
+      });
+      newCollaborateur.save(function (error, collaborateur) {
+        res.status(200).json(collaborateur);
+      });
+    }
+  } catch (error) {
+    console.log("error")
+  }
+})
+
+app.post('/userCollaborateurRh/:id', async (req, res) => {
+  console.log("body", req.body)
+  try {
+    const user = await collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
+    if (user) {
+      console.log("user")
+      return res.status(200).json(user)
+    } else {
+      console.log("no user")
+      const newCollaborateur = new collaborateurModel({
         matériels: req.body.matériels,
         contrat: req.body.contrat,
         déclaration: req.body.déclaration,
