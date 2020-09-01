@@ -52,7 +52,7 @@ export default function InputRh({ disable, informationsRH }) {
         naturetravail: "",
         tempstravail: ""
     })
-    console.log(informationsRH, ' PROPS ICI');
+    // console.log(informationsRH, ' PROPS ICI');
 
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
@@ -83,7 +83,7 @@ export default function InputRh({ disable, informationsRH }) {
             const object = Object.assign(informations, informationsRH);
             const response = await axios({
                 method: 'post',
-                url: `http://localhost:3000/userCollaborateurRh/${informationsRH._id}`,
+                url: `http://localhost:5000/userCollaborateurRh/${informationsRH._id}`,
                 data: object
             })
             setMessage('Donnée enregistrer')

@@ -20,6 +20,7 @@ const collaborateursSchema = db.mongoose.Schema({
     numeroDepartemental: String,
     departementConseil: String,
     specialitePratiquee: String,
+    carteIdentitePassport: String, //IMG//
     matériels: String,
     contrat: String,
     déclaration: String,

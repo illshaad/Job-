@@ -15,6 +15,7 @@ const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 const passport = require('passport')
+const { v4: uuidv4 } = require('uuid');
 
 const collaborateurModel = require('./models/collaborteurs');
 
@@ -29,7 +30,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(__dirname + '/public'));
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static('public'));
+
 app.use(cors())
 app.use(passport.initialize())
 app.use('/', indexRouter);
@@ -38,15 +42,21 @@ app.use('/users', usersRouter);
 
 //CONFIGURATION MULTER //
 var storage = multer.diskStorage({
+  //Création d'un folder pour chaque utilisateur 
+  // Si le path n'existe pas tu le créee avec le nom de l'utilisateur 
   destination: function (req, file, cb) {
-    cb(null, `./public/uploads/`);
+    let sousCategorie = req.body.prenom + req.body.nom
+    const path = `./public/uploads/${sousCategorie}`
+    console.log(path)
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true })
+    }
+    cb(null, path);
   },
   filename: function (req, file, cb) {
     cb(
       null,
-      moment().locale("fr").format("MMMM Do YYYY, h:mm:ss") +
-      "   " +
-      file.originalname
+      uuidv4() + file.originalname.split(" ").join("")
     );
   },
 });
@@ -61,14 +71,21 @@ app.get('/uploadCollaborateur', function (req, res) {
   });
 });
 
+
+
 //: id pour faire des modificiations d'un collaborateur //
+
+//1°) Ranger le dossier uploads par personne qui uploads files
+//2°) Mettre les files uploads dans une variable et le renvoyer au front 
+
 app.post("/uploadCollaborateur/:id", upload.any(), [
   body('prenom').isLength({ min: 2 }),
   body('nom').isLength({ min: 2 }),
   body('numerosecurite').isLength({ min: 1, max: 12 }),
   body('email').isEmail(),
 ], async function (req, res) {
-  console.log(req.body);
+  console.log(req.files);
+  // fs.renameSync('./public/uploads', `./public/uploads/${sousCategorie}`)
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
   //   let errorsObject = {};
@@ -80,6 +97,7 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
   //   })
   //   return res.status(422).json({ errors: errorsObject });
   // }
+  console.log(req.files[0].path.replace("public/", ""))
   try {
     const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
@@ -133,6 +151,7 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
       rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
       nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
       nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
+      carteIdentitePassport: req.files[0].path.replace("public/", "")
     }, { new: true }
     )
     res.status(200).json(result)
@@ -200,6 +219,7 @@ app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
       rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
       nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
       nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
+      carteIdentitePassport: req.files.path
     }, { new: true }
     )
     res.status(200).json(result)
@@ -210,9 +230,8 @@ app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
 });
 
 
-
 //Création d'un nouveau collaborateur dans la BDD et recuperation par son prenom et nom //
-app.post('/userCollaborateur', async (req, res) => {
+app.post('/userCollaborateur', upload.any(), async (req, res) => {
   // console.log("body", req.body)
   try {
     const user = await collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
@@ -250,9 +269,6 @@ app.post('/userCollaborateur', async (req, res) => {
     console.log("error")
   }
 })
-
-
-
 
 
 //GOOGLE API GOOGLE SHEET//
@@ -656,12 +672,10 @@ app.get("/juridiqueData", async function (req, res) {
 
 app.post("/gestionPerso", async function (req, res) {
   const emailToFront = req.body.email
-  console.log(emailToFront, 'MES DONNÉE DU FRONT ICI ');
   fs.readFile('./public/credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.
     authorize(JSON.parse(content), gestionPerso);
-
   });
 
 

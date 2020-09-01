@@ -9,7 +9,7 @@ export default function AutocompletJuridique({ handleChange, disable }) {
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios.get(
-                'http://localhost:3000/juridiqueData',
+                'http://localhost:5000/juridiqueData',
             );
             setData(result.data);
         };

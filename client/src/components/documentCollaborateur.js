@@ -1,7 +1,9 @@
 import React from 'react'
 import { Grid, Container, Segment, Label } from 'semantic-ui-react'
 
-export default function DocumentsCollaborateur({ handleChangeFile }) {
+export default function DocumentsCollaborateur({ handleChangeFile, file }) {
+    console.log(file, 'PROPS');
+
     return (
         <Container>
             <br />
@@ -17,6 +19,7 @@ export default function DocumentsCollaborateur({ handleChangeFile }) {
                             name='carteIdentitePassport'
                             onChange={handleChangeFile}
                         />
+                        <a href={`http://localhost:5000/static/${file.carteIdentitePassport}`}>Website</a>
                     </Grid.Column>
                     <Grid.Column>
                         <Segment textAlign='center'>Carte Vital</Segment>

@@ -13,7 +13,7 @@ export default function Rh() {
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios.get(
-                'http://localhost:3000/uploadCollaborateur',
+                'http://localhost:5000/uploadCollaborateur',
             );
             setDataCollaboorateurs(result.data);
         };

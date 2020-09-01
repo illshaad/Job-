@@ -24,17 +24,17 @@ export default function Presentation() {
         villedenaissance: "",
         nationalite: "",
         numerosecurite: "",
-        ville: '',
+        ville: "",
         addresse: "",
         cp: "",
-        email: '',
-        telephonePerso: '',
-        telephoneDomicile: '',
-        telephoneUrgence: '',
-        rpps: '',
-        numeroDepartemental: '',
-        departementConseil: '',
-        specialitePratiquee: '',
+        email: "",
+        telephonePerso: "",
+        telephoneDomicile: "",
+        telephoneUrgence: "",
+        rpps: "",
+        numeroDepartemental: "",
+        departementConseil: "",
+        specialitePratiquee: "",
         carnetVaccination: "",
         carteIdentitePassport: "",
         carteVital: "",
@@ -62,9 +62,9 @@ export default function Presentation() {
         aptitudeMedical: "",
         assuranceHabitation: "",
         contratsTravailCours: "",
-        lettreMotivation: '',
-        carteSejour: '',
-        casierJudiciaire: '',
+        lettreMotivation: "",
+        carteSejour: "",
+        casierJudiciaire: "",
     })
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
@@ -77,7 +77,7 @@ export default function Presentation() {
     useEffect(() => {
         const callInfo = async () => {
             try {
-                const result = await axios.post(`http://localhost:3000/userCollaborateur/`, { prenom, nom })
+                const result = await axios.post(`http://localhost:5000/userCollaborateur/`, { prenom, nom })
                 setInformations(result.data)
             } catch (error) {
                 console.log("error");
@@ -86,8 +86,9 @@ export default function Presentation() {
         callInfo()
     }, [])
 
+
     //J'envoie mon email et je recupere la response si je suis collaborateur ou pas //
-    axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
+    axios.post("http://localhost:5000/gestionPerso", { email: localStorage.getItem("name") })
         .then(response => {
             setCollabo(response.data.isCollabo)
         })
@@ -155,16 +156,24 @@ export default function Presentation() {
         try {
             const response = await axios({
                 method: 'post',
-                url: `http://localhost:3000/uploadCollaborateur/${informations._id}`, //recuperation de id pour envoyer dans le back permet de faire des mofications de collaborateur//
-                data: data
+                url: `http://localhost:5000/uploadCollaborateur/${informations._id}`, //recuperation de id pour envoyer dans le back permet de faire des mofications de collaborateur//
+                data: data,
             })
+            console.log(response, ' RESPONSE');
+            setInformations(response.data)
             setMessage('Donnée enregistrer')
         } catch (error) {
             console.log("Error", error.response.data.errors)
             setError(error.response.data.errors);
         }
-    }
 
+        // 1°)Recuperation des fichiers uplods ici 
+        //Envoie une requet à mon micro api email du localStorage et les photos //
+        axios.post("http://localhost:3000/comparateur", { email: localStorage.getItem("name") })
+            .then(response => {
+                console.log(response);
+            })
+    }
     return (
         <Container>
             <br />
@@ -186,7 +195,7 @@ export default function Presentation() {
             <Grid columns={2}>
                 <Grid.Row>
                     <Label circular size='massive'>1</Label>
-                    <h3>Informations à remplir par le collaborateur (5/40)</h3>
+                    <h3>Informations à remplir par le collaborateur 5/20</h3>
                 </Grid.Row>
             </Grid>
 
@@ -273,7 +282,7 @@ export default function Presentation() {
                 <br />
                 <Form.Group>
                     {/* COMPONENT 'DocumentCollaborateur' */}
-                    <Collaborateur handleChangeFile={handleChangeFile} />
+                    <Collaborateur handleChangeFile={handleChangeFile} file={informations} />
                 </Form.Group>
                 {collabo === false ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
             </Form>
