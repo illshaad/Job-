@@ -9,7 +9,8 @@ import {
     useParams,
 } from "react-router-dom";
 
-import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
+import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label, GridColumn, GridRow, } from 'semantic-ui-react'
+import InputImageGenerique from './InputImageGenerique';
 
 
 export default function Presentation() {
@@ -38,7 +39,7 @@ export default function Presentation() {
         carnetVaccination: "",
         carteIdentitePassport: "",
         carteVital: "",
-        CV: "",
+        cv: "",
         permisConduire: "",
         assuranceAutomobile: "",
         photo: "",
@@ -69,7 +70,6 @@ export default function Presentation() {
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
     const [collabo, setCollabo] = useState({})
-
     let { prenom, nom } = useParams();
 
     // use Params permet de ajouter un ou plusieurs paramettres dans l'url
@@ -96,6 +96,7 @@ export default function Presentation() {
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
 
     const handleChangeFile = (e) => {
+        // console.log("value de l'input", e.target.files)
         // le regex N°securite Social//
         if (e.target.value !== "#^[12][0-9]{2}[0-1][0-9](2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$#") {
             setInformations({ ...informations, [e.target.name]: e.target.files[0] })
@@ -134,7 +135,7 @@ export default function Presentation() {
         data.append('carnetvaccination', informations.carnetVaccination)
         data.append('carteIdentitePassport', informations.carteIdentitePassport)
         data.append('carteVital', informations.carteVital)
-        data.append('CV', informations.CV)
+        data.append('cv', informations.cv)
         data.append('permisConduire', informations.permisConduire)
         data.append('assuranceAutomobile', informations.assuranceAutomobile)
         data.append('photo', informations.photo)
@@ -147,7 +148,7 @@ export default function Presentation() {
         data.append('casierjudiciaire', informations.casierJudiciaire)
         data.append('conseildelordre', informations.conseildelordre)
         data.append('ONCD', informations.ONCD)
-        data.append('ADLI', informations.adli)
+        data.append('ADLI', informations.adli)// A VOIR AVEC FLORIANT//
         data.append('diplomes', informations.diplômes)
         data.append('diplomescollaborateurs', informations.diplômescollaborateurs)
         data.append('RCP', informations.RCP)
@@ -169,7 +170,7 @@ export default function Presentation() {
 
         // 1°)Recuperation des fichiers uplods ici 
         //Envoie une requet à mon micro api email du localStorage et les photos //
-        axios.post("http://localhost:3000/comparateur", { email: localStorage.getItem("name") })
+        axios.post("http://localhost:5000/api", { email: localStorage.getItem("name") })
             .then(response => {
                 console.log(response);
             })
@@ -195,16 +196,17 @@ export default function Presentation() {
             <Grid columns={2}>
                 <Grid.Row>
                     <Label circular size='massive'>1</Label>
-                    <h3>Informations à remplir par le collaborateur 5/20</h3>
+                    <h3>Informations à remplir par le collaborateur (5/15)</h3>
                 </Grid.Row>
             </Grid>
 
             <Grid columns={3}>
                 <Grid.Row>
                     <Grid.Column>
-                        <Form.Input fluid name='prenom' value={informations.prenom} onChange={handleChange} label='Prénom' placeholder='Prénom' />
+                        <b>Prenom</b>
+                        <Form.Input fluid name='prenom' value={informations.prenom} onChange={handleChange} placeholder='Prénom' />
                         <br />
-                        <Form.Input fluid value={informations.name} name='datenaissance' onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
+                        <Form.Input fluid name='datenaissance' value={informations.name} onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
                         <br />
                         <Form.Input fluid name='addresse' value={informations.addresse} onChange={handleChange} label='Addresse' placeholder='Addresse' />
                         <br />
@@ -263,7 +265,7 @@ export default function Presentation() {
             </Grid>
             <Form>
                 <br />
-                <Segment className='segmentPerso' size='small'>Réservé aux praticiens</Segment>
+                <Segment className='segmentPerso' size='small'>Réservé aux praticiens (1/4)</Segment>
                 <Grid columns={3}>
                     <Grid.Row>
                         <Grid.Column>
@@ -280,10 +282,44 @@ export default function Presentation() {
                 </Grid>
                 <br />
                 <br />
-                <Form.Group>
-                    {/* COMPONENT 'DocumentCollaborateur' */}
-                    <Collaborateur handleChangeFile={handleChangeFile} file={informations} />
-                </Form.Group>
+                <h3>Documents à fournir par le collaborateur (10/15)</h3>
+                <Grid columns={3} divided>
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte national ou passport' handleChangeFile={handleChangeFile} name={"carteIdentitePassport"} />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte Vital' handleChangeFile={handleChangeFile} name="carteVital" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='CV' handleChangeFile={handleChangeFile} name="cv" />
+                </Grid>
+                <Grid columns={3} divided>
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carnet Vaccinal' handleChangeFile={handleChangeFile} name="carnetVaccination" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplômescollaborateurs" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Photo' handleChangeFile={handleChangeFile} name="photo" />
+
+                </Grid>
+                <Grid columns={3} divided>
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='RIB' handleChangeFile={handleChangeFile} name="RIB" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Aptitude médicale au travail' handleChangeFile={handleChangeFile} name="aptitudemédicale" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='permisConduire' handleChangeFile={handleChangeFile} name="permisConduire" />
+                </Grid>
+                <Grid columns={3} divided>
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Assurance automobile' handleChangeFile={handleChangeFile} name="AassuranceAutomobile" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Attestation assurance habitation' handleChangeFile={handleChangeFile} name="assuranceHabitation" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Autres contrats de travail en cours' handleChangeFile={handleChangeFile} name="contratsTravailCours" />
+
+                </Grid>
+                <Grid columns={3} divided>
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Lettre de motivation' handleChangeFile={handleChangeFile} name="lettreMotivation" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte de séjour' handleChangeFile={handleChangeFile} name="carteSejour" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Extrait de casier judiciaire ' handleChangeFile={handleChangeFile} name="casierJudiciaire" />
+                </Grid>
+                <Segment className='segmentPerso' size='small'>Réservé aux praticiens (3/5)</Segment>
+                <Grid columns={3} divided>
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestion d'assurance RCP" handleChangeFile={handleChangeFile} name="RCP" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title="ONCD" handleChangeFile={handleChangeFile} name="ONCD" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation d’inscription au tableau du conseil de l’Ordre" handleChangeFile={handleChangeFile} name="conseildelordre" />
+                </Grid>
+                <Grid columns={3} divided>
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection patients" handleChangeFile={handleChangeFile} name="radioprotectionpatients" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection travailleurs" handleChangeFile={handleChangeFile} name="radioprotectiontravailleurs" />
+                </Grid>
                 {collabo === false ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
             </Form>
             {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}

@@ -1,8 +1,16 @@
 import React from 'react'
-import { Grid, Container, Segment, Label } from 'semantic-ui-react'
+import { Grid, Container, Segment, Label, Icon } from 'semantic-ui-react'
 
-export default function DocumentsCollaborateur({ handleChangeFile, file }) {
+export default function DocumentsCollaborateur({ handleChangeFile, file, previewImage, setPreviewImage, setInformations }) {
     console.log(file, 'PROPS');
+
+    const deletImage = () => {
+        setPreviewImage('')
+        setInformations({
+            ...file,
+            carteIdentitePassport: ""
+        })
+    }
 
     return (
         <Container>
@@ -14,20 +22,25 @@ export default function DocumentsCollaborateur({ handleChangeFile, file }) {
                 <Grid.Row>
                     <Grid.Column>
                         <Segment textAlign='center'>Carte national ou passport</Segment>
-                        <input
-                            type="file"
-                            name='carteIdentitePassport'
-                            onChange={handleChangeFile}
-                        />
-                        <a href={`http://localhost:5000/static/${file.carteIdentitePassport}`}>Website</a>
+                        {previewImage || file.carteIdentitePassport ? <div className='closeImage'>
+                            <Icon name='close' color="red" className="icon-cross" onClick={deletImage} />
+                            <img src={previewImage || `http://localhost:5000/static/${file.carteIdentitePassport}`} />
+                        </div> : <input
+                                type="file"
+                                name='carteIdentitePassport'
+                                onChange={(e) => handleChangeFile(e)}
+                            />}
                     </Grid.Column>
                     <Grid.Column>
                         <Segment textAlign='center'>Carte Vital</Segment>
-                        <input
-                            type="file"
-                            name='carteVital'
-                            onChange={handleChangeFile}
-                        />
+                        {previewImage || file.carteIdentitePassport ? <div className='closeImage'>
+                            <Icon name='close' color="red" className="icon-cross" onClick={deletImage} />
+                            <img src={previewImage || `http://localhost:5000/static/${file.carteVital}`} />
+                        </div> : <input
+                                type="file"
+                                name='carteVital'
+                                onChange={(e) => handleChangeFile(e)}
+                            />}
                     </Grid.Column>
                     <Grid.Column>
                         <Segment textAlign='center'>CV</Segment>

@@ -1,6 +1,7 @@
 const db = require('./db');
 
 const collaborateursSchema = db.mongoose.Schema({
+    //COLLABORATEUR INPUT//
     prenom: String,
     nom: String,
     genre: String,
@@ -20,7 +21,28 @@ const collaborateursSchema = db.mongoose.Schema({
     numeroDepartemental: String,
     departementConseil: String,
     specialitePratiquee: String,
-    carteIdentitePassport: String, //IMG//
+    //COLLABORATEUR IMG//
+    carteIdentitePassport: String,
+    carteVital: String,
+    cv: String,
+    carnetVaccination: String,
+    diplômescollaborateurs: String,
+    photo: String,
+    RIB: String,
+    aptitudemédicale: String,
+    permisConduire: String,
+    assuranceAutomobile: String,
+    assuranceHabitation: String,
+    contratsTravailCours: String,
+    lettreMotivation: String,
+    carteSejour: String,
+    casierJudiciaire: String,
+    RCP: String,
+    ONCD: String,
+    conseildelordre: String,
+    radioprotectionpatients: String,
+    radioprotectiontravailleurs: String,
+    //INPUT RH//
     matériels: String,
     contrat: String,
     déclaration: String,

@@ -45,7 +45,9 @@ var storage = multer.diskStorage({
   //Création d'un folder pour chaque utilisateur 
   // Si le path n'existe pas tu le créee avec le nom de l'utilisateur 
   destination: function (req, file, cb) {
-    let sousCategorie = req.body.prenom + req.body.nom
+    const sousCategorie = req.body.prenom + req.body.nom
+    console.log(sousCategorie, 'NOM ICI');
+
     const path = `./public/uploads/${sousCategorie}`
     console.log(path)
     if (!fs.existsSync(path)) {
@@ -74,17 +76,13 @@ app.get('/uploadCollaborateur', function (req, res) {
 
 
 //: id pour faire des modificiations d'un collaborateur //
-
-//1°) Ranger le dossier uploads par personne qui uploads files
-//2°) Mettre les files uploads dans une variable et le renvoyer au front 
-
 app.post("/uploadCollaborateur/:id", upload.any(), [
   body('prenom').isLength({ min: 2 }),
   body('nom').isLength({ min: 2 }),
   body('numerosecurite').isLength({ min: 1, max: 12 }),
   body('email').isEmail(),
 ], async function (req, res) {
-  console.log(req.files);
+  console.log("req file", req.files);
   // fs.renameSync('./public/uploads', `./public/uploads/${sousCategorie}`)
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
@@ -97,7 +95,6 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
   //   })
   //   return res.status(422).json({ errors: errorsObject });
   // }
-  console.log(req.files[0].path.replace("public/", ""))
   try {
     const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
@@ -151,11 +148,30 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
       rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
       nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
       nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
-      carteIdentitePassport: req.files[0].path.replace("public/", "")
+      //si reqfiles il est true y a une data sinon vide 
+      carteIdentitePassport: req.files[0] ? req.files[0].path.replace("public/", "") : "",
+      carteVital: req.files[1] ? req.files[1].path.replace("public/", "") : "",
+      cv: req.files[2] ? req.files[2].path.replace("public/", "") : "",
+      carnetVaccination: req.files[3] ? req.files[3].path.replace("public/", "") : "",
+      diplômescollaborateurs: req.files[4] ? req.files[4].path.replace("public/", "") : "",
+      photo: req.files[5] ? req.files[5].path.replace("public/", "") : "",
+      RIB: req.files[6] ? req.files[6].path.replace("public/", "") : "",
+      aptitudemédicale: req.files[7] ? req.files[7].path.replace("public/", "") : "",
+      permisConduire: req.files[8] ? req.files[8].path.replace("public/", "") : "",
+      assuranceAutomobile: req.files[9] ? req.files[9].path.replace("public/", "") : "",
+      assuranceHabitation: req.files[10] ? req.files[10].path.replace("public/", "") : "",
+      contratsTravailCours: req.files[11] ? req.files[11].path.replace("public/", "") : "",
+      lettreMotivation: req.files[12] ? req.files[12].path.replace("public/", "") : "",
+      carteSejour: req.files[13] ? req.files[13].path.replace("public/", "") : "",
+      casierJudiciaire: req.files[14] ? req.files[14].path.replace("public/", "") : "",
+      RCP: req.files[15] ? req.files[15].path.replace("public/", "") : "",
+      ONCD: req.files[16] ? req.files[16].path.replace("public/", "") : "",
+      conseildelordre: req.files[17] ? req.files[17].path.replace("public/", "") : "",
+      radioprotectionpatients: req.files[18] ? req.files[18].path.replace("public/", "") : "",
+      radioprotectiontravailleurs: req.files[19] ? req.files[19].path.replace("public/", "") : "",
     }, { new: true }
     )
     res.status(200).json(result)
-    // console.log(result, ' ??????');
   } catch (error) {
     console.log(error);
   }
@@ -164,7 +180,6 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
 //: id pour faire des modificiations d'un collaborateur et la partie remplire par les RH //
 
 app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
-  console.log(req.body);
   try {
     const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
@@ -219,11 +234,30 @@ app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
       rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
       nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
       nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
-      carteIdentitePassport: req.files.path
+      carteIdentitePassport: req.files[0] ? req.files[0].path.replace("public/", "") : "",
+      carteVital: req.files[1] ? req.files[1].path.replace("public/", "") : "",
+      cv: req.files[2] ? req.files[2].path.replace("public/", "") : "",
+      carnetVaccination: req.files[3] ? req.files[3].path.replace("public/", "") : "",
+      diplômescollaborateurs: req.files[4] ? req.files[4].path.replace("public/", "") : "",
+      photo: req.files[5] ? req.files[5].path.replace("public/", "") : "",
+      RIB: req.files[6] ? req.files[6].path.replace("public/", "") : "",
+      aptitudemédicale: req.files[7] ? req.files[7].path.replace("public/", "") : "",
+      permisConduire: req.files[8] ? req.files[8].path.replace("public/", "") : "",
+      assuranceAutomobile: req.files[9] ? req.files[9].path.replace("public/", "") : "",
+      assuranceHabitation: req.files[10] ? req.files[10].path.replace("public/", "") : "",
+      contratsTravailCours: req.files[11] ? req.files[11].path.replace("public/", "") : "",
+      lettreMotivation: req.files[12] ? req.files[12].path.replace("public/", "") : "",
+      carteSejour: req.files[13] ? req.files[13].path.replace("public/", "") : "",
+      casierJudiciaire: req.files[14] ? req.files[14].path.replace("public/", "") : "",
+      RCP: req.files[15] ? req.files[15].path.replace("public/", "") : "",
+      ONCD: req.files[16] ? req.files[16].path.replace("public/", "") : "",
+      conseildelordre: req.files[17] ? req.files[17].path.replace("public/", "") : "",
+      radioprotectionpatients: req.files[18] ? req.files[18].path.replace("public/", "") : "",
+      radioprotectiontravailleurs: req.files[19] ? req.files[19].path.replace("public/", "") : "",
     }, { new: true }
     )
     res.status(200).json(result)
-    console.log(result, ' ??????');
+
   } catch (error) {
     console.log(error);
   }
@@ -269,6 +303,16 @@ app.post('/userCollaborateur', upload.any(), async (req, res) => {
     console.log("error")
   }
 })
+
+//Recuperer les fichiers dans public/uploads j'envoie au micro api 
+
+app.post('/api', function (req, res) {
+  const emailToFront = req.body.email
+  const sousCategorie = req.body.prenom + req.body.nom
+  const path = fs.readFileSync(`./public/uploads/${sousCategorie}`)
+  const send = emailToFront + path
+  res.status(200).json(send)
+});
 
 
 //GOOGLE API GOOGLE SHEET//
