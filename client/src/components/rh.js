@@ -13,15 +13,12 @@ export default function Rh() {
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios.get(
-                'http://localhost:5000/uploadCollaborateur',
+                'http://localhost:3000/uploadCollaborateur',
             );
             setDataCollaboorateurs(result.data);
         };
         fetchData();
     }, []);
-
-    console.log(dataCollaborateurs, '???????');
-
 
     return (
         <div>

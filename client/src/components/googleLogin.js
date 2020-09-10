@@ -1,22 +1,37 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Image, Segment } from 'semantic-ui-react'
-import { useHistory } from "react-router-dom";
 import GoogleLogin from 'react-google-login'
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
 
 
 export default function Google() {
 
     let history = useHistory();
 
+    const [collaborateur, setCollaborateur] = useState()
+
+    useEffect(() => {
+        const collboratorResponse = async () => {
+            await axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
+                .then(response => {
+                    console.log("response :", response.data)
+                    setCollaborateur(response.data.isCollabo)
+                })
+        }
+        collboratorResponse()
+    }, [])
+
     //Envoie de la donnée au back//
     // Utilisation du localStorage pour sauvergarder email apres le click du button google//
     const responseGoogle = (response) => {
         const emailResponse = response.rt.$t;
-        console.log(emailResponse);
         const nomPrenom = emailResponse.split("@")[0].replace(".", "/")
         localStorage.setItem('name', emailResponse)
-        history.push(`/collaborateur/${nomPrenom}`)
+        { collaborateur ? history.push(`/rh`) : history.push(`/collaborateur/${nomPrenom}`) }
+
     }
+
 
     return (
         <div>

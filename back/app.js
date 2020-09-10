@@ -68,6 +68,7 @@ let upload = multer({ storage: storage });
 
 //recuperer tous mes collaborateurs//
 app.get('/uploadCollaborateur', function (req, res) {
+  console.log(req.body, ' GET');
   collaborateurModel.find(function (error, collaborateurs) {
     res.json(collaborateurs);
   });
@@ -82,8 +83,7 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
   body('numerosecurite').isLength({ min: 1, max: 12 }),
   body('email').isEmail(),
 ], async function (req, res) {
-  console.log("req file", req.files);
-  // fs.renameSync('./public/uploads', `./public/uploads/${sousCategorie}`)
+  console.log(req.body, 'Donnée que je recois')
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
   //   let errorsObject = {};
@@ -96,6 +96,17 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
   //   return res.status(422).json({ errors: errorsObject });
   // }
   try {
+    const objectFiles = {};
+    const nameFiles = ["carteIdentitePassport", "carteVital", "cv", "carnetVaccination", "photo", "RIB", "aptitudeMedicale", "permisConduire", "assuranceAutomobile", "attestationAssuranceHabitation", "autreContratsTravailCours", "lettreMotivation", "carteSejour", "casierJudiciaire", "RCP", "ONCD", "conseildelordre", "radioProtectionPatients", "radioProtectionTravailleurs", 'diplomes', 'diplomesRh']
+    for (let i = 0; i < nameFiles.length; i++) {
+      objectFiles[nameFiles[i]] = req.files.find((e) => {
+        const object = nameFiles[i].includes(e.fieldname) ? e.path : "";
+        return object
+      })
+      console.log({ objectFiles }, 'OBJECT FILES ICI');
+    }
+    const resultGet = await collaborateurModel.findById(req.params.id)
+
     const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
       nom: req.body.nom,
@@ -148,30 +159,32 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
       rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
       nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
       nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
-      //si reqfiles il est true y a une data sinon vide 
-      carteIdentitePassport: req.files[0] ? req.files[0].path.replace("public/", "") : "",
-      carteVital: req.files[1] ? req.files[1].path.replace("public/", "") : "",
-      cv: req.files[2] ? req.files[2].path.replace("public/", "") : "",
-      carnetVaccination: req.files[3] ? req.files[3].path.replace("public/", "") : "",
-      diplômescollaborateurs: req.files[4] ? req.files[4].path.replace("public/", "") : "",
-      photo: req.files[5] ? req.files[5].path.replace("public/", "") : "",
-      RIB: req.files[6] ? req.files[6].path.replace("public/", "") : "",
-      aptitudemédicale: req.files[7] ? req.files[7].path.replace("public/", "") : "",
-      permisConduire: req.files[8] ? req.files[8].path.replace("public/", "") : "",
-      assuranceAutomobile: req.files[9] ? req.files[9].path.replace("public/", "") : "",
-      assuranceHabitation: req.files[10] ? req.files[10].path.replace("public/", "") : "",
-      contratsTravailCours: req.files[11] ? req.files[11].path.replace("public/", "") : "",
-      lettreMotivation: req.files[12] ? req.files[12].path.replace("public/", "") : "",
-      carteSejour: req.files[13] ? req.files[13].path.replace("public/", "") : "",
-      casierJudiciaire: req.files[14] ? req.files[14].path.replace("public/", "") : "",
-      RCP: req.files[15] ? req.files[15].path.replace("public/", "") : "",
-      ONCD: req.files[16] ? req.files[16].path.replace("public/", "") : "",
-      conseildelordre: req.files[17] ? req.files[17].path.replace("public/", "") : "",
-      radioprotectionpatients: req.files[18] ? req.files[18].path.replace("public/", "") : "",
-      radioprotectiontravailleurs: req.files[19] ? req.files[19].path.replace("public/", "") : "",
+      //si reqfiles il est true y a une data sinon vide j'affiche l'emplacement vide//
+      carteIdentitePassport: objectFiles.carteIdentitePassport ? objectFiles.carteIdentitePassport.path.replace("public/", "") : resultGet.carteIdentitePassport,
+      carteVital: objectFiles.carteVital ? objectFiles.carteVital.path.replace("public/", "") : resultGet.carteVital,
+      cv: objectFiles.cv ? objectFiles.cv.path.replace("public/", "") : resultGet.cv,
+      carnetVaccination: objectFiles.carnetVaccination ? objectFiles.carnetVaccination.path.replace("public/", "") : resultGet.carnetVaccination,
+      diplomesRh: objectFiles.diplomesRh ? objectFiles.diplomesRh.path.replace("public/", "") : resultGet.diplomesRh,
+      photo: objectFiles.photo ? objectFiles.photo.path.replace("public/", "") : resultGet.photo,
+      RIB: objectFiles.RIB ? objectFiles.RIB.path.replace("public/", "") : resultGet.RIB,
+      aptitudeMedicale: objectFiles.aptitudeMedicale ? objectFiles.aptitudeMedicale.path.replace("public/", "") : resultGet.aptitudeMedicale,
+      permisConduire: objectFiles.permisConduire ? objectFiles.permisConduire.path.replace("public/", "") : resultGet.permisConduire,
+      assuranceAutomobile: objectFiles.assuranceAutomobile ? objectFiles.assuranceAutomobile.path.replace("public/", "") : resultGet.assuranceAutomobile,
+      attestationAssuranceHabitation: objectFiles.attestationAssuranceHabitation ? objectFiles.attestationAssuranceHabitation.path.replace("public/", "") : resultGet.attestationAssuranceHabitation,
+      autreContratsTravailCours: objectFiles.autreContratsTravailCours ? objectFiles.autreContratsTravailCours.path.replace("public/", "") : resultGet.autreContratsTravailCours,
+      lettreMotivation: objectFiles.lettreMotivation ? objectFiles.lettreMotivation.path.replace("public/", "") : resultGet.lettreMotivation,
+      carteSejour: objectFiles.carteSejour ? objectFiles.carteSejour.path.replace("public/", "") : resultGet.carteSejour,
+      casierJudiciaire: objectFiles.casierJudiciaire ? objectFiles.casierJudiciaire.path.replace("public/", "") : resultGet.casierJudiciaire,
+      RCP: objectFiles.RCP ? objectFiles.RCP.path.replace("public/", "") : resultGet.RCP,
+      ONCD: objectFiles.ONCD ? objectFiles.ONCD.path.replace("public/", "") : resultGet.ONCD,
+      conseildelordre: objectFiles.conseildelordre ? objectFiles.conseildelordre.path.replace("public/", "") : resultGet.conseildelordre,
+      radioProtectionPatients: objectFiles.radioProtectionPatients ? objectFiles.radioProtectionPatients.path.replace("public/", "") : resultGet.radioProtectionPatients,
+      radioProtectionTravailleurs: objectFiles.radioProtectionTravailleurs ? objectFiles.radioProtectionTravailleurs.path.replace("public/", "") : resultGet.radioProtectionTravailleurs,
+      diplomes: objectFiles.diplomes ? objectFiles.diplomes.path.replace("public/", "") : resultGet.diplomes,
     }, { new: true }
     )
     res.status(200).json(result)
+    // console.log(req.files, 'MES FILES ICI ')
   } catch (error) {
     console.log(error);
   }
@@ -180,6 +193,17 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
 //: id pour faire des modificiations d'un collaborateur et la partie remplire par les RH //
 
 app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
+  // console.log(req.files, ' FILE RH');
+  const objectFiles = {};
+  const nameFiles = ["carteIdentitePassport", "carteVital", "cv", "carnetVaccination", "photo", "RIB", "aptitudeMedicale", "permisConduire", "assuranceAutomobile", "attestationAssuranceHabitation", "autreContratsTravailCours", "lettreMotivation", "carteSejour", "casierJudiciaire", "RCP", "ONCD", "conseildelordre", "radioProtectionPatients", "radioProtectionTravailleurs", 'diplomes', 'diplomesRh', 'materiels', 'contrat', 'declaration', 'fichedeposte', 'fichesynthetique', 'avantagesennature', 'mutuelle', 'onboarding']
+  for (let i = 0; i < nameFiles.length; i++) {
+    objectFiles[nameFiles[i]] = req.files.find((e) => {
+      const object = nameFiles[i].includes(e.fieldname) ? e.path : "";
+      return object
+    })
+  }
+  console.log({ objectFiles });
+  const resultGet = await collaborateurModel.findById(req.params.id)
   try {
     const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
@@ -219,6 +243,7 @@ app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
       etablissement: req.body.etablissement,
       fonctiondigital: req.body.fonctiondigital,
       juridique: req.body.juridique,
+      //Partie RH INPUT//
       collaborteur: req.body.collaborateur,
       convention: req.body.convention,
       erp: req.body.erp,
@@ -234,26 +259,36 @@ app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
       rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
       nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
       nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
-      carteIdentitePassport: req.files[0] ? req.files[0].path.replace("public/", "") : "",
-      carteVital: req.files[1] ? req.files[1].path.replace("public/", "") : "",
-      cv: req.files[2] ? req.files[2].path.replace("public/", "") : "",
-      carnetVaccination: req.files[3] ? req.files[3].path.replace("public/", "") : "",
-      diplômescollaborateurs: req.files[4] ? req.files[4].path.replace("public/", "") : "",
-      photo: req.files[5] ? req.files[5].path.replace("public/", "") : "",
-      RIB: req.files[6] ? req.files[6].path.replace("public/", "") : "",
-      aptitudemédicale: req.files[7] ? req.files[7].path.replace("public/", "") : "",
-      permisConduire: req.files[8] ? req.files[8].path.replace("public/", "") : "",
-      assuranceAutomobile: req.files[9] ? req.files[9].path.replace("public/", "") : "",
-      assuranceHabitation: req.files[10] ? req.files[10].path.replace("public/", "") : "",
-      contratsTravailCours: req.files[11] ? req.files[11].path.replace("public/", "") : "",
-      lettreMotivation: req.files[12] ? req.files[12].path.replace("public/", "") : "",
-      carteSejour: req.files[13] ? req.files[13].path.replace("public/", "") : "",
-      casierJudiciaire: req.files[14] ? req.files[14].path.replace("public/", "") : "",
-      RCP: req.files[15] ? req.files[15].path.replace("public/", "") : "",
-      ONCD: req.files[16] ? req.files[16].path.replace("public/", "") : "",
-      conseildelordre: req.files[17] ? req.files[17].path.replace("public/", "") : "",
-      radioprotectionpatients: req.files[18] ? req.files[18].path.replace("public/", "") : "",
-      radioprotectiontravailleurs: req.files[19] ? req.files[19].path.replace("public/", "") : "",
+      //PARTIE COLLABORATEUR UPLOAD //
+      carteIdentitePassport: objectFiles.carteIdentitePassport ? objectFiles.carteIdentitePassport.path.replace("public/", "") : resultGet.carteIdentitePassport,
+      carteVital: objectFiles.carteVital ? objectFiles.carteVital.path.replace("public/", "") : resultGet.carteVital,
+      cv: objectFiles.cv ? objectFiles.cv.path.replace("public/", "") : resultGet.cv,
+      carnetVaccination: objectFiles.carnetVaccination ? objectFiles.carnetVaccination.path.replace("public/", "") : resultGet.carnetVaccination,
+      diplomesRh: objectFiles.diplomesRh ? objectFiles.diplomesRh.path.replace("public/", "") : resultGet.diplomesRh,
+      photo: objectFiles.photo ? objectFiles.photo.path.replace("public/", "") : resultGet.photo,
+      RIB: objectFiles.RIB ? objectFiles.RIB.path.replace("public/", "") : resultGet.RIB,
+      aptitudeMedicale: objectFiles.aptitudeMedicale ? objectFiles.aptitudeMedicale.path.replace("public/", "") : resultGet.aptitudeMedicale,
+      permisConduire: objectFiles.permisConduire ? objectFiles.permisConduire.path.replace("public/", "") : resultGet.permisConduire,
+      assuranceAutomobile: objectFiles.assuranceAutomobile ? objectFiles.assuranceAutomobile.path.replace("public/", "") : resultGet.assuranceAutomobile,
+      attestationAssuranceHabitation: objectFiles.attestationAssuranceHabitation ? objectFiles.attestationAssuranceHabitation.path.replace("public/", "") : resultGet.attestationAssuranceHabitation,
+      autreContratsTravailCours: objectFiles.autreContratsTravailCours ? objectFiles.autreContratsTravailCours.path.replace("public/", "") : resultGet.autreContratsTravailCours,
+      lettreMotivation: objectFiles.lettreMotivation ? objectFiles.lettreMotivation.path.replace("public/", "") : resultGet.lettreMotivation,
+      carteSejour: objectFiles.carteSejour ? objectFiles.carteSejour.path.replace("public/", "") : resultGet.carteSejour,
+      casierJudiciaire: objectFiles.casierJudiciaire ? objectFiles.casierJudiciaire.path.replace("public/", "") : resultGet.casierJudiciaire,
+      RCP: objectFiles.RCP ? objectFiles.RCP.path.replace("public/", "") : resultGet.RCP,
+      ONCD: objectFiles.ONCD ? objectFiles.ONCD.path.replace("public/", "") : resultGet.ONCD,
+      conseildelordre: objectFiles.conseildelordre ? objectFiles.conseildelordre.path.replace("public/", "") : resultGet.conseildelordre,
+      radioProtectionPatients: objectFiles.radioProtectionPatients ? objectFiles.radioProtectionPatients.path.replace("public/", "") : resultGet.radioProtectionPatients,
+      radioProtectionTravailleurs: objectFiles.radioProtectionTravailleurs ? objectFiles.radioProtectionTravailleurs.path.replace("public/", "") : resultGet.radioProtectionTravailleurs,
+      diplomes: objectFiles.diplomes ? objectFiles.diplomes.path.replace("public/", "") : resultGet.diplomes,
+      //PARTIE UPLOADS RH//
+      materiels: objectFiles.materiels ? objectFiles.materiels.path.replace("public/", "") : resultGet.materiels,
+      contrat: objectFiles.contrat ? objectFiles.contrat.path.replace("public/", "") : resultGet.contrat,
+      declaration: objectFiles.declaration ? objectFiles.declaration.path.replace("public/", "") : resultGet.declaration,
+      fichedeposte: objectFiles.fichedeposte ? objectFiles.fichedeposte.path.replace("public/", "") : resultGet.fichedeposte,
+      fichesynthetique: objectFiles.fichesynthetique ? objectFiles.fichesynthetique.path.replace("public/", "") : resultGet.fichesynthetique,
+      avantagesennature: objectFiles.avantagesennature ? objectFiles.avantagesennature.path.replace("public/", "") : resultGet.avantagesennature,
+      onboarding: objectFiles.onboarding ? objectFiles.onboarding.path.replace("public/", "") : resultGet.onboarding,
     }, { new: true }
     )
     res.status(200).json(result)
@@ -266,7 +301,7 @@ app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
 
 //Création d'un nouveau collaborateur dans la BDD et recuperation par son prenom et nom //
 app.post('/userCollaborateur', upload.any(), async (req, res) => {
-  // console.log("body", req.body)
+  console.log("bodyUSERCOLLABORATEUR", req.body)
   try {
     const user = await collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
     if (user) {
@@ -716,6 +751,8 @@ app.get("/juridiqueData", async function (req, res) {
 
 app.post("/gestionPerso", async function (req, res) {
   const emailToFront = req.body.email
+  console.log(emailToFront, ' EMAIL');
+
   fs.readFile('./public/credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.

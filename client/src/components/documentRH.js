@@ -6,7 +6,6 @@ export default function DocumentsRh({ handleChangeFile, disable }) {
         <Container>
             <br />
             <br />
-            <h3>Documents à fournir par gestionpersonnel (10/30)</h3>
             <br />
             <Grid columns={4} divided>
                 <Grid.Row>

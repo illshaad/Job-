@@ -1,6 +1,6 @@
 import React, { useState, setError, useEffect } from 'react'
 import axios from 'axios'
-import Collaborateur from './documentCollaborateur'
+import InputImageGenerique from './InputImageGenerique';
 import InputRH from './inputRH'
 
 import {
@@ -10,11 +10,10 @@ import {
 } from "react-router-dom";
 
 import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label, GridColumn, GridRow, } from 'semantic-ui-react'
-import InputImageGenerique from './InputImageGenerique';
+
 
 
 export default function Presentation() {
-
     const [informations, setInformations] = useState({
         _id: "",
         prenom: "",
@@ -46,13 +45,12 @@ export default function Presentation() {
         RIB: "",
         conseildelordre: "",
         ONCD: "",
-        diplômes: "",
-        diplômescollaborateurs: "",
+        diplomes: "",
+        diplomesRh: "",
         RCP: "",
-        Radioprotectionpatients: "",
-        Radioprotectiontravailleurs: "",
+        radioProtectionPatients: "",
+        radioProtectionTravailleurs: "",
         matériels: "",
-        contrat: "",
         déclaration: "",
         fichedeposte: "",
         fichesynthetique: "",
@@ -60,9 +58,9 @@ export default function Presentation() {
         mutuelle: "",
         onboarding: "",
         adli: "",
-        aptitudeMedical: "",
-        assuranceHabitation: "",
-        contratsTravailCours: "",
+        aptitudeMedicale: "",
+        attestationAssuranceHabitation: "",
+        autreContratsTravailCours: "",
         lettreMotivation: "",
         carteSejour: "",
         casierJudiciaire: "",
@@ -74,10 +72,11 @@ export default function Presentation() {
 
     // use Params permet de ajouter un ou plusieurs paramettres dans l'url
     // Post pour recuperer le prenom et nom et l'afficher dans l'url 
+
     useEffect(() => {
         const callInfo = async () => {
             try {
-                const result = await axios.post(`http://localhost:5000/userCollaborateur/`, { prenom, nom })
+                const result = await axios.post(`http://localhost:3000/userCollaborateur/`, { prenom, nom })
                 setInformations(result.data)
             } catch (error) {
                 console.log("error");
@@ -86,12 +85,11 @@ export default function Presentation() {
         callInfo()
     }, [])
 
-
-    //J'envoie mon email et je recupere la response si je suis collaborateur ou pas //
-    axios.post("http://localhost:5000/gestionPerso", { email: localStorage.getItem("name") })
+    axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
         .then(response => {
             setCollabo(response.data.isCollabo)
         })
+
 
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
 
@@ -132,7 +130,7 @@ export default function Presentation() {
         data.append('departementConseil', informations.departementConseil)
         data.append('specialitePratiquee', informations.specialitePratiquee)
         {/* state component 'documentCollaborteur'*/ }
-        data.append('carnetvaccination', informations.carnetVaccination)
+        data.append('carnetVaccination', informations.carnetVaccination)
         data.append('carteIdentitePassport', informations.carteIdentitePassport)
         data.append('carteVital', informations.carteVital)
         data.append('cv', informations.cv)
@@ -140,27 +138,26 @@ export default function Presentation() {
         data.append('assuranceAutomobile', informations.assuranceAutomobile)
         data.append('photo', informations.photo)
         data.append('RIB', informations.RIB)
-        data.append('aptitudemédicale', informations.aptitudeMedical)
-        data.append('attestationassurancehabitation', informations.assuranceHabitation)
-        data.append('contratstravailcours', informations.contratsTravailCours)
-        data.append('lettremotivation', informations.lettreMotivation)
-        data.append('cartesejour', informations.carteSejour)
-        data.append('casierjudiciaire', informations.casierJudiciaire)
+        data.append('aptitudeMedicale', informations.aptitudeMedicale)
+        data.append('attestationAssuranceHabitation', informations.attestationAssuranceHabitation)
+        data.append('autreContratsTravailCours', informations.autreContratsTravailCours)
+        data.append('lettreMotivation', informations.lettreMotivation)
+        data.append('carteSejour', informations.carteSejour)
+        data.append('casierJudiciaire', informations.casierJudiciaire)
         data.append('conseildelordre', informations.conseildelordre)
         data.append('ONCD', informations.ONCD)
         data.append('ADLI', informations.adli)// A VOIR AVEC FLORIANT//
-        data.append('diplomes', informations.diplômes)
-        data.append('diplomescollaborateurs', informations.diplômescollaborateurs)
+        data.append('diplomes', informations.diplomes)
+        data.append('diplomesRh', informations.diplomesRh)
         data.append('RCP', informations.RCP)
-        data.append('radioprotectionpatients', informations.Radioprotectionpatients)
-        data.append('radioprotectiontravailleurs', informations.Radioprotectiontravailleurs)
+        data.append('radioProtectionPatients', informations.radioProtectionPatients)
+        data.append('radioProtectionTravailleurs', informations.radioProtectionTravailleurs)
         try {
             const response = await axios({
                 method: 'post',
-                url: `http://localhost:5000/uploadCollaborateur/${informations._id}`, //recuperation de id pour envoyer dans le back permet de faire des mofications de collaborateur//
+                url: `http://localhost:3000/uploadCollaborateur/${informations._id}`, //recuperation de id pour envoyer dans le back permet de faire des mofications de collaborateur//
                 data: data,
             })
-            console.log(response, ' RESPONSE');
             setInformations(response.data)
             setMessage('Donnée enregistrer')
         } catch (error) {
@@ -170,18 +167,13 @@ export default function Presentation() {
 
         // 1°)Recuperation des fichiers uplods ici 
         //Envoie une requet à mon micro api email du localStorage et les photos //
-        axios.post("http://localhost:5000/api", { email: localStorage.getItem("name") })
-            .then(response => {
-                console.log(response);
-            })
+        // axios.post("http://localhost:000/api", { email: localStorage.getItem("name") })
+        //     .then(response => {
+        //         console.log(response);
+        //     })
     }
     return (
         <Container>
-            <br />
-            {Object.keys(error).map((e) => (
-                <p>{error[e]}</p>
-            ))}
-
             {/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */}
             {collabo !== true ?
                 null
@@ -191,7 +183,6 @@ export default function Presentation() {
                     </Menu.Item>
                 </Menu>
             }
-
             <Image src='/Embarquer.png' size='huge' centered='true' />
             <Grid columns={2}>
                 <Grid.Row>
@@ -290,19 +281,18 @@ export default function Presentation() {
                 </Grid>
                 <Grid columns={3} divided>
                     <InputImageGenerique informations={informations} setInformations={setInformations} title='Carnet Vaccinal' handleChangeFile={handleChangeFile} name="carnetVaccination" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplômescollaborateurs" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplomes" />
                     <InputImageGenerique informations={informations} setInformations={setInformations} title='Photo' handleChangeFile={handleChangeFile} name="photo" />
-
                 </Grid>
                 <Grid columns={3} divided>
                     <InputImageGenerique informations={informations} setInformations={setInformations} title='RIB' handleChangeFile={handleChangeFile} name="RIB" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Aptitude médicale au travail' handleChangeFile={handleChangeFile} name="aptitudemédicale" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Aptitude médicale au travail' handleChangeFile={handleChangeFile} name="aptitudeMedicale" />
                     <InputImageGenerique informations={informations} setInformations={setInformations} title='permisConduire' handleChangeFile={handleChangeFile} name="permisConduire" />
                 </Grid>
                 <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Assurance automobile' handleChangeFile={handleChangeFile} name="AassuranceAutomobile" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Attestation assurance habitation' handleChangeFile={handleChangeFile} name="assuranceHabitation" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Autres contrats de travail en cours' handleChangeFile={handleChangeFile} name="contratsTravailCours" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Assurance automobile' handleChangeFile={handleChangeFile} name="assuranceAutomobile" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Attestation assurance habitation' handleChangeFile={handleChangeFile} name="attestationAssuranceHabitation" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Autres contrats de travail en cours' handleChangeFile={handleChangeFile} name="autreContratsTravailCours" />
 
                 </Grid>
                 <Grid columns={3} divided>
@@ -317,10 +307,11 @@ export default function Presentation() {
                     <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation d’inscription au tableau du conseil de l’Ordre" handleChangeFile={handleChangeFile} name="conseildelordre" />
                 </Grid>
                 <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection patients" handleChangeFile={handleChangeFile} name="radioprotectionpatients" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection travailleurs" handleChangeFile={handleChangeFile} name="radioprotectiontravailleurs" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplomesRh" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection patients" handleChangeFile={handleChangeFile} name="radioProtectionPatients" />
+                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection travailleurs" handleChangeFile={handleChangeFile} name="radioProtectionTravailleurs" />
                 </Grid>
-                {collabo === false ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
+                {collabo !== true ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
             </Form>
             {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
             <InputRH id={informations._id} informationsRH={informations} disable={collabo !== true} />

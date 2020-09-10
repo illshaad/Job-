@@ -9,7 +9,7 @@ export default function AutocompletFonctionDigital({ handleChange, disable }) {
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios.get(
-                'http://localhost:5000/fonctionData',
+                'http://localhost:3000/fonctionData',
             );
             setData(result.data);
         };

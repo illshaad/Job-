@@ -9,7 +9,7 @@ export default function AutocompletEtablissement({ handleChange, disable }) {
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios.get(
-                'http://localhost:5000/etablissementData',
+                'http://localhost:3000/etablissementData',
             );
             setData(result.data);
         };

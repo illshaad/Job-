@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import { Grid, Container, Form, Label, Button } from 'semantic-ui-react'
 import DocumentRH from './documentRH' // COMPONENT UPLOAD FILE RH
 import AutocompletEmailResponsable from './autocomplet/emailResponsable'
@@ -12,13 +12,14 @@ import TempsTravail from './menuDeroulant/tempsTravail'
 import Convention from './menuDeroulant/convention'
 import ERP from './menuDeroulant/erp'
 import axios from 'axios'
+import InputImageGeneriqueRh from './inputimageGeneriqueRh';
 
 export default function InputRh({ disable, informationsRH }) {
     const [informations, setInformations] = useState({
         _id: "",
-        matériels: "",
+        materiels: "",
         contrat: "",
-        déclaration: "",
+        declaration: "",
         fichedeposte: "",
         fichesynthetique: "",
         avantagesennature: "",
@@ -33,10 +34,10 @@ export default function InputRh({ disable, informationsRH }) {
         niveau: "",
         coefficient: "",
         indice: "",
-        rémunérationbrutemensuelle: "",
-        rémunérationbrutejournalière: "",
-        rémunérationbruteannuelle: "",
-        rémunérationbrutehoraire: "",
+        remunerationbrutemensuelle: "",
+        remunerationbrutejournalière: "",
+        remunerationbruteannuelle: "",
+        remunerationbrutehoraire: "",
         nombreheureshebdomadairedusalarie: "",
         nombreheuresmensueldusalarié: "",
         /* COMPONENT 'autocomplet' */
@@ -56,7 +57,6 @@ export default function InputRh({ disable, informationsRH }) {
 
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
-
     const handleChange = (e, { value, name }) => {
         console.log(e, value, name)
         setInformations({ ...informations, [e.target.name || name]: value })
@@ -77,14 +77,19 @@ export default function InputRh({ disable, informationsRH }) {
     }
 
     const sendDataRH = async () => {
+        //Fusionner les deux states des deux composants//
+        const object = Object.assign(informations, informationsRH);
+        const data = new FormData()
+        const keys = Object.keys(object)
+        for (let i in keys) {
+            data.append(keys[i], object[keys[i]])
+        }
         //Url est une route dynamique avec ID //
         try {
-            //Fusionner les deux states des deux composants//
-            const object = Object.assign(informations, informationsRH);
             const response = await axios({
                 method: 'post',
-                url: `http://localhost:5000/userCollaborateurRh/${informationsRH._id}`,
-                data: object
+                url: `http://localhost:3000/userCollaborateurRh/${informationsRH._id}`,
+                data: data,
             })
             setMessage('Donnée enregistrer')
         } catch (error) {
@@ -104,9 +109,9 @@ export default function InputRh({ disable, informationsRH }) {
                 <Grid.Row>
                     <Grid.Column>
                         {/* COMPONENT 'Collaborateur' */}
-                        <AutocompletCollaborateur handleChange={handleChange} value={'test'} disable={disable} />
+                        <AutocompletCollaborateur handleChange={handleChange} disable={disable} />
                         {/* COMPONENT 'EmailResponsable' */}
-                        <AutocompletEmailResponsable handleChange={handleChange} value={'test'} disable={disable} />
+                        <AutocompletEmailResponsable handleChange={handleChange} disable={disable} />
                         {/* COMPONENT 'Activite' */}
                         <AutocompletActivité handleChange={handleChange} disable={disable} />
                     </Grid.Column>
@@ -157,14 +162,14 @@ export default function InputRh({ disable, informationsRH }) {
                     <Grid.Column>
                         <Form.Input fluid name='indice' onChange={handleChange} value={informationsRH.indice} label='Indice' placeholder='Indice' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='rémunérationbrutemensuelle' value={informationsRH.rémunérationbrutemensuelle} onChange={handleChange} label='Rémunération brute mensuelle' placeholder='Rémunération brute mensuelle' disabled={disable} />
+                        <Form.Input fluid name='remunerationbrutemensuelle' value={informationsRH.remunerationbrutemensuelle} onChange={handleChange} label='Rémunération brute mensuelle' placeholder='Rémunération brute mensuelle' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='rémunérationbrutejournalière' value={informationsRH.rémunérationbrutejournalière} onChange={handleChange} label='Rémunération brute journalière' placeholder='Rémunération brute journalière' disabled={disable} />
+                        <Form.Input fluid name='remunerationbrutejournalière' value={informationsRH.remunerationbrutejournalière} onChange={handleChange} label='Rémunération brute journalière' placeholder='Rémunération brute journalière' disabled={disable} />
                     </Grid.Column>
                     <Grid.Column>
-                        <Form.Input fluid name='rémunérationbruteannuelle' value={informationsRH.rémunérationbruteannuelle} onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' disabled={disable} />
+                        <Form.Input fluid name='remunerationbruteannuelle' value={informationsRH.remunerationbruteannuelle} onChange={handleChange} label='Rémunération brute annuelle' placeholder='Rémunération brute annuelle' disabled={disable} />
                         <br />
-                        <Form.Input fluid name='rémunérationbrutehoraire' value={informationsRH.rémunérationbrutehoraire} onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' disabled={disable} />
+                        <Form.Input fluid name='remunerationbrutehoraire' value={informationsRH.remunerationbrutehoraire} onChange={handleChange} label='Rémunération brute horaire' placeholder='Rémunération brute horaire' disabled={disable} />
                         <br />
                         <Form.Input fluid name='nombreheureshebdomadairedusalarié' value={informationsRH.nombreheureshebdomadairedusalarie} onChange={handleChange} label="Nombre d'heures hebdomadaire du salarié" placeholder="Nombre d'heures hebdomadaire du salarié" disabled={disable} />
                     </Grid.Column>
@@ -176,9 +181,26 @@ export default function InputRh({ disable, informationsRH }) {
                 </Grid.Row>
             </Grid>
             <Form.Group>
-                <DocumentRH handleChangeFile={handleChangeFile} disable={disable} />
+                <h3>Documents à fournir par gestionpersonnel (10/30)</h3>
+                <Grid columns={3} divided>
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Chartes d'utilisation de matériels et pratiques" handleChangeFile={handleChangeFile} name={"materiels"} />
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Contrat de travail ou contrat de prestation ou convention de stage et promesse d'embauche" handleChangeFile={handleChangeFile} name={"contrat"} />
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Déclaration préalable à l'embauche (DPAE)" handleChangeFile={handleChangeFile} name={"declaration"} />
+                </Grid>
+                <Grid columns={3} divided>
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Fiche de poste" handleChangeFile={handleChangeFile} name={"fichedeposte"} />
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Fiche signalétique synthétique" handleChangeFile={handleChangeFile} name={"fichesynthetique"} />
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Mise à disposition d'avantages en nature" handleChangeFile={handleChangeFile} name={"avantagesennature"} />
+                </Grid>
+                <Grid columns={3} divided>
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Mutuelle et prévoyance" handleChangeFile={handleChangeFile} name={"mutuelle"} />
+                    <InputImageGeneriqueRh disable={disable} informations={informations} setInformations={setInformations} title="Onboarding" handleChangeFile={handleChangeFile} name={"onboarding"} />
+                </Grid>
             </Form.Group>
             {disable !== true ? <Button primary onClick={sendDataRH} >Enregistrer les données</Button> : null}
         </Container>
+
     )
 }
+
+
