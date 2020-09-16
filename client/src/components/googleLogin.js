@@ -1,38 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Container, Image, Segment } from 'semantic-ui-react'
 import GoogleLogin from 'react-google-login'
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 
 
-export default function Google() {
+export default function Google({ setDataFromAPI }) {
 
     let history = useHistory();
-
-    const [collaborateur, setCollaborateur] = useState()
-
-    useEffect(() => {
-        const collboratorResponse = async () => {
-            await axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
-                .then(response => {
-                    console.log("response :", response.data)
-                    setCollaborateur(response.data.isCollabo)
-                })
-        }
-        collboratorResponse()
-    }, [])
-
     //Envoie de la donnée au back//
     // Utilisation du localStorage pour sauvergarder email apres le click du button google//
-    const responseGoogle = (response) => {
-        const emailResponse = response.rt.$t;
-        const nomPrenom = emailResponse.split("@")[0].replace(".", "/")
+    const responseGoogle = async (response) => {
+        const emailResponse = await response.rt.$t;
+        //envoie EMAIL RESPONSE  A DIMITRI//
+        await axios.post("https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/getGsuiteUser", { email: emailResponse })
+            .then(res => {
+                setDataFromAPI(res.data)
+            })
+        const nomPrenom = await emailResponse.split("@")[0].replace(".", "/")
         localStorage.setItem('name', emailResponse)
-        { collaborateur ? history.push(`/rh`) : history.push(`/collaborateur/${nomPrenom}`) }
-
+        await axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
+            .then(response => {
+                { response.data.isCollabo ? history.push(`/rh`) : history.push(`/collaborateur/${nomPrenom}`) }
+            })
     }
-
-
     return (
         <div>
             <Image style={{ marginTop: 100 }} src='./Doctegestio.png' size='medium' centered='true' />

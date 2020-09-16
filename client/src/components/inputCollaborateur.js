@@ -1,4 +1,4 @@
-import React, { useState, setError, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import InputImageGenerique from './InputImageGenerique';
 import InputRH from './inputRH'
@@ -13,7 +13,9 @@ import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Lab
 
 
 
-export default function Presentation() {
+export default function Presentation({ dataFromAPI }) {
+    console.log(dataFromAPI, 'DIMITRI');
+
     const [informations, setInformations] = useState({
         _id: "",
         prenom: "",
@@ -72,7 +74,7 @@ export default function Presentation() {
 
     // use Params permet de ajouter un ou plusieurs paramettres dans l'url
     // Post pour recuperer le prenom et nom et l'afficher dans l'url 
-
+    // Requet pour crée la BDD du nouveau collaborateur par son nom et prenom 
     useEffect(() => {
         const callInfo = async () => {
             try {
@@ -83,13 +85,33 @@ export default function Presentation() {
             }
         }
         callInfo()
+        axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
+            .then(response => {
+                setCollabo(response.data.isCollabo)
+            })
     }, [])
 
-    axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
-        .then(response => {
-            setCollabo(response.data.isCollabo)
-        })
+    //Recuperation du IsCollabo true || False pour faire des conditions //
 
+    useEffect(() => {
+        if (collabo) {
+            setInformations({
+                genre: dataFromAPI.customSchemas.Attributs_personnaliss.Sexe ? dataFromAPI.customSchemas.Attributs_personnaliss.Sexe : "",
+                nomnaissance: dataFromAPI.name.familyName ? dataFromAPI.name.familyName : "",
+                datenaissance: dataFromAPI.customSchemas.Attributs_personnaliss.Date_de_naissance ? dataFromAPI.customSchemas.Attributs_personnaliss.Date_de_naissance : "",
+                addresse: dataFromAPI.customSchemas.Attributs_personnaliss.Adresse_personnel ? dataFromAPI.customSchemas.Attributs_personnaliss.Adresse_personnel : "",
+                cp: dataFromAPI.customSchemas.Attributs_personnaliss.Code_postal_personnel ? dataFromAPI.customSchemas.Attributs_personnaliss.Code_postal_personnel : "",
+                ville: dataFromAPI.customSchemas.Attributs_personnaliss.Commune_personnel ? dataFromAPI.customSchemas.Attributs_personnaliss.Commune_personnel : "",
+                villedenaissance: dataFromAPI.customSchemas.Attributs_personnaliss.Lieu_de_naissance ? dataFromAPI.customSchemas.Attributs_personnaliss.Lieu_de_naissance : "",
+                numerosecurite: dataFromAPI.customSchemas.Attributs_personnaliss.Scurit_sociale ? dataFromAPI.customSchemas.Attributs_personnaliss.Scurit_sociale : "",
+                nationalite: dataFromAPI.customSchemas.Attributs_personnaliss.Nationalit ? dataFromAPI.customSchemas.Attributs_personnaliss.Nationalit : "",
+                email: dataFromAPI.emails ? dataFromAPI.emails[0].address : "",
+                telephonePerso: dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone_portable_personnel ? dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone_portable_personnel : "",
+                telephoneDomicile: dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone_domicile ? dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone_domicile : "",
+                telephoneUrgence: dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone__appeler_en_cas_durgence ? dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone__appeler_en_cas_durgence : "",
+            })
+        }
+    }, [collabo])
 
     const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
 
@@ -164,13 +186,6 @@ export default function Presentation() {
             console.log("Error", error.response.data.errors)
             setError(error.response.data.errors);
         }
-
-        // 1°)Recuperation des fichiers uplods ici 
-        //Envoie une requet à mon micro api email du localStorage et les photos //
-        // axios.post("http://localhost:000/api", { email: localStorage.getItem("name") })
-        //     .then(response => {
-        //         console.log(response);
-        //     })
     }
     return (
         <Container>
@@ -197,7 +212,7 @@ export default function Presentation() {
                         <b>Prenom</b>
                         <Form.Input fluid name='prenom' value={informations.prenom} onChange={handleChange} placeholder='Prénom' />
                         <br />
-                        <Form.Input fluid name='datenaissance' value={informations.name} onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
+                        <Form.Input fluid name='datenaissance' value={informations.datenaissance} onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
                         <br />
                         <Form.Input fluid name='addresse' value={informations.addresse} onChange={handleChange} label='Addresse' placeholder='Addresse' />
                         <br />
@@ -206,7 +221,7 @@ export default function Presentation() {
                     <Grid.Column>
                         <Form.Input fluid name='nom' value={informations.nom} onChange={handleChange} label='Nom' placeholder='Nom' />
                         <br />
-                        <Form.Input fluid value={informations.villedenaissance} name='villedenaissance' onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
+                        <Form.Input fluid name='villedenaissance' value={informations.villedenaissance} onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
                         <br />
                         <Form.Input fluid name='cp' value={informations.cp} onChange={handleChange} label='Code postal' placeholder='Code postal' />
                         <br />
@@ -233,9 +248,9 @@ export default function Presentation() {
                         <br />
                         <Form.Input fluid name='nomnaissance' value={informations.nomnaissance} onChange={handleChange} label='Nom de naissance' placeholder='Nom de naissance' />
                         <br />
-                        <Form.Input fluid name='ville' onChange={handleChange} value={informations.ville} label='Ville' placeholder='Ville' />
+                        <Form.Input fluid name='ville' value={informations.ville} onChange={handleChange} label='Ville' placeholder='Ville' />
                         <br />
-                        <Form.Input fluid name='nationalite' onChange={handleChange} value={informations.nationalite} label='Nationalité' placeholder='Nationalité' />
+                        <Form.Input fluid name='nationalite' value={informations.nationalite} onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -314,7 +329,7 @@ export default function Presentation() {
                 {collabo !== true ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
             </Form>
             {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
-            <InputRH id={informations._id} informationsRH={informations} disable={collabo !== true} />
+            <InputRH dataFromAPI={dataFromAPI} id={informations._id} informationsRH={informations} disable={collabo !== true} />
             {message ? <Message positive>
                 <Message.Header>Donnée enregistrer</Message.Header>
             </Message> : null}

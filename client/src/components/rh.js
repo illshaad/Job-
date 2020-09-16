@@ -1,54 +1,53 @@
 import React, { useState, useEffect } from 'react'
-import {
-    BrowserRouter as Router,
-    Link
-} from "react-router-dom";
 import axios from 'axios'
-import { Container, Table, Header } from 'semantic-ui-react'
-
+import { Container, Header, Grid, Dropdown, Button } from 'semantic-ui-react'
+import { useHistory } from "react-router-dom";
 
 export default function Rh() {
-    const [dataCollaborateurs, setDataCollaboorateurs] = useState([])
+    let history = useHistory();
+    const [dataCollaborateurs, setDataCollaborateurs] = useState([])
+
+    const handleChange = e => {
+        console.log(e.target.value)
+    }
 
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios.get(
-                'http://localhost:3000/uploadCollaborateur',
+                'http://localhost:3000/emailData',
             );
-            setDataCollaboorateurs(result.data);
+            setDataCollaborateurs(result.data);
         };
         fetchData();
     }, []);
+
+
+    const buttonRedirect = () => {
+        const nomPrenom = dataCollaborateurs.map(item => item.value.split("@")[0].replace(".", "/"))
+        console.log(nomPrenom);
+        history.push(`/collaborateur/${nomPrenom}`)
+    }
 
     return (
         <div>
             <Container>
                 <Header as='h1' textAlign='center'>Liste des nouveaux collaborateurs</Header>
-                <Table singleLine>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Prénom</Table.HeaderCell>
-                            <Table.HeaderCell>Nom</Table.HeaderCell>
-                            <Table.HeaderCell>Email</Table.HeaderCell>
-                            <Table.HeaderCell>Date de dernière mise à jour</Table.HeaderCell>
-                            <Table.HeaderCell>Nombre de champs remplis </Table.HeaderCell>
-                            <Table.HeaderCell>Nombre de documents fournis</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    {dataCollaborateurs.map((item, key) =>
-                        <Table.Body>
-                            <Table.Row>
-                                <Table.Cell><Link to={`/collaborateur/${item.prenom}/${item.nom}`}>{item.prenom}</Link></Table.Cell>
-                                <Table.Cell>{item.nom}</Table.Cell>
-                                <Table.Cell>{item.email}</Table.Cell>
-                                <Table.Cell>10 Janvier 2020</Table.Cell>
-                                <Table.Cell>3/20</Table.Cell>
-                                <Table.Cell>15/20</Table.Cell>
-                            </Table.Row>
-                        </Table.Body>
-                    )}
-                </Table>
+                <Grid>
+                    <div className='autoCompletTitre'>Adresse e-mail du responsable </div>
+                    <Dropdown
+                        onChange={handleChange}
+                        placeholder='Collaborateur'
+                        fluid
+                        search
+                        options={dataCollaborateurs}
+                        value
+                    />
+                </Grid>
+                <Button onClick={buttonRedirect}>DIRECTION</Button>
             </Container>
         </div>
     )
 }
+
+
+{/* <BUTTON><Link to={`/collaborateur/${item.prenom}/${item.nom}`}>{item.prenom}</Link></BUTTON> */ }

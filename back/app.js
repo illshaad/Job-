@@ -66,9 +66,9 @@ var storage = multer.diskStorage({
 // SAVE FILE MY LOCAL STORAGE //
 let upload = multer({ storage: storage });
 
+
 //recuperer tous mes collaborateurs//
 app.get('/uploadCollaborateur', function (req, res) {
-  console.log(req.body, ' GET');
   collaborateurModel.find(function (error, collaborateurs) {
     res.json(collaborateurs);
   });
@@ -84,36 +84,23 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
   body('email').isEmail(),
 ], async function (req, res) {
   console.log(req.body, 'Donnée que je recois')
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   let errorsObject = {};
-  //   errors.array().forEach((e) => {
-  //     if (e.param === "prenom") errorsObject.prenom = "Ce prenom n'est pas assez long !"
-  //     if (e.param === "nom") errorsObject.nom = "Ce nom n'est pas assez long !"
-  //     if (e.param === "numerosecurite") errorsObject.numerosecurite = "Merci de saisir le N°Securite Social !"
-  //     if (e.param === "email") errorsObject.email = "Ce email n'est pas bon !"
-  //   })
-  //   return res.status(422).json({ errors: errorsObject });
-  // }
   try {
     const objectFiles = {};
-    const nameFiles = ["carteIdentitePassport", "carteVital", "cv", "carnetVaccination", "photo", "RIB", "aptitudeMedicale", "permisConduire", "assuranceAutomobile", "attestationAssuranceHabitation", "autreContratsTravailCours", "lettreMotivation", "carteSejour", "casierJudiciaire", "RCP", "ONCD", "conseildelordre", "radioProtectionPatients", "radioProtectionTravailleurs", 'diplomes', 'diplomesRh']
+    const nameFiles = ["carteIdentitePassport", "carteVital", "cv", "carnetVaccination", "photo", "RIB", "aptitudeMedicale", "permisConduire", "assuranceAutomobile", "attestationAssuranceHabitation", "autreContratsTravailCours", "lettreMotivation", "carteSejour", "casierJudiciaire", "RCP", "ONCD", "conseildelordre", "radioProtectionPatients", "radioProtectionTravailleurs", 'diplomes', 'diplomesRh', 'materiels', 'contrat', 'declaration', 'fichedeposte', 'fichesynthetique', 'avantagesennature', 'mutuelle', 'onboarding']
     for (let i = 0; i < nameFiles.length; i++) {
       objectFiles[nameFiles[i]] = req.files.find((e) => {
         const object = nameFiles[i].includes(e.fieldname) ? e.path : "";
         return object
       })
-      console.log({ objectFiles }, 'OBJECT FILES ICI');
     }
     const resultGet = await collaborateurModel.findById(req.params.id)
-
     const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
       prenom: req.body.prenom,
       nom: req.body.nom,
       genre: req.body.genre,
-      dateDeNaissance: req.body.dateDeNaissance,
-      villeDeNaissance: req.body.villeDeNaissance,
-      nomDeNaissance: req.body.nomDeNaissance,
+      datenaissance: req.body.datenaissance,
+      villedenaissance: req.body.villedenaissance,
+      nomnaissance: req.body.nomnaissance,
       nationalite: req.body.nationalite,
       numerosecurite: req.body.numerosecurite,
       addresse: req.body.addresse,
@@ -127,16 +114,16 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
       numeroDepartemental: req.body.numeroDepartemental,
       departementConseil: req.body.departementConseil,
       specialitePratiquee: req.body.specialitePratiquee,
-      matériels: req.body.matériels,
+      materiels: req.body.materiels,
       contrat: req.body.contrat,
-      déclaration: req.body.déclaration,
+      declaration: req.body.declaration,
       fichedeposte: req.body.fichedeposte,
       fichesynthetique: req.body.fichesynthetique,
       avantagesennature: req.body.avantagesennature,
       mutuelle: req.body.mutuelle,
       onboarding: req.body.onboarding,
       fonctiondigitalsecondaire: req.body.fonctiondigitalsecondaire,
-      datedeprisedefonction: req.body.datedeprisedefonction,
+      datePriseDeFonction: req.body.datePriseDeFonction,
       telephonetravail: req.body.telephonetravail,
       telephonemobile: req.body.telephonemobile,
       adressetravail: req.body.adressetravail,
@@ -145,7 +132,7 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
       etablissement: req.body.etablissement,
       fonctiondigital: req.body.fonctiondigital,
       juridique: req.body.juridique,
-      collaborteur: req.body.collaborateur,
+      collaborateur: req.body.collaborateur,
       convention: req.body.convention,
       erp: req.body.erp,
       naturetravail: req.body.naturetravail,
@@ -153,12 +140,13 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
       classification: req.body.classification,
       niveau: req.body.niveau,
       indice: req.body.indice,
-      rémunérationbrutemensuelle: req.body.rémunérationbrutemensuelle,
-      rémunérationbrutejournalière: req.body.rémunérationbrutejournalière,
-      rémunérationbruteannuelle: req.body.rémunérationbruteannuelle,
-      rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
+      coefficient: req.body.coefficient,
+      remunerationbrutemensuelle: req.body.remunerationbrutemensuelle,
+      remunerationbrutejournaliere: req.body.remunerationbrutejournaliere,
+      remunerationbruteannuelle: req.body.remunerationbruteannuelle,
+      remunerationbrutehoraire: req.body.remunerationbrutehoraire,
       nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
-      nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
+      nombreheuresmensueldusalarie: req.body.nombreheuresmensueldusalarie,
       //si reqfiles il est true y a une data sinon vide j'affiche l'emplacement vide//
       carteIdentitePassport: objectFiles.carteIdentitePassport ? objectFiles.carteIdentitePassport.path.replace("public/", "") : resultGet.carteIdentitePassport,
       carteVital: objectFiles.carteVital ? objectFiles.carteVital.path.replace("public/", "") : resultGet.carteVital,
@@ -181,107 +169,6 @@ app.post("/uploadCollaborateur/:id", upload.any(), [
       radioProtectionPatients: objectFiles.radioProtectionPatients ? objectFiles.radioProtectionPatients.path.replace("public/", "") : resultGet.radioProtectionPatients,
       radioProtectionTravailleurs: objectFiles.radioProtectionTravailleurs ? objectFiles.radioProtectionTravailleurs.path.replace("public/", "") : resultGet.radioProtectionTravailleurs,
       diplomes: objectFiles.diplomes ? objectFiles.diplomes.path.replace("public/", "") : resultGet.diplomes,
-    }, { new: true }
-    )
-    res.status(200).json(result)
-    // console.log(req.files, 'MES FILES ICI ')
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-//: id pour faire des modificiations d'un collaborateur et la partie remplire par les RH //
-
-app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
-  // console.log(req.files, ' FILE RH');
-  const objectFiles = {};
-  const nameFiles = ["carteIdentitePassport", "carteVital", "cv", "carnetVaccination", "photo", "RIB", "aptitudeMedicale", "permisConduire", "assuranceAutomobile", "attestationAssuranceHabitation", "autreContratsTravailCours", "lettreMotivation", "carteSejour", "casierJudiciaire", "RCP", "ONCD", "conseildelordre", "radioProtectionPatients", "radioProtectionTravailleurs", 'diplomes', 'diplomesRh', 'materiels', 'contrat', 'declaration', 'fichedeposte', 'fichesynthetique', 'avantagesennature', 'mutuelle', 'onboarding']
-  for (let i = 0; i < nameFiles.length; i++) {
-    objectFiles[nameFiles[i]] = req.files.find((e) => {
-      const object = nameFiles[i].includes(e.fieldname) ? e.path : "";
-      return object
-    })
-  }
-  console.log({ objectFiles });
-  const resultGet = await collaborateurModel.findById(req.params.id)
-  try {
-    const result = await collaborateurModel.findByIdAndUpdate(req.params.id, {
-      prenom: req.body.prenom,
-      nom: req.body.nom,
-      genre: req.body.genre,
-      dateDeNaissance: req.body.dateDeNaissance,
-      villeDeNaissance: req.body.villeDeNaissance,
-      nomDeNaissance: req.body.nomDeNaissance,
-      nationalite: req.body.nationalite,
-      numerosecurite: req.body.numerosecurite,
-      addresse: req.body.addresse,
-      cp: req.body.cp,
-      ville: req.body.ville,
-      email: req.body.email,
-      telephonePerso: req.body.telephonePerso,
-      telephoneDomicile: req.body.telephoneDomicile,
-      telephoneUrgence: req.body.telephoneUrgence,
-      rpps: req.body.rpps,
-      numeroDepartemental: req.body.numeroDepartemental,
-      departementConseil: req.body.departementConseil,
-      specialitePratiquee: req.body.specialitePratiquee,
-      matériels: req.body.matériels,
-      contrat: req.body.contrat,
-      déclaration: req.body.déclaration,
-      fichedeposte: req.body.fichedeposte,
-      fichesynthetique: req.body.fichesynthetique,
-      avantagesennature: req.body.avantagesennature,
-      mutuelle: req.body.mutuelle,
-      onboarding: req.body.onboarding,
-      fonctiondigitalsecondaire: req.body.fonctiondigitalsecondaire,
-      datedeprisedefonction: req.body.datedeprisedefonction,
-      telephonetravail: req.body.telephonetravail,
-      telephonemobile: req.body.telephonemobile,
-      adressetravail: req.body.adressetravail,
-      activite: req.body.activite,
-      emailresponsable: req.body.emailresponsable,
-      etablissement: req.body.etablissement,
-      fonctiondigital: req.body.fonctiondigital,
-      juridique: req.body.juridique,
-      //Partie RH INPUT//
-      collaborteur: req.body.collaborateur,
-      convention: req.body.convention,
-      erp: req.body.erp,
-      naturetravail: req.body.naturetravail,
-      tempstravail: req.body.tempstravail,
-      classification: req.body.classification,
-      niveau: req.body.niveau,
-      indice: req.body.indice,
-      coefficient: req.body.coefficient,
-      rémunérationbrutemensuelle: req.body.rémunérationbrutemensuelle,
-      rémunérationbrutejournalière: req.body.rémunérationbrutejournalière,
-      rémunérationbruteannuelle: req.body.rémunérationbruteannuelle,
-      rémunérationbrutehoraire: req.body.rémunérationbrutehoraire,
-      nombreheureshebdomadairedusalarie: req.body.nombreheureshebdomadairedusalarie,
-      nombreheuresmensueldusalarié: req.body.nombreheuresmensueldusalarié,
-      //PARTIE COLLABORATEUR UPLOAD //
-      carteIdentitePassport: objectFiles.carteIdentitePassport ? objectFiles.carteIdentitePassport.path.replace("public/", "") : resultGet.carteIdentitePassport,
-      carteVital: objectFiles.carteVital ? objectFiles.carteVital.path.replace("public/", "") : resultGet.carteVital,
-      cv: objectFiles.cv ? objectFiles.cv.path.replace("public/", "") : resultGet.cv,
-      carnetVaccination: objectFiles.carnetVaccination ? objectFiles.carnetVaccination.path.replace("public/", "") : resultGet.carnetVaccination,
-      diplomesRh: objectFiles.diplomesRh ? objectFiles.diplomesRh.path.replace("public/", "") : resultGet.diplomesRh,
-      photo: objectFiles.photo ? objectFiles.photo.path.replace("public/", "") : resultGet.photo,
-      RIB: objectFiles.RIB ? objectFiles.RIB.path.replace("public/", "") : resultGet.RIB,
-      aptitudeMedicale: objectFiles.aptitudeMedicale ? objectFiles.aptitudeMedicale.path.replace("public/", "") : resultGet.aptitudeMedicale,
-      permisConduire: objectFiles.permisConduire ? objectFiles.permisConduire.path.replace("public/", "") : resultGet.permisConduire,
-      assuranceAutomobile: objectFiles.assuranceAutomobile ? objectFiles.assuranceAutomobile.path.replace("public/", "") : resultGet.assuranceAutomobile,
-      attestationAssuranceHabitation: objectFiles.attestationAssuranceHabitation ? objectFiles.attestationAssuranceHabitation.path.replace("public/", "") : resultGet.attestationAssuranceHabitation,
-      autreContratsTravailCours: objectFiles.autreContratsTravailCours ? objectFiles.autreContratsTravailCours.path.replace("public/", "") : resultGet.autreContratsTravailCours,
-      lettreMotivation: objectFiles.lettreMotivation ? objectFiles.lettreMotivation.path.replace("public/", "") : resultGet.lettreMotivation,
-      carteSejour: objectFiles.carteSejour ? objectFiles.carteSejour.path.replace("public/", "") : resultGet.carteSejour,
-      casierJudiciaire: objectFiles.casierJudiciaire ? objectFiles.casierJudiciaire.path.replace("public/", "") : resultGet.casierJudiciaire,
-      RCP: objectFiles.RCP ? objectFiles.RCP.path.replace("public/", "") : resultGet.RCP,
-      ONCD: objectFiles.ONCD ? objectFiles.ONCD.path.replace("public/", "") : resultGet.ONCD,
-      conseildelordre: objectFiles.conseildelordre ? objectFiles.conseildelordre.path.replace("public/", "") : resultGet.conseildelordre,
-      radioProtectionPatients: objectFiles.radioProtectionPatients ? objectFiles.radioProtectionPatients.path.replace("public/", "") : resultGet.radioProtectionPatients,
-      radioProtectionTravailleurs: objectFiles.radioProtectionTravailleurs ? objectFiles.radioProtectionTravailleurs.path.replace("public/", "") : resultGet.radioProtectionTravailleurs,
-      diplomes: objectFiles.diplomes ? objectFiles.diplomes.path.replace("public/", "") : resultGet.diplomes,
-      //PARTIE UPLOADS RH//
       materiels: objectFiles.materiels ? objectFiles.materiels.path.replace("public/", "") : resultGet.materiels,
       contrat: objectFiles.contrat ? objectFiles.contrat.path.replace("public/", "") : resultGet.contrat,
       declaration: objectFiles.declaration ? objectFiles.declaration.path.replace("public/", "") : resultGet.declaration,
@@ -292,16 +179,13 @@ app.post("/userCollaborateurRh/:id", upload.any(), async function (req, res) {
     }, { new: true }
     )
     res.status(200).json(result)
-
   } catch (error) {
     console.log(error);
   }
 });
 
-
 //Création d'un nouveau collaborateur dans la BDD et recuperation par son prenom et nom //
 app.post('/userCollaborateur', upload.any(), async (req, res) => {
-  console.log("bodyUSERCOLLABORATEUR", req.body)
   try {
     const user = await collaborateurModel.findOne({ prenom: req.body.prenom, nom: req.body.nom })
     if (user) {
@@ -352,12 +236,500 @@ app.post('/api', function (req, res) {
 
 //GOOGLE API GOOGLE SHEET//
 
+//CONVENTION COLLECTIF //
+app.get("/conventionData", async function (req, res) {
+  fs.readFile('./public/credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), listMajors);
+  });
+
+  /**
+   * Create an OAuth2 client with the given credentials, and then execute the
+   * given callback function.
+   * @param {Object} credentials The authorization client credentials.
+   * @param {function} callback The callback to call with the authorized client.
+   */
+  function authorize(credentials, callback) {
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+    // Check if we have previously stored a token.
+
+
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) return getNewToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client);
+    });
+  }
+
+  /**
+   * Get and store new token after prompting for user authorization, and then
+   * execute the given callback with the authorized OAuth2 client.
+   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+   * @param {getEventsCallback} callback The callback for the authorized client.
+   */
+  function getNewToken(oAuth2Client, callback) {
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('Authorize this app by visiting this url:', authUrl);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question('Enter the code from that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error while trying to retrieve access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+        callback(oAuth2Client);
+      });
+    });
+  }
+
+  /**
+   * Prints the names and majors of students in a sample spreadsheet:
+   * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+   * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
+   */
+
+  async function listMajors(auth) {
+    var arrayData = []
+    const sheets = google.sheets({ version: 'v4', auth });
+    try {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: '1KLtdch7_TT2JZOHc7rrBMrfSPf67Xs1gmnJEfYqTwwI',
+        range: 'Convention collective',
+      })
+      const rows = response.data.values;
+      if (rows.length) {
+        var names = rows;
+        for (const i in names) {
+          let object = {
+            key: i,
+            value: rows[i][1],
+            text: rows[i][1]
+          }
+          arrayData.push(object)
+        };
+      } else {
+        console.log('No data found.');
+      }
+      res.status(200).json(arrayData.slice(3))
+    } catch (error) {
+      console.log("error dans listMajor")
+    }
+  };
+})
+
+// TEMP DE TRAVAIL //
+app.get("/travailData", async function (req, res) {
+  fs.readFile('./public/credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), listMajors);
+  });
+
+  /**
+   * Create an OAuth2 client with the given credentials, and then execute the
+   * given callback function.
+   * @param {Object} credentials The authorization client credentials.
+   * @param {function} callback The callback to call with the authorized client.
+   */
+  function authorize(credentials, callback) {
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+    // Check if we have previously stored a token.
+
+
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) return getNewToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client);
+    });
+  }
+
+  /**
+   * Get and store new token after prompting for user authorization, and then
+   * execute the given callback with the authorized OAuth2 client.
+   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+   * @param {getEventsCallback} callback The callback for the authorized client.
+   */
+  function getNewToken(oAuth2Client, callback) {
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('Authorize this app by visiting this url:', authUrl);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question('Enter the code from that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error while trying to retrieve access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+        callback(oAuth2Client);
+      });
+    });
+  }
+
+  /**
+   * Prints the names and majors of students in a sample spreadsheet:
+   * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+   * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
+   */
+
+  async function listMajors(auth) {
+    var arrayData = []
+    const sheets = google.sheets({ version: 'v4', auth });
+    try {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: '1KLtdch7_TT2JZOHc7rrBMrfSPf67Xs1gmnJEfYqTwwI',
+        range: 'Temps de travail',
+      })
+      const rows = response.data.values;
+      if (rows.length) {
+        var names = rows;
+        for (const i in names) {
+          let object = {
+            key: i,
+            value: rows[i][1],
+            text: rows[i][1]
+          }
+          arrayData.push(object)
+        };
+      } else {
+        console.log('No data found.');
+      }
+      res.status(200).json(arrayData.slice(3))
+    } catch (error) {
+      console.log("error dans listMajor")
+    }
+  };
+})
+
+
+//NATURE TRAVAILLE //
+app.get("/natureData", async function (req, res) {
+  fs.readFile('./public/credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), listMajors);
+  });
+
+  /**
+   * Create an OAuth2 client with the given credentials, and then execute the
+   * given callback function.
+   * @param {Object} credentials The authorization client credentials.
+   * @param {function} callback The callback to call with the authorized client.
+   */
+  function authorize(credentials, callback) {
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+    // Check if we have previously stored a token.
+
+
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) return getNewToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client);
+    });
+  }
+
+  /**
+   * Get and store new token after prompting for user authorization, and then
+   * execute the given callback with the authorized OAuth2 client.
+   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+   * @param {getEventsCallback} callback The callback for the authorized client.
+   */
+  function getNewToken(oAuth2Client, callback) {
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('Authorize this app by visiting this url:', authUrl);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question('Enter the code from that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error while trying to retrieve access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+        callback(oAuth2Client);
+      });
+    });
+  }
+
+  /**
+   * Prints the names and majors of students in a sample spreadsheet:
+   * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+   * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
+   */
+
+  async function listMajors(auth) {
+    var arrayData = []
+    const sheets = google.sheets({ version: 'v4', auth });
+    try {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: '1KLtdch7_TT2JZOHc7rrBMrfSPf67Xs1gmnJEfYqTwwI',
+        range: 'Nature relation de travail',
+      })
+      const rows = response.data.values;
+      if (rows.length) {
+        var names = rows;
+        for (const i in names) {
+          let object = {
+            key: i,
+            value: rows[i][1],
+            text: rows[i][1]
+          }
+          arrayData.push(object)
+
+        };
+      } else {
+        console.log('No data found.');
+      }
+      res.status(200).json(arrayData.slice(3))
+    } catch (error) {
+      console.log("error dans listMajor")
+    }
+  };
+})
+
+
+
+
+// COLLABORATEUR //
+
+
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = 'token.json';
+// Load client secrets from a local file.
+app.get("/collaborateurData", async function (req, res) {
+  fs.readFile('./public/credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), listMajors);
+  });
+
+  /**
+   * Create an OAuth2 client with the given credentials, and then execute the
+   * given callback function.
+   * @param {Object} credentials The authorization client credentials.
+   * @param {function} callback The callback to call with the authorized client.
+   */
+  function authorize(credentials, callback) {
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+    // Check if we have previously stored a token.
+
+
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) return getNewToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client);
+    });
+  }
+
+  /**
+   * Get and store new token after prompting for user authorization, and then
+   * execute the given callback with the authorized OAuth2 client.
+   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+   * @param {getEventsCallback} callback The callback for the authorized client.
+   */
+  function getNewToken(oAuth2Client, callback) {
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('Authorize this app by visiting this url:', authUrl);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question('Enter the code from that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error while trying to retrieve access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+        callback(oAuth2Client);
+      });
+    });
+  }
+
+  /**
+   * Prints the names and majors of students in a sample spreadsheet:
+   * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+   * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
+   */
+
+  async function listMajors(auth) {
+    var arrayData = []
+    const sheets = google.sheets({ version: 'v4', auth });
+    try {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: '1KLtdch7_TT2JZOHc7rrBMrfSPf67Xs1gmnJEfYqTwwI',
+        range: 'Type User',
+      })
+      const rows = response.data.values;
+      if (rows.length) {
+        var names = rows;
+        for (const i in names) {
+          let object = {
+            key: i,
+            value: rows[i][1],
+            text: rows[i][1]
+          }
+          arrayData.push(object)
+        };
+      } else {
+        console.log('No data found.');
+      }
+      res.status(200).json(arrayData.slice(3))
+    } catch (error) {
+      console.log("error dans listMajor")
+    }
+  };
+})
+
+//ACTIVITER //
+// Load client secrets from a local file.
+app.get("/activiteData", async function (req, res) {
+  fs.readFile('./public/credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), listMajors);
+  });
+
+  /**
+   * Create an OAuth2 client with the given credentials, and then execute the
+   * given callback function.
+   * @param {Object} credentials The authorization client credentials.
+   * @param {function} callback The callback to call with the authorized client.
+   */
+  function authorize(credentials, callback) {
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+    // Check if we have previously stored a token.
+
+
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) return getNewToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client);
+    });
+  }
+
+  /**
+   * Get and store new token after prompting for user authorization, and then
+   * execute the given callback with the authorized OAuth2 client.
+   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+   * @param {getEventsCallback} callback The callback for the authorized client.
+   */
+  function getNewToken(oAuth2Client, callback) {
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('Authorize this app by visiting this url:', authUrl);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question('Enter the code from that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error while trying to retrieve access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+        callback(oAuth2Client);
+      });
+    });
+  }
+
+  /**
+   * Prints the names and majors of students in a sample spreadsheet:
+   * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+   * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
+   */
+
+  async function listMajors(auth) {
+    var arrayData = []
+    const sheets = google.sheets({ version: 'v4', auth });
+    try {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: '1KLtdch7_TT2JZOHc7rrBMrfSPf67Xs1gmnJEfYqTwwI',
+        range: 'Activité',
+      })
+      const rows = response.data.values;
+      if (rows.length) {
+        var names = rows;
+        for (const i in names) {
+          let object = {
+            key: i,
+            value: rows[i][1],
+            text: rows[i][1]
+          }
+          arrayData.push(object)
+        };
+      } else {
+        console.log('No data found.');
+      }
+      res.status(200).json(arrayData.slice(3))
+    } catch (error) {
+      console.log("error dans listMajor")
+    }
+  };
+})
+
+
+
+
+// ETABLISSEMENT // 
 
 // Load client secrets from a local file.
 app.get("/etablissementData", async function (req, res) {
@@ -642,7 +1014,7 @@ app.get("/emailData", async function (req, res) {
       } else {
         console.log('No data found.');
       }
-      res.status(200).json(arrayData.slice(1, 100))//limite
+      res.status(200).json(arrayData.slice(1, 10))//limite
     } catch (error) {
       console.log("error dans listMajor")
     }
@@ -844,6 +1216,7 @@ app.post("/gestionPerso", async function (req, res) {
     } catch (error) {
       console.log("error dans listMajor")
     }
+
     // Quand je me connecte par le front si mon email fait partie de ces cas je fais partie du gestion personnel sinon non//
     const isCollabo = arrayData.filter((element, i) => element.value === emailToFront)
     res.status(200).json({ isCollabo: isCollabo.length ? true : false })
