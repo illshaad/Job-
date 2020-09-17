@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Container, Form, Label, Button } from 'semantic-ui-react'
+import { Grid, Container, Form, Label, Button, ItemDescription } from 'semantic-ui-react'
 import ERP from './menuDeroulant/erp'
 import axios from 'axios'
 import InputImageGenerique from './InputImageGenerique';
@@ -48,16 +48,16 @@ export default function InputRh({ dataFromAPI, disable, informationsRH }) {
         setInformations({
             collaborateur: dataFromAPI.organizations ? dataFromAPI.organizations[0].description : "",
             fonctiondigital: dataFromAPI.customSchemas.Attributs_supplementaires.Fonction_digitale_principale ? dataFromAPI.customSchemas.Attributs_supplementaires.Fonction_digitale_principale : "",
-            fonctiondigitalsecondaire: dataFromAPI.customSchemas.Attributs_supplementaires.Fonction_digitale_minuscules ? dataFromAPI.customSchemas.Attributs_supplementaires.Fonction_digitale_minuscules : "",
-            emailresponsable: dataFromAPI.relations ? dataFromAPI.relations[0].value : "",
+            fonctiondigitalsecondaire: dataFromAPI.customSchemas.Attributs_supplementaires.Fonction_digitale_minuscules ? dataFromAPI.customSchemas.Attributs_supplementaires.Fonction_digitale_minuscules.map(e => e.value) : "",
+            emailresponsable: dataFromAPI.relations ? dataFromAPI.relations[0].type : "",
             etablissement: dataFromAPI.customSchemas.Attributs_supplementaires.Etablissement_digital ? dataFromAPI.customSchemas.Attributs_supplementaires.Etablissement_digital : "",
             datePriseDeFonction: dataFromAPI.customSchemas.Attributs_personnaliss.Date_de_la_prise_de_fonction ? dataFromAPI.customSchemas.Attributs_personnaliss.Date_de_la_prise_de_fonction : "",
             activite: dataFromAPI.customSchemas.Attributs_supplementaires.Activits ? dataFromAPI.customSchemas.Attributs_supplementaires.Activits[0].value : "",
             juridique: dataFromAPI.customSchemas.Attributs_supplementaires.Structure_Jurdique ? dataFromAPI.customSchemas.Attributs_supplementaires.Structure_Jurdique : "",
-            telephonetravail: dataFromAPI.phones.value ? dataFromAPI.phones[0].value : "",
+            telephonetravail: dataFromAPI.phones.value ? dataFromAPI.phones[1].value : "",
             naturetravail: dataFromAPI.customSchemas.Attributs_personnaliss.Nature_de_la_relation_de_travail ? dataFromAPI.customSchemas.Attributs_personnaliss.Nature_de_la_relation_de_travail : "",
             classification: dataFromAPI.customSchemas.Attributs_personnaliss.Classification ? dataFromAPI.customSchemas.Attributs_personnaliss.Classification : "",
-            telephonemobile: dataFromAPI.phones ? dataFromAPI.phones[1].value : "",
+            telephonemobile: dataFromAPI.phones ? dataFromAPI.phones[2].value : "",
             tempstravail: dataFromAPI.customSchemas.Attributs_personnaliss.Temps_de_travail ? dataFromAPI.customSchemas.Attributs_personnaliss.Temps_de_travail : "",
             niveau: dataFromAPI.customSchemas.Attributs_personnaliss.Niveau ? dataFromAPI.customSchemas.Attributs_personnaliss.Niveau : "",
             adressetravail: dataFromAPI.addresses ? dataFromAPI.addresses[1].formatted : "",

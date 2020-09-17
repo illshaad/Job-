@@ -67,6 +67,9 @@ export default function Presentation({ dataFromAPI }) {
         carteSejour: "",
         casierJudiciaire: "",
     })
+
+    const [update, setUpdate] = useState({})
+
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
     const [collabo, setCollabo] = useState({})
@@ -113,7 +116,10 @@ export default function Presentation({ dataFromAPI }) {
         }
     }, [collabo])
 
-    const handleChange = (e, { value, name }) => setInformations({ ...informations, [e.target.name || name]: value })
+    const handleChange = (e, { value, name }) => {
+        setInformations({ ...informations, [e.target.name || name]: value })
+        setUpdate({ ...update, [e.target.name || name]: value })
+    }
 
     const handleChangeFile = (e) => {
         // console.log("value de l'input", e.target.files)
@@ -175,11 +181,15 @@ export default function Presentation({ dataFromAPI }) {
         data.append('radioProtectionPatients', informations.radioProtectionPatients)
         data.append('radioProtectionTravailleurs', informations.radioProtectionTravailleurs)
         try {
+
             const response = await axios({
                 method: 'post',
                 url: `http://localhost:3000/uploadCollaborateur/${informations._id}`, //recuperation de id pour envoyer dans le back permet de faire des mofications de collaborateur//
                 data: data,
+
+
             })
+            setUpdate({})
             setInformations(response.data)
             setMessage('Donnée enregistrer')
         } catch (error) {

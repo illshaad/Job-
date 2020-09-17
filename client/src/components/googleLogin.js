@@ -17,6 +17,7 @@ export default function Google({ setDataFromAPI }) {
             .then(res => {
                 setDataFromAPI(res.data)
             })
+
         const nomPrenom = await emailResponse.split("@")[0].replace(".", "/")
         localStorage.setItem('name', emailResponse)
         await axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
