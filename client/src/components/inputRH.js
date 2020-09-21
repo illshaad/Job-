@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Container, Form, Label, Button, ItemDescription } from 'semantic-ui-react'
+import { Grid, Container, Form, Label, Button } from 'semantic-ui-react'
 import ERP from './menuDeroulant/erp'
 import axios from 'axios'
 import InputImageGenerique from './InputImageGenerique';
 import InputAutocompletGenerique from './inputAutocompletGenerique';
 
-export default function InputRh({ dataFromAPI, disable, informationsRH }) {
+export default function InputRh({ dataFromAPI, disable, informationsRH, updateCollaborateur }) {
+    console.log(updateCollaborateur, 'MES CHANGEMENT COLLAB');
+
     const [informations, setInformations] = useState({
         materiels: "",
         contrat: "",
@@ -44,6 +46,8 @@ export default function InputRh({ dataFromAPI, disable, informationsRH }) {
         tempstravail: ""
     })
 
+    const [updateRh, setUpdateRh] = useState()
+
     useEffect(() => {
         setInformations({
             collaborateur: dataFromAPI.organizations ? dataFromAPI.organizations[0].description : "",
@@ -57,7 +61,7 @@ export default function InputRh({ dataFromAPI, disable, informationsRH }) {
             telephonetravail: dataFromAPI.phones.value ? dataFromAPI.phones[1].value : "",
             naturetravail: dataFromAPI.customSchemas.Attributs_personnaliss.Nature_de_la_relation_de_travail ? dataFromAPI.customSchemas.Attributs_personnaliss.Nature_de_la_relation_de_travail : "",
             classification: dataFromAPI.customSchemas.Attributs_personnaliss.Classification ? dataFromAPI.customSchemas.Attributs_personnaliss.Classification : "",
-            telephonemobile: dataFromAPI.phones ? dataFromAPI.phones[2].value : "",
+            // telephonemobile: dataFromAPI.phones ? dataFromAPI.phones[2].value : "",
             tempstravail: dataFromAPI.customSchemas.Attributs_personnaliss.Temps_de_travail ? dataFromAPI.customSchemas.Attributs_personnaliss.Temps_de_travail : "",
             niveau: dataFromAPI.customSchemas.Attributs_personnaliss.Niveau ? dataFromAPI.customSchemas.Attributs_personnaliss.Niveau : "",
             adressetravail: dataFromAPI.addresses ? dataFromAPI.addresses[1].formatted : "",
@@ -76,52 +80,33 @@ export default function InputRh({ dataFromAPI, disable, informationsRH }) {
         })
     }, [dataFromAPI])
 
-
-
-    const [message, setMessage] = useState('')
-    const [error, setError] = useState({})
-
-
-
     const handleChange = (e, { value, name }) => {
-        console.log({ value, name })
         setInformations({ ...informations, [e.target.name || name]: value })
+        setUpdateRh({ ...updateRh, [e.target.name || name]: value })
     }
 
     const handleChangeFile = (e) => {
-        // le regex N°securite Social//
-        if (e.target.value !== "#^[12][0-9]{2}[0-1][0-9](2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$#") {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        } else {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        }
-        if (e.target.name === "cp" && e.target.value.match("/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/") != null) {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        } else {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        }
+        setInformations({ ...informations, [e.target.name]: e.target.files[0] })
+        setUpdateRh({ ...updateRh, [e.target.name]: e.target.files[0] })
     }
 
     const sendDataRH = async () => {
         //Fusionner les deux states des deux composants//
-        const object = Object.assign(informationsRH, informations);
-        console.log({ object })
-        const keys = Object.keys(object)
-        const data = new FormData()
-        for (let i in keys) {
-            data.append(keys[i], object[keys[i]])
-        }
-        //Url est une route dynamique avec ID //
+        const object = Object.assign(updateCollaborateur, updateRh);
         try {
             const response = await axios({
                 method: 'post',
-                url: `http://localhost:3000/uploadCollaborateur/${informationsRH._id}`,
-                data: data
+                url: `https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/updateGSuiteUser`,
+                data: {
+                    email: informationsRH.email,
+                    update: object,
+                }
+
             })
-            setMessage('Donnée enregistrer')
+            console.log(response, 'API SERVICE RETOUR ICI')
+            setUpdateRh({})
         } catch (error) {
             console.log("Error", error.response.data.errors)
-            setError(error.response.data.errors);
         }
     }
     return (

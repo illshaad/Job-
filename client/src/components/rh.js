@@ -36,7 +36,7 @@ export default function Rh({ setDataFromAPI }) {
         <div>
             <Container>
                 <br />
-                <Header as='h1' textAlign='center'>Adresse e-mail du responsable</Header>
+                <Header as='h1' textAlign='center'>Sélectionner un collaborateur</Header>
                 <Dropdown
                     name='email'
                     onChange={handleChange}

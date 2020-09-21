@@ -9,12 +9,12 @@ import {
     useParams,
 } from "react-router-dom";
 
-import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label, GridColumn, GridRow, } from 'semantic-ui-react'
+import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
 
 
 
 export default function Presentation({ dataFromAPI }) {
-    console.log(dataFromAPI, 'DIMITRI');
+    console.log(dataFromAPI);
 
     const [informations, setInformations] = useState({
         _id: "",
@@ -68,26 +68,13 @@ export default function Presentation({ dataFromAPI }) {
         casierJudiciaire: "",
     })
 
-    const [update, setUpdate] = useState({})
 
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
     const [collabo, setCollabo] = useState({})
-    let { prenom, nom } = useParams();
+    const [update, setUpdate] = useState()
 
-    // use Params permet de ajouter un ou plusieurs paramettres dans l'url
-    // Post pour recuperer le prenom et nom et l'afficher dans l'url 
-    // Requet pour crée la BDD du nouveau collaborateur par son nom et prenom 
     useEffect(() => {
-        const callInfo = async () => {
-            try {
-                const result = await axios.post(`http://localhost:3000/userCollaborateur/`, { prenom, nom })
-                setInformations(result.data)
-            } catch (error) {
-                console.log("error");
-            }
-        }
-        callInfo()
         axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
             .then(response => {
                 setCollabo(response.data.isCollabo)
@@ -95,10 +82,11 @@ export default function Presentation({ dataFromAPI }) {
     }, [])
 
     //Recuperation du IsCollabo true || False pour faire des conditions //
-
     useEffect(() => {
         if (collabo) {
             setInformations({
+                prenom: dataFromAPI.name.givenName ? dataFromAPI.name.givenName : "",
+                nom: dataFromAPI.name.familyName ? dataFromAPI.name.familyName : "",
                 genre: dataFromAPI.customSchemas.Attributs_personnaliss.Sexe ? dataFromAPI.customSchemas.Attributs_personnaliss.Sexe : "",
                 nomnaissance: dataFromAPI.name.familyName ? dataFromAPI.name.familyName : "",
                 datenaissance: dataFromAPI.customSchemas.Attributs_personnaliss.Date_de_naissance ? dataFromAPI.customSchemas.Attributs_personnaliss.Date_de_naissance : "",
@@ -122,81 +110,32 @@ export default function Presentation({ dataFromAPI }) {
     }
 
     const handleChangeFile = (e) => {
-        // console.log("value de l'input", e.target.files)
         // le regex N°securite Social//
-        if (e.target.value !== "#^[12][0-9]{2}[0-1][0-9](2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$#") {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        } else {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        }
-        if (e.target.name === "cp" && e.target.value.match("/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/") != null) {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        } else {
-            setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        }
+        setInformations({ ...informations, [e.target.name]: e.target.files[0] })
+        setUpdate({ ...update, [e.target.name]: e.target.files[0] })
     }
 
     const sendData = async () => {
-        const data = new FormData()
-        data.append('prenom', informations.prenom)
-        data.append('nom', informations.nom)
-        data.append('genre', informations.genre)
-        data.append('nomnaissance', informations.nomnaissance)
-        data.append('datenaissance', informations.datenaissance)
-        data.append('villedenaissance', informations.villedenaissance)
-        data.append('nationalite', informations.nationalite)
-        data.append('numerosecurite', informations.numerosecurite)
-        data.append('addresse', informations.addresse)
-        data.append('ville', informations.ville)
-        data.append('cp', informations.cp)
-        data.append('email', informations.email)
-        data.append('telephonePerso', informations.telephonePerso)
-        data.append('telephoneDomicile', informations.telephoneDomicile)
-        data.append('telephoneUrgence', informations.telephoneUrgence)
-        data.append('rpps', informations.rpps)
-        data.append('numeroDepartemental', informations.numeroDepartemental)
-        data.append('departementConseil', informations.departementConseil)
-        data.append('specialitePratiquee', informations.specialitePratiquee)
-        {/* state component 'documentCollaborteur'*/ }
-        data.append('carnetVaccination', informations.carnetVaccination)
-        data.append('carteIdentitePassport', informations.carteIdentitePassport)
-        data.append('carteVital', informations.carteVital)
-        data.append('cv', informations.cv)
-        data.append('permisConduire', informations.permisConduire)
-        data.append('assuranceAutomobile', informations.assuranceAutomobile)
-        data.append('photo', informations.photo)
-        data.append('RIB', informations.RIB)
-        data.append('aptitudeMedicale', informations.aptitudeMedicale)
-        data.append('attestationAssuranceHabitation', informations.attestationAssuranceHabitation)
-        data.append('autreContratsTravailCours', informations.autreContratsTravailCours)
-        data.append('lettreMotivation', informations.lettreMotivation)
-        data.append('carteSejour', informations.carteSejour)
-        data.append('casierJudiciaire', informations.casierJudiciaire)
-        data.append('conseildelordre', informations.conseildelordre)
-        data.append('ONCD', informations.ONCD)
-        data.append('ADLI', informations.adli)// A VOIR AVEC FLORIANT//
-        data.append('diplomes', informations.diplomes)
-        data.append('diplomesRh', informations.diplomesRh)
-        data.append('RCP', informations.RCP)
-        data.append('radioProtectionPatients', informations.radioProtectionPatients)
-        data.append('radioProtectionTravailleurs', informations.radioProtectionTravailleurs)
         try {
-
+            const keys = Object.keys(update)
+            const data = new FormData()
+            for (const i in keys) {
+                data.append('email', localStorage.getItem("name"))
+                data.append(keys[i], update[keys[i]])
+            }
             const response = await axios({
                 method: 'post',
-                url: `http://localhost:3000/uploadCollaborateur/${informations._id}`, //recuperation de id pour envoyer dans le back permet de faire des mofications de collaborateur//
-                data: data,
-
-
+                url: 'http://localhost:3000/upload',
+                data: data
             })
             setUpdate({})
             setInformations(response.data)
             setMessage('Donnée enregistrer')
         } catch (error) {
-            console.log("Error", error.response.data.errors)
-            setError(error.response.data.errors);
+            console.log(error);
         }
     }
+
     return (
         <Container>
             {/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */}
@@ -339,7 +278,7 @@ export default function Presentation({ dataFromAPI }) {
                 {collabo !== true ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
             </Form>
             {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
-            <InputRH dataFromAPI={dataFromAPI} id={informations._id} informationsRH={informations} disable={collabo !== true} />
+            <InputRH dataFromAPI={dataFromAPI} id={informations._id} informationsRH={informations} updateCollaborateur={update} disable={collabo !== true} />
             {message ? <Message positive>
                 <Message.Header>Donnée enregistrer</Message.Header>
             </Message> : null}

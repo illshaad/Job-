@@ -45,11 +45,8 @@ var storage = multer.diskStorage({
   //Création d'un folder pour chaque utilisateur 
   // Si le path n'existe pas tu le créee avec le nom de l'utilisateur 
   destination: function (req, file, cb) {
-    const sousCategorie = req.body.prenom + req.body.nom
-    console.log(sousCategorie, 'NOM ICI');
-
-    const path = `./public/uploads/${sousCategorie}`
-    console.log(path)
+    const email = req.body.email[0]
+    const path = `./public/uploads/${email}`
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path, { recursive: true })
     }
@@ -75,14 +72,16 @@ app.get('/uploadCollaborateur', function (req, res) {
 });
 
 
+app.post('/upload', upload.any(), async function (req, res) {
+  console.log(req.body, ' data  file and upload');
+  console.log(req.files);
+  res.send('ok')
+})
+
+
 
 //: id pour faire des modificiations d'un collaborateur //
-app.post("/uploadCollaborateur/:id", upload.any(), [
-  body('prenom').isLength({ min: 2 }),
-  body('nom').isLength({ min: 2 }),
-  body('numerosecurite').isLength({ min: 1, max: 12 }),
-  body('email').isEmail(),
-], async function (req, res) {
+app.post("/uploadCollaborateur/:id", upload.any(), async function (req, res) {
   console.log(req.body, 'Donnée que je recois')
   try {
     const objectFiles = {};
