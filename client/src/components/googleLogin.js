@@ -22,7 +22,7 @@ export default function Google({ setDataFromAPI }) {
         localStorage.setItem('name', emailResponse)
         await axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
             .then(response => {
-                { response.data.isCollabo ? history.push(`/rh`) : history.push(`/collaborateur/${nomPrenom}`) }
+                { history.push(`/collaborateur/${nomPrenom}`) }
             })
     }
     return (

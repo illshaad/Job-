@@ -22,8 +22,8 @@ function App() {
           <Route exact path='/'><Google setDataFromAPI={setDataFromAPI} />
           }</Route>
           {/* <Route exact path='/redirect/:email'><Redirection /></Route> */}
-          <Route exact path='/collaborateur/:prenom/:nom'><InputCollaborateur dataFromAPI={dataFromAPI} handleChange={handleChange} /></Route>
-          <Route exact path='/rh'><Rh setHandleChange={setHandleChange} setDataFromAPI={setDataFromAPI} /></Route>}
+          <Route exact path='/collaborateur/:prenom/:nom'><InputCollaborateur dataFromAPI={dataFromAPI} setDataFromAPI={setDataFromAPI} handleChange={handleChange} /></Route>
+          {/* <Route exact path='/rh'><Rh setHandleChange={setHandleChange} setDataFromAPI={setDataFromAPI} /></Route>} */}
         </Switch>
       </div>
     </Router>

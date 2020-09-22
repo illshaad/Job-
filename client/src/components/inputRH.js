@@ -5,9 +5,7 @@ import axios from 'axios'
 import InputImageGenerique from './InputImageGenerique';
 import InputAutocompletGenerique from './inputAutocompletGenerique';
 
-export default function InputRh({ dataFromAPI, disable, informationsRH, updateCollaborateur }) {
-    console.log(updateCollaborateur, 'MES CHANGEMENT COLLAB');
-
+export default function InputRh({ dataFromAPI, disable, informationsRH, updateCollaborateur, updateFileCollaborateur }) {
     const [informations, setInformations] = useState({
         materiels: "",
         contrat: "",
@@ -47,6 +45,7 @@ export default function InputRh({ dataFromAPI, disable, informationsRH, updateCo
     })
 
     const [updateRh, setUpdateRh] = useState()
+    const [updateFileRh, setUpdateFileRh] = useState()
 
     useEffect(() => {
         setInformations({
@@ -64,7 +63,7 @@ export default function InputRh({ dataFromAPI, disable, informationsRH, updateCo
             // telephonemobile: dataFromAPI.phones ? dataFromAPI.phones[2].value : "",
             tempstravail: dataFromAPI.customSchemas.Attributs_personnaliss.Temps_de_travail ? dataFromAPI.customSchemas.Attributs_personnaliss.Temps_de_travail : "",
             niveau: dataFromAPI.customSchemas.Attributs_personnaliss.Niveau ? dataFromAPI.customSchemas.Attributs_personnaliss.Niveau : "",
-            adressetravail: dataFromAPI.addresses ? dataFromAPI.addresses[1].formatted : "",
+            // adressetravail: dataFromAPI.addresses ? dataFromAPI.addresses[1].formatted : "",
             convention: dataFromAPI.customSchemas.Attributs_personnaliss.Convention_collective ? dataFromAPI.customSchemas.Attributs_personnaliss.Convention_collective : "",
             coefficient: dataFromAPI.customSchemas.Attributs_personnaliss.Coefficient ? dataFromAPI.customSchemas.Attributs_personnaliss.Coefficient : "",
             indice: dataFromAPI.customSchemas.Attributs_personnaliss.Indice ? dataFromAPI.customSchemas.Attributs_personnaliss.Indice : "",
@@ -87,23 +86,29 @@ export default function InputRh({ dataFromAPI, disable, informationsRH, updateCo
 
     const handleChangeFile = (e) => {
         setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        setUpdateRh({ ...updateRh, [e.target.name]: e.target.files[0] })
+        setUpdateFileRh({ ...updateFileRh, [e.target.name]: e.target.files[0] })
     }
 
     const sendDataRH = async () => {
-        //Fusionner les deux states des deux composants//
-        const object = Object.assign(updateCollaborateur, updateRh);
+        //Fusionner les deux states des deux composants de input//
         try {
+            const object = Object.assign(updateCollaborateur, updateRh);
+            const object2 = Object.assign(updateFileCollaborateur, updateFileRh);
+            const keys = Object.keys(object2)
+            const data = new FormData()
+            for (const i in keys) {
+                data.append(keys[i], object2[keys[i]])
+            }
             const response = await axios({
                 method: 'post',
-                url: `https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/updateGSuiteUser`,
-                data: {
-                    email: informationsRH.email,
-                    update: object,
-                }
-
+                url: 'http://localhost:3000/upload',
+                data: object
             })
-            console.log(response, 'API SERVICE RETOUR ICI')
+            const responseFile = await axios({
+                method: 'post',
+                url: 'http://localhost:3000/file',
+                data: data
+            })
             setUpdateRh({})
         } catch (error) {
             console.log("Error", error.response.data.errors)

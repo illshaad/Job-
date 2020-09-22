@@ -2,20 +2,12 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import InputImageGenerique from './InputImageGenerique';
 import InputRH from './inputRH'
-
-import {
-    BrowserRouter as Router,
-    Link,
-    useParams,
-} from "react-router-dom";
-
-import { Menu, Icon, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
+import { useHistory } from "react-router-dom";
+import { Menu, Dropdown, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
 
 
 
-export default function Presentation({ dataFromAPI }) {
-    console.log(dataFromAPI);
-
+export default function Presentation({ dataFromAPI, setDataFromAPI }) {
     const [informations, setInformations] = useState({
         _id: "",
         prenom: "",
@@ -68,11 +60,14 @@ export default function Presentation({ dataFromAPI }) {
         casierJudiciaire: "",
     })
 
-
+    let history = useHistory();
     const [message, setMessage] = useState('')
     const [error, setError] = useState({})
     const [collabo, setCollabo] = useState({})
-    const [update, setUpdate] = useState()
+    const [update, setUpdate] = useState({ email: localStorage.getItem("name") })
+    const [updateFile, setUpdateFile] = useState()
+    const [valueEmail, setValueEmail] = useState('')
+    const [dataCollaborateurs, setDataCollaborateurs] = useState([])
 
     useEffect(() => {
         axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
@@ -80,6 +75,19 @@ export default function Presentation({ dataFromAPI }) {
                 setCollabo(response.data.isCollabo)
             })
     }, [])
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await axios.get(
+                'http://localhost:3000/emailData',
+            );
+            setDataCollaborateurs(result.data);
+        };
+        fetchData();
+    }, []);
+
+
 
     //Recuperation du IsCollabo true || False pour faire des conditions //
     useEffect(() => {
@@ -102,52 +110,93 @@ export default function Presentation({ dataFromAPI }) {
                 telephoneUrgence: dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone__appeler_en_cas_durgence ? dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone__appeler_en_cas_durgence : "",
             })
         }
-    }, [collabo])
+    }, [collabo, dataFromAPI])
 
     const handleChange = (e, { value, name }) => {
         setInformations({ ...informations, [e.target.name || name]: value })
         setUpdate({ ...update, [e.target.name || name]: value })
+        setValueEmail({ ...valueEmail, [name]: value })
     }
 
     const handleChangeFile = (e) => {
         // le regex N°securite Social//
         setInformations({ ...informations, [e.target.name]: e.target.files[0] })
-        setUpdate({ ...update, [e.target.name]: e.target.files[0] })
+        setUpdateFile({ ...updateFile, [e.target.name]: e.target.files[0] })
     }
+
+    const buttonRedirect = async () => {
+        await axios.post("https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/getGsuiteUser", { email: valueEmail.email })
+            .then(res => {
+                setDataFromAPI(res.data)
+                const nomPrenom = valueEmail.email.split("@")[0].replace(".", "/")
+                history.push(`/collaborateur/${nomPrenom}`)
+            })
+    }
+
+
+    const buttonRedirectRh = async () => {
+        const email = localStorage.getItem("name")
+        await axios.post("https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/getGsuiteUser", { email: email })
+            .then(res => {
+                setDataFromAPI(res.data)
+            })
+        const nomPrenom = email.split("@")[0].replace(".", "/")
+        history.push(`/collaborateur/${nomPrenom}`)
+    }
+
 
     const sendData = async () => {
         try {
-            const keys = Object.keys(update)
+            const keys = Object.keys(updateFile)
             const data = new FormData()
             for (const i in keys) {
-                data.append('email', localStorage.getItem("name"))
-                data.append(keys[i], update[keys[i]])
+                data.append(keys[i], updateFile[keys[i]])
             }
             const response = await axios({
                 method: 'post',
                 url: 'http://localhost:3000/upload',
+                data: update
+            })
+            const responseFile = await axios({
+                method: 'post',
+                url: 'http://localhost:3000/file',
                 data: data
             })
             setUpdate({})
-            setInformations(response.data)
+            // setInformations(response.data)
             setMessage('Donnée enregistrer')
         } catch (error) {
             console.log(error);
         }
     }
-
     return (
         <Container>
             {/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */}
             {collabo !== true ?
                 null
-                : <Menu icon='labeled' vertical>
-                    <Menu.Item>
-                        <Link to='/rh'><Icon name='table' size='large'></Icon></Link>
-                    </Menu.Item>
-                </Menu>
+                : <Grid>
+                    <Grid.Column width={5}>
+                        <Menu fluid vertical tabular>
+                            <Menu.Item
+                                name='Mes données'
+                                onClick={buttonRedirectRh}
+                            />
+                            <p>Les données des collaborateurs</p>
+                            <Dropdown
+                                name='email'
+                                onChange={handleChange}
+                                placeholder='Collaborateur'
+                                fluid
+                                search
+                                options={dataCollaborateurs}
+                            />
+                            <Button className='buttonRh' size='mini' onClick={buttonRedirect}>DIRECTION</Button>
+                        </Menu>
+                    </Grid.Column>
+                </Grid>
             }
-            <Image src='/Embarquer.png' size='huge' centered='true' />
+            {collabo ? <Image src='/rh.jpg' size='huge' centered='true' /> : <Image src='/Embarquer.png' size='huge' centered='true' />}
+
             <Grid columns={2}>
                 <Grid.Row>
                     <Label circular size='massive'>1</Label>
@@ -278,7 +327,7 @@ export default function Presentation({ dataFromAPI }) {
                 {collabo !== true ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
             </Form>
             {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
-            <InputRH dataFromAPI={dataFromAPI} id={informations._id} informationsRH={informations} updateCollaborateur={update} disable={collabo !== true} />
+            <InputRH dataFromAPI={dataFromAPI} id={informations._id} informationsRH={informations} updateCollaborateur={update} updateFileCollaborateur={updateFile} disable={collabo !== true} />
             {message ? <Message positive>
                 <Message.Header>Donnée enregistrer</Message.Header>
             </Message> : null}
