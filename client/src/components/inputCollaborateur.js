@@ -169,6 +169,7 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
         } catch (error) {
             console.log(error);
         }
+        history.push('/ok')
     }
 
     return (
@@ -204,15 +205,19 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
                             onClick={buttonRedirectRh}
                         />
                         <Menu.Item as='a'>
-                            <Dropdown
-                                name='email'
-                                onChange={handleChange}
-                                placeholder='Collaborateur'
-                                fluid
-                                search
-                                options={dataCollaborateurs}
-                            />
-                            <Button className='buttonRh' size='mini' onClick={buttonRedirect}>Oké</Button>
+                            <Grid>
+                                <Grid.Row>
+                                    <Dropdown
+                                        name='email'
+                                        onChange={handleChange}
+                                        placeholder='Collaborateur'
+                                        fluid
+                                        search
+                                        options={dataCollaborateurs}
+                                    />
+                                    <Button className='buttonRh' size='mini' onClick={buttonRedirect}>Oké</Button>
+                                </Grid.Row>
+                            </Grid>
                         </Menu.Item>
                     </Sidebar>
                     <Sidebar.Pusher dimmed={visible}>
@@ -358,34 +363,6 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
     )
 }
 
-
-
-
-
-{/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */ }
-{/* {collabo !== true ?
-                null
-                : <Grid>
-                    <Grid.Column width={5}>
-                        <Menu fluid vertical tabular>
-                            <Menu.Item
-                                name='Mes données'
-                                onClick={buttonRedirectRh}
-                            />
-                            <p>Les données des collaborateurs</p>
-                            <Dropdown
-                                name='email'
-                                onChange={handleChange}
-                                placeholder='Collaborateur'
-                                fluid
-                                search
-                                options={dataCollaborateurs}
-                            />
-                            <Button className='buttonRh' size='mini' onClick={buttonRedirect}>DIRECTION</Button>
-                        </Menu>
-                    </Grid.Column>
-                </Grid>
-            } */}
 
 
 

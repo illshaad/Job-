@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,7 +7,7 @@ import {
 import './App.css';
 import Google from './components/googleLogin'
 import InputCollaborateur from './components/inputCollaborateur';
-import Rh from './components/rh'
+import End from './components/end'
 
 
 function App() {
@@ -20,10 +20,9 @@ function App() {
       <div>
         <Switch>
           <Route exact path='/'><Google setDataFromAPI={setDataFromAPI} />
-          }</Route>
-          {/* <Route exact path='/redirect/:email'><Redirection /></Route> */}
+          </Route>
           <Route exact path='/collaborateur/:prenom/:nom'><InputCollaborateur dataFromAPI={dataFromAPI} setDataFromAPI={setDataFromAPI} handleChange={handleChange} /></Route>
-          {/* <Route exact path='/rh'><Rh setHandleChange={setHandleChange} setDataFromAPI={setDataFromAPI} /></Route>} */}
+          <Route exact path='/ok'><End /></Route>
         </Switch>
       </div>
     </Router>

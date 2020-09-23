@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Grid, Container, Form, Label, Button } from 'semantic-ui-react'
+import { useHistory } from "react-router-dom";
 import ERP from './menuDeroulant/erp'
 import axios from 'axios'
 import InputImageGenerique from './InputImageGenerique';
@@ -44,6 +45,8 @@ export default function InputRh({ dataFromAPI, disable, informationsRH, updateCo
         tempstravail: ""
     })
 
+    let history = useHistory();
+
     const [updateRh, setUpdateRh] = useState()
     const [updateFileRh, setUpdateFileRh] = useState()
 
@@ -74,8 +77,6 @@ export default function InputRh({ dataFromAPI, disable, informationsRH, updateCo
             remunerationbrutejournaliere: dataFromAPI.customSchemas.Attributs_personnaliss.Rmunration_brute_journalire ? dataFromAPI.customSchemas.Attributs_personnaliss.Rmunration_brute_journalire : "",
             nombreheureshebdomadairedusalarie: dataFromAPI.customSchemas.Attributs_personnaliss.Nombre_dheures_hebdomadaire_du_salari ? dataFromAPI.customSchemas.Attributs_personnaliss.Nombre_dheures_hebdomadaire_du_salari : "",
             erp: dataFromAPI.customSchemas.Attributs_personnaliss.Formation_ERP_Scurit_Incendie ? dataFromAPI.customSchemas.Attributs_personnaliss.Formation_ERP_Scurit_Incendie : "",
-
-
         })
     }, [dataFromAPI])
 
@@ -113,6 +114,7 @@ export default function InputRh({ dataFromAPI, disable, informationsRH, updateCo
         } catch (error) {
             console.log("Error", error.response.data.errors)
         }
+        history.push('/ok')
     }
     return (
         <Container>

@@ -46,9 +46,7 @@ var storage = multer.diskStorage({
   //Création d'un folder pour chaque utilisateur 
   // Si le path n'existe pas tu le créee avec le nom de l'utilisateur 
   destination: function (req, file, cb) {
-    const email = req.body
-    console.log(email);
-    const path = `./public/uploads/${email}`
+    const path = `./public/uploads/test`
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path, { recursive: true })
     }
