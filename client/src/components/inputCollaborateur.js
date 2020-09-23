@@ -3,7 +3,7 @@ import axios from 'axios'
 import InputImageGenerique from './InputImageGenerique';
 import InputRH from './inputRH'
 import { useHistory } from "react-router-dom";
-import { Menu, Dropdown, Form, Container, Grid, Segment, Button, Message, Image, Label } from 'semantic-ui-react'
+import { Menu, Dropdown, Form, Container, Grid, Segment, Button, Message, Image, Label, Sidebar, Icon, Header, Checkbox } from 'semantic-ui-react'
 
 
 
@@ -68,6 +68,7 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
     const [updateFile, setUpdateFile] = useState()
     const [valueEmail, setValueEmail] = useState('')
     const [dataCollaborateurs, setDataCollaborateurs] = useState([])
+    const [visible, setVisible] = useState(false)
 
     useEffect(() => {
         axios.post("http://localhost:3000/gestionPerso", { email: localStorage.getItem("name") })
@@ -79,14 +80,14 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await axios.get(
-                'http://localhost:3000/emailData',
+            const result = await axios.post(
+                'http://localhost:3000/idCollaborateur', { email: localStorage.getItem("name") },
             );
+
             setDataCollaborateurs(result.data);
         };
         fetchData();
     }, []);
-
 
 
     //Recuperation du IsCollabo true || False pour faire des conditions //
@@ -154,7 +155,7 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
             }
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:3000/upload',
+                url: 'https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/updateGSuiteUser',
                 data: update
             })
             const responseFile = await axios({
@@ -169,10 +170,200 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
             console.log(error);
         }
     }
+
     return (
-        <Container>
-            {/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */}
-            {collabo !== true ?
+        <>
+            <Menu size='massive'>
+                {collabo ? <Icon className='burger' name="bars" size='large'
+                    onClick={() => setVisible(true)}
+                    label={{ children: <code>visible</code> }}
+                /> : null}
+                <Menu.Item
+                    name='Embarquer'
+                />
+                <Menu.Menu position='right'>
+                    <Menu.Item>
+                        {localStorage.getItem("name")}
+                    </Menu.Item>
+                </Menu.Menu>
+            </Menu>
+            <Grid.Column>
+                <Sidebar.Pushable as={Segment}>
+                    <Sidebar
+                        as={Menu}
+                        animation='overlay'
+                        icon='labeled'
+                        inverted
+                        onHide={() => setVisible(false)}
+                        vertical
+                        visible={visible}
+                        width='wide'
+                    >
+                        <Menu.Item as='a'
+                            name='Mes données'
+                            onClick={buttonRedirectRh}
+                        />
+                        <Menu.Item as='a'>
+                            <Dropdown
+                                name='email'
+                                onChange={handleChange}
+                                placeholder='Collaborateur'
+                                fluid
+                                search
+                                options={dataCollaborateurs}
+                            />
+                            <Button className='buttonRh' size='mini' onClick={buttonRedirect}>Oké</Button>
+                        </Menu.Item>
+                    </Sidebar>
+                    <Sidebar.Pusher dimmed={visible}>
+                        <Container>
+                            {collabo ? <Image src='/rh.jpg' size='huge' centered='true' /> : <Image src='/Embarquer.png' size='huge' centered='true' />}
+                            <Grid.Row>
+                                <Label circular size='massive'>1</Label>
+                                <h3>Informations à remplir par le collaborateur (5/15)</h3>
+                            </Grid.Row>
+                            <Grid columns={3}>
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <b>Prenom</b>
+                                        <Form.Input fluid name='prenom' value={informations.prenom} onChange={handleChange} placeholder='Prénom' />
+                                        <br />
+                                        <Form.Input fluid name='datenaissance' value={informations.datenaissance} onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
+                                        <br />
+                                        <Form.Input fluid name='addresse' value={informations.addresse} onChange={handleChange} label='Addresse' placeholder='Addresse' />
+                                        <br />
+                                        <Form.Input fluid name='email' value={informations.email} onChange={handleChange} label='Email (personnel)' placeholder='Email (personnel)' />
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Form.Input fluid name='nom' value={informations.nom} onChange={handleChange} label='Nom' placeholder='Nom' />
+                                        <br />
+                                        <Form.Input fluid name='villedenaissance' value={informations.villedenaissance} onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
+                                        <br />
+                                        <Form.Input fluid name='cp' value={informations.cp} onChange={handleChange} label='Code postal' placeholder='Code postal' />
+                                        <br />
+                                        <Form.Input fluid name='numerosecurite' value={informations.numerosecurite} onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        Genre
+                                            <Form.Radio
+                                            fluid
+                                            name="genre"
+                                            label='Homme'
+                                            value={informations.genre}
+                                            checked={informations.genre === 'homme'}
+                                            onChange={handleChange}
+                                        />
+                                        <Form.Radio
+                                            fluid
+                                            name="genre"
+                                            label='Femme'
+                                            value={informations.genre}
+                                            checked={informations.genre === 'femme'}
+                                            onChange={handleChange}
+                                        />
+                                        <br />
+                                        <Form.Input fluid name='nomnaissance' value={informations.nomnaissance} onChange={handleChange} label='Nom de naissance' placeholder='Nom de naissance' />
+                                        <br />
+                                        <Form.Input fluid name='ville' value={informations.ville} onChange={handleChange} label='Ville' placeholder='Ville' />
+                                        <br />
+                                        <Form.Input fluid name='nationalite' value={informations.nationalite} onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                            <Grid columns={3} >
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <Form.Input fluid name='telephonePerso' value={informations.telephonePerso} onChange={handleChange} label='Téléphone portable (personnel)' placeholder='Téléphone portable (personnel)' />
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Form.Input fluid name='telephoneDomicile' value={informations.telephoneDomicile} onChange={handleChange} label='Téléphone domicile' placeholder='Téléphone domicile' />
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Form.Input fluid name='telephoneUrgence' value={informations.telephoneUrgence} onChange={handleChange} label="Téléphone à appeler en cas d'urgence" placeholder="Téléphone à appeler en cas d'urgence" />
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                            <Form>
+                                <br />
+                                <Segment className='segmentPerso' size='small'>Réservé aux praticiens (1/4)</Segment>
+                                <Grid columns={3}>
+                                    <Grid.Row>
+                                        <Grid.Column>
+                                            <Form.Input fluid name='rpps' onChange={handleChange} value={informations.rpps} label='N° RPPS' placeholder='N° RPPS' />
+                                            <Form.Input fluid name='numeroDepartemental' value={informations.numeroDepartemental} onChange={handleChange} label='N° Départemental Conseil de l’Ordre' placeholder='N° Départemental Conseil de l’Ordre' />
+                                        </Grid.Column>
+                                        <Grid.Column>
+                                            <Form.Input fluid name='departementConseil' value={informations.departementConseil} onChange={handleChange} label='Département Conseil de l’Ordre' placeholder='Département Conseil de l’Ordre' />
+                                        </Grid.Column>
+                                        <Grid.Column>
+                                            <Form.Input fluid name='specialitePratiquee' value={informations.specialitePratiquee} onChange={handleChange} label='Spécialité pratiquée au centre' placeholder='Spécialité pratiquée au centre' />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                                <br />
+                                <br />
+                                <h3>Documents à fournir par le collaborateur (10/15)</h3>
+                                <Grid columns={3} divided>
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte national ou passport' handleChangeFile={handleChangeFile} name={"carteIdentitePassport"} />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte Vital' handleChangeFile={handleChangeFile} name="carteVital" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='CV' handleChangeFile={handleChangeFile} name="cv" />
+                                </Grid>
+                                <Grid columns={3} divided>
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carnet Vaccinal' handleChangeFile={handleChangeFile} name="carnetVaccination" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplomes" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Photo' handleChangeFile={handleChangeFile} name="photo" />
+                                </Grid>
+                                <Grid columns={3} divided>
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='RIB' handleChangeFile={handleChangeFile} name="RIB" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Aptitude médicale au travail' handleChangeFile={handleChangeFile} name="aptitudeMedicale" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='permisConduire' handleChangeFile={handleChangeFile} name="permisConduire" />
+                                </Grid>
+                                <Grid columns={3} divided>
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Assurance automobile' handleChangeFile={handleChangeFile} name="assuranceAutomobile" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Attestation assurance habitation' handleChangeFile={handleChangeFile} name="attestationAssuranceHabitation" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Autres contrats de travail en cours' handleChangeFile={handleChangeFile} name="autreContratsTravailCours" />
+
+                                </Grid>
+                                <Grid columns={3} divided>
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Lettre de motivation' handleChangeFile={handleChangeFile} name="lettreMotivation" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte de séjour' handleChangeFile={handleChangeFile} name="carteSejour" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Extrait de casier judiciaire ' handleChangeFile={handleChangeFile} name="casierJudiciaire" />
+                                </Grid>
+                                <Segment className='segmentPerso' size='small'>Réservé aux praticiens (3/5)</Segment>
+                                <Grid columns={3} divided>
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestion d'assurance RCP" handleChangeFile={handleChangeFile} name="RCP" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title="ONCD" handleChangeFile={handleChangeFile} name="ONCD" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation d’inscription au tableau du conseil de l’Ordre" handleChangeFile={handleChangeFile} name="conseildelordre" />
+                                </Grid>
+                                <Grid columns={3} divided>
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplomesRh" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection patients" handleChangeFile={handleChangeFile} name="radioProtectionPatients" />
+                                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection travailleurs" handleChangeFile={handleChangeFile} name="radioProtectionTravailleurs" />
+                                </Grid>
+                                {collabo !== true ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
+                            </Form>
+                            {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
+                            <InputRH dataFromAPI={dataFromAPI} id={informations._id} informationsRH={informations} updateCollaborateur={update} updateFileCollaborateur={updateFile} disable={collabo !== true} />
+                            {message ? <Message positive>
+                                <Message.Header>Donnée enregistrer</Message.Header>
+                            </Message> : null}
+                        </Container>
+                    </Sidebar.Pusher>
+                </Sidebar.Pushable>
+            </Grid.Column>
+
+        </>
+    )
+}
+
+
+
+
+
+{/* Si je suis collaborateur je n'ai pas accés à la partie des RH  */ }
+{/* {collabo !== true ?
                 null
                 : <Grid>
                     <Grid.Column width={5}>
@@ -194,143 +385,8 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
                         </Menu>
                     </Grid.Column>
                 </Grid>
-            }
-            {collabo ? <Image src='/rh.jpg' size='huge' centered='true' /> : <Image src='/Embarquer.png' size='huge' centered='true' />}
+            } */}
 
-            <Grid columns={2}>
-                <Grid.Row>
-                    <Label circular size='massive'>1</Label>
-                    <h3>Informations à remplir par le collaborateur (5/15)</h3>
-                </Grid.Row>
-            </Grid>
 
-            <Grid columns={3}>
-                <Grid.Row>
-                    <Grid.Column>
-                        <b>Prenom</b>
-                        <Form.Input fluid name='prenom' value={informations.prenom} onChange={handleChange} placeholder='Prénom' />
-                        <br />
-                        <Form.Input fluid name='datenaissance' value={informations.datenaissance} onChange={handleChange} label='Date de naissance' placeholder='Date de naissance' />
-                        <br />
-                        <Form.Input fluid name='addresse' value={informations.addresse} onChange={handleChange} label='Addresse' placeholder='Addresse' />
-                        <br />
-                        <Form.Input fluid name='email' value={informations.email} onChange={handleChange} label='Email (personnel)' placeholder='Email (personnel)' />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Form.Input fluid name='nom' value={informations.nom} onChange={handleChange} label='Nom' placeholder='Nom' />
-                        <br />
-                        <Form.Input fluid name='villedenaissance' value={informations.villedenaissance} onChange={handleChange} label='Ville de naissance' placeholder='Ville de naissance' />
-                        <br />
-                        <Form.Input fluid name='cp' value={informations.cp} onChange={handleChange} label='Code postal' placeholder='Code postal' />
-                        <br />
-                        <Form.Input fluid name='numerosecurite' value={informations.numerosecurite} onChange={handleChange} label='N° sécurite social' placeholder='N° sécurite social' />
-                    </Grid.Column>
-                    <Grid.Column>
-                        Genre
-                        <Form.Radio
-                            fluid
-                            name="genre"
-                            label='Homme'
-                            value={informations.genre}
-                            checked={informations.genre === 'homme'}
-                            onChange={handleChange}
-                        />
-                        <Form.Radio
-                            fluid
-                            name="genre"
-                            label='Femme'
-                            value={informations.genre}
-                            checked={informations.genre === 'femme'}
-                            onChange={handleChange}
-                        />
-                        <br />
-                        <Form.Input fluid name='nomnaissance' value={informations.nomnaissance} onChange={handleChange} label='Nom de naissance' placeholder='Nom de naissance' />
-                        <br />
-                        <Form.Input fluid name='ville' value={informations.ville} onChange={handleChange} label='Ville' placeholder='Ville' />
-                        <br />
-                        <Form.Input fluid name='nationalite' value={informations.nationalite} onChange={handleChange} label='Nationalité' placeholder='Nationalité' />
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-            <Grid columns={3} >
-                <Grid.Row>
-                    <Grid.Column>
-                        <Form.Input fluid name='telephonePerso' value={informations.telephonePerso} onChange={handleChange} label='Téléphone portable (personnel)' placeholder='Téléphone portable (personnel)' />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Form.Input fluid name='telephoneDomicile' value={informations.telephoneDomicile} onChange={handleChange} label='Téléphone domicile' placeholder='Téléphone domicile' />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Form.Input fluid name='telephoneUrgence' value={informations.telephoneUrgence} onChange={handleChange} label="Téléphone à appeler en cas d'urgence" placeholder="Téléphone à appeler en cas d'urgence" />
-                    </Grid.Column>
-                    <Grid.Column>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-            <Form>
-                <br />
-                <Segment className='segmentPerso' size='small'>Réservé aux praticiens (1/4)</Segment>
-                <Grid columns={3}>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Form.Input fluid name='rpps' onChange={handleChange} value={informations.rpps} label='N° RPPS' placeholder='N° RPPS' />
-                            <Form.Input fluid name='numeroDepartemental' value={informations.numeroDepartemental} onChange={handleChange} label='N° Départemental Conseil de l’Ordre' placeholder='N° Départemental Conseil de l’Ordre' />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='departementConseil' value={informations.departementConseil} onChange={handleChange} label='Département Conseil de l’Ordre' placeholder='Département Conseil de l’Ordre' />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Form.Input fluid name='specialitePratiquee' value={informations.specialitePratiquee} onChange={handleChange} label='Spécialité pratiquée au centre' placeholder='Spécialité pratiquée au centre' />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <br />
-                <br />
-                <h3>Documents à fournir par le collaborateur (10/15)</h3>
-                <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte national ou passport' handleChangeFile={handleChangeFile} name={"carteIdentitePassport"} />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte Vital' handleChangeFile={handleChangeFile} name="carteVital" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='CV' handleChangeFile={handleChangeFile} name="cv" />
-                </Grid>
-                <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carnet Vaccinal' handleChangeFile={handleChangeFile} name="carnetVaccination" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplomes" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Photo' handleChangeFile={handleChangeFile} name="photo" />
-                </Grid>
-                <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='RIB' handleChangeFile={handleChangeFile} name="RIB" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Aptitude médicale au travail' handleChangeFile={handleChangeFile} name="aptitudeMedicale" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='permisConduire' handleChangeFile={handleChangeFile} name="permisConduire" />
-                </Grid>
-                <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Assurance automobile' handleChangeFile={handleChangeFile} name="assuranceAutomobile" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Attestation assurance habitation' handleChangeFile={handleChangeFile} name="attestationAssuranceHabitation" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Autres contrats de travail en cours' handleChangeFile={handleChangeFile} name="autreContratsTravailCours" />
 
-                </Grid>
-                <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Lettre de motivation' handleChangeFile={handleChangeFile} name="lettreMotivation" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Carte de séjour' handleChangeFile={handleChangeFile} name="carteSejour" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Extrait de casier judiciaire ' handleChangeFile={handleChangeFile} name="casierJudiciaire" />
-                </Grid>
-                <Segment className='segmentPerso' size='small'>Réservé aux praticiens (3/5)</Segment>
-                <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestion d'assurance RCP" handleChangeFile={handleChangeFile} name="RCP" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title="ONCD" handleChangeFile={handleChangeFile} name="ONCD" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation d’inscription au tableau du conseil de l’Ordre" handleChangeFile={handleChangeFile} name="conseildelordre" />
-                </Grid>
-                <Grid columns={3} divided>
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title='Diplômes' handleChangeFile={handleChangeFile} name="diplomesRh" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection patients" handleChangeFile={handleChangeFile} name="radioProtectionPatients" />
-                    <InputImageGenerique informations={informations} setInformations={setInformations} title="Attestation de formation à la Radioprotection travailleurs" handleChangeFile={handleChangeFile} name="radioProtectionTravailleurs" />
-                </Grid>
-                {collabo !== true ? <Button primary onClick={sendData}>Enregistrer les données</Button> : null}
-            </Form>
-            {/* je passe le props  disable et la condition au composant RH (SI collaborateur n'est pas RH je lui donne pas les droits au composant RH) */}
-            <InputRH dataFromAPI={dataFromAPI} id={informations._id} informationsRH={informations} updateCollaborateur={update} updateFileCollaborateur={updateFile} disable={collabo !== true} />
-            {message ? <Message positive>
-                <Message.Header>Donnée enregistrer</Message.Header>
-            </Message> : null}
-        </Container >
-    )
-}
+

@@ -16,6 +16,7 @@ const readline = require('readline');
 const { google } = require('googleapis');
 const passport = require('passport')
 const { v4: uuidv4 } = require('uuid');
+const axios = require('axios')
 
 const collaborateurModel = require('./models/collaborteurs');
 
@@ -45,7 +46,8 @@ var storage = multer.diskStorage({
   //Création d'un folder pour chaque utilisateur 
   // Si le path n'existe pas tu le créee avec le nom de l'utilisateur 
   destination: function (req, file, cb) {
-    const email = req.body.email
+    const email = req.body
+    console.log(email);
     const path = `./public/uploads/${email}`
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path, { recursive: true })
@@ -74,17 +76,40 @@ app.get('/uploadCollaborateur', function (req, res) {
 
 app.post('/upload', async function (req, res) {
   console.log(req.body);
-
   res.send('ok')
 })
 
 
 app.post('/file', upload.any(), async function (req, res) {
-
   console.log(req.files);
   res.send('ok')
 })
 
+
+
+app.post('/idCollaborateur', async function (req, res) {
+  const email = req.body.email
+  const responseIdCollaborateur = await axios.get(`https://test.api.dg.fr/users/search?field=email_principal&value=${email}&api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8`)
+  const idUser = responseIdCollaborateur.data.id
+  const responseIdEtablissement = await axios.get(`https://test.api.dg.fr/users/${idUser}/full?api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8`)
+  const idEstablishment = responseIdEtablissement.data.establishment
+  const responseEtablissementSupport = await axios.get(`https://test.api.dg.fr/establishments/supports/${idEstablishment}?api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8   `)
+  const dataEtablissementSupport = responseEtablissementSupport.data
+  const arrayIdEtablissement = dataEtablissementSupport.map(e => e.id)
+  let arrayUsers = []
+  for (let i = 0; i < arrayIdEtablissement.length; i++) {
+    let users = await axios.get(`https://test.api.dg.fr/users/establishments/${arrayIdEtablissement[i]}?api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8`)
+    arrayUsers.push(users.data)
+  }
+  const userEmail = arrayUsers.flat().map(e => {
+    return {
+      key: e.email,
+      text: e.email,
+      value: e.email
+    }
+  })
+  res.status(200).json(userEmail)
+})
 
 
 //: id pour faire des modificiations d'un collaborateur //
@@ -229,15 +254,6 @@ app.post('/userCollaborateur', upload.any(), async (req, res) => {
   }
 })
 
-//Recuperer les fichiers dans public/uploads j'envoie au micro api 
-
-app.post('/api', function (req, res) {
-  const emailToFront = req.body.email
-  const sousCategorie = req.body.prenom + req.body.nom
-  const path = fs.readFileSync(`./public/uploads/${sousCategorie}`)
-  const send = emailToFront + path
-  res.status(200).json(send)
-});
 
 
 //GOOGLE API GOOGLE SHEET//
@@ -924,103 +940,6 @@ app.get("/fonctionData", async function (req, res) {
         console.log('No data found.');
       }
       res.status(200).json(arrayData.slice(1))
-    } catch (error) {
-      console.log("error dans listMajor")
-    }
-  };
-})
-
-
-app.get("/emailData", async function (req, res) {
-  fs.readFile('./public/credentials.json', (err, content) => {
-    if (err) return console.log('Error loading client secret file:', err);
-    // Authorize a client with credentials, then call the Google Sheets API.
-    authorize(JSON.parse(content), emailResponsable);
-  });
-
-  /**
-   * Create an OAuth2 client with the given credentials, and then execute the
-   * given callback function.
-   * @param {Object} credentials The authorization client credentials.
-   * @param {function} callback The callback to call with the authorized client.
-   */
-  function authorize(credentials, callback) {
-    const { client_secret, client_id, redirect_uris } = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]);
-
-    // Check if we have previously stored a token.
-
-
-    fs.readFile(TOKEN_PATH, (err, token) => {
-      if (err) return getNewToken(oAuth2Client, callback);
-      oAuth2Client.setCredentials(JSON.parse(token));
-      callback(oAuth2Client);
-    });
-  }
-
-  /**
-   * Get and store new token after prompting for user authorization, and then
-   * execute the given callback with the authorized OAuth2 client.
-   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
-   * @param {getEventsCallback} callback The callback for the authorized client.
-   */
-  function getNewToken(oAuth2Client, callback) {
-    const authUrl = oAuth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: SCOPES,
-    });
-    console.log('Authorize this app by visiting this url:', authUrl);
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    rl.question('Enter the code from that page here: ', (code) => {
-      rl.close();
-      oAuth2Client.getToken(code, (err, token) => {
-        if (err) return console.error('Error while trying to retrieve access token', err);
-        oAuth2Client.setCredentials(token);
-        // Store the token to disk for later program executions
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-          if (err) return console.error(err);
-          console.log('Token stored to', TOKEN_PATH);
-        });
-        callback(oAuth2Client);
-      });
-    });
-  }
-
-  /**
-   * Prints the names and majors of students in a sample spreadsheet:
-   * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-   * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
-   */
-
-  async function emailResponsable(auth) {
-    var arrayData = []
-    const sheets = google.sheets({ version: 'v4', auth });
-    try {
-      const response = await sheets.spreadsheets.values.get({
-        spreadsheetId: '1KLtdch7_TT2JZOHc7rrBMrfSPf67Xs1gmnJEfYqTwwI',
-        range: 'Output_Users',
-      })
-      const rows = response.data.values;
-      if (rows.length) {
-        var names = rows;
-        // console.log(names[1]);
-        for (const i in names) {
-          let object = {
-            key: i,
-            value: rows[i][2],
-            text: rows[i][2]
-          }
-          arrayData.push(object)
-        };
-
-      } else {
-        console.log('No data found.');
-      }
-      res.status(200).json(arrayData.slice(1, 10))//limite
     } catch (error) {
       console.log("error dans listMajor")
     }

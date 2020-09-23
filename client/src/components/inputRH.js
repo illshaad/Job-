@@ -101,7 +101,7 @@ export default function InputRh({ dataFromAPI, disable, informationsRH, updateCo
             }
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:3000/upload',
+                url: 'https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/updateGSuiteUser',
                 data: object
             })
             const responseFile = await axios({
