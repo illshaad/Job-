@@ -3,6 +3,7 @@ import { Container, Image, Segment } from "semantic-ui-react";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import config from "../config";
 
 export default function Google({ setDataFromAPI }) {
   let history = useHistory();
@@ -23,7 +24,7 @@ export default function Google({ setDataFromAPI }) {
     const nomPrenom = await emailResponse.split("@")[0].replace(".", "/");
     localStorage.setItem("name", emailResponse);
     await axios
-      .post("http://localhost:3000/gestionPerso", {
+      .post(`${config.url}/gestionPerso`, {
         email: localStorage.getItem("name"),
       })
       .then((response) => {

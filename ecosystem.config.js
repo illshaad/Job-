@@ -7,7 +7,7 @@ module.exports = {
       cwd: "./back",
       env_production: {
         NODE_ENV: "production",
-        PORT: 3000,
+        PORT: 3444,
       },
     },
     {
@@ -17,7 +17,7 @@ module.exports = {
       cwd: "./client",
       env_production: {
         NODE_ENV: "production",
-        PORT: 3001,
+        PORT: 3445,
       },
     },
   ],
