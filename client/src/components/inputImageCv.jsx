@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "semantic-ui-react";
 
-export default function InputImageGenerique({
+export default function InputImageCv({
   title,
   name,
   handleChangeFile,
@@ -18,6 +18,7 @@ export default function InputImageGenerique({
           onChange={(e) => {
             handleChangeFile(e);
           }}
+          multiple
         />
       </Grid.Row>
     </Grid.Column>

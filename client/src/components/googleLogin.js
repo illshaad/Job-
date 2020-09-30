@@ -10,7 +10,7 @@ export default function Google({ setDataFromAPI }) {
   //Envoie de la donnée au back//
   // Utilisation du localStorage pour sauvergarder email apres le click du button google//
   const responseGoogle = async (response) => {
-    const emailResponse = await response.rt.$t;
+    const emailResponse = await response.profileObj.email;
     //envoie EMAIL RESPONSE  A DIMITRI//
     await axios
       .post(

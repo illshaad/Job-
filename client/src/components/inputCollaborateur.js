@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import InputImageGenerique from "./InputImageGenerique";
+import InputAutoCompletGenre from "./menuDeroulant/genre";
+import InputImageCv from "./inputImageCv";
 import InputRH from "./inputRH";
 import { useHistory } from "react-router-dom";
 import {
@@ -16,13 +18,13 @@ import {
   Label,
   Sidebar,
   Icon,
-  Header,
-  Checkbox,
 } from "semantic-ui-react";
 
 import config from "../config";
 
 export default function Presentation({ dataFromAPI, setDataFromAPI }) {
+  console.log(dataFromAPI);
+
   const [informations, setInformations] = useState({
     _id: "",
     prenom: "",
@@ -45,17 +47,18 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
     departementConseil: "",
     specialitePratiquee: "",
     carnetVaccination: "",
-    carteIdentitePassport: "",
+    carteIdentite: "",
+    cartePassport: "",
+    carteSejour: "",
     carteVital: "",
     cv: "",
+    diplomes: "",
     permisConduire: "",
     assuranceAutomobile: "",
     photo: "",
     RIB: "",
     conseildelordre: "",
     ONCD: "",
-    diplomes: "",
-    diplomesRh: "",
     RCP: "",
     radioProtectionPatients: "",
     radioProtectionTravailleurs: "",
@@ -71,13 +74,13 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
     attestationAssuranceHabitation: "",
     autreContratsTravailCours: "",
     lettreMotivation: "",
-    carteSejour: "",
     casierJudiciaire: "",
+    genre: "",
   });
 
   let history = useHistory();
   const [message, setMessage] = useState("");
-  const [error, setError] = useState({});
+  // const [error, setError] = useState({});
   const [collabo, setCollabo] = useState({});
   const [update, setUpdate] = useState({ email: localStorage.getItem("name") });
   const [updateFile, setUpdateFile] = useState();
@@ -147,11 +150,11 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
           ? dataFromAPI.customSchemas.Attributs_personnaliss.Nationalit
           : "",
         email: dataFromAPI.emails ? dataFromAPI.emails[0].address : "",
-        telephonePerso: dataFromAPI.customSchemas.Attributs_personnaliss
-          .Tlphone_portable_personnel
-          ? dataFromAPI.customSchemas.Attributs_personnaliss
-              .Tlphone_portable_personnel
+
+        telephonePerso: dataFromAPI.recoveryPhone
+          ? dataFromAPI.recoveryPhone
           : "",
+
         telephoneDomicile: dataFromAPI.customSchemas.Attributs_personnaliss
           .Tlphone_domicile
           ? dataFromAPI.customSchemas.Attributs_personnaliss.Tlphone_domicile
@@ -165,6 +168,8 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
     }
   }, [collabo, dataFromAPI]);
 
+  console.log(informations, "API ");
+
   const handleChange = (e, { value, name }) => {
     setInformations({ ...informations, [e.target.name || name]: value });
     setUpdate({ ...update, [e.target.name || name]: value });
@@ -172,7 +177,6 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
   };
 
   const handleChangeFile = (e) => {
-    // le regex N°securite Social//
     setInformations({ ...informations, [e.target.name]: e.target.files[0] });
     setUpdateFile({ ...updateFile, [e.target.name]: e.target.files[0] });
   };
@@ -208,6 +212,8 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
     try {
       const keys = Object.keys(updateFile);
       const data = new FormData();
+      const sendEmailFile = localStorage.getItem("name");
+      data.append("email", sendEmailFile);
       for (const i in keys) {
         data.append(keys[i], updateFile[keys[i]]);
       }
@@ -260,27 +266,26 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
             visible={visible}
             width="wide"
           >
-            <Menu.Item as="a" name="Mes données" onClick={buttonRedirectRh} />
-            <Menu.Item as="a">
-              <Grid>
-                <Grid.Row>
-                  <Dropdown
-                    name="email"
-                    onChange={handleChange}
-                    placeholder="Collaborateur"
-                    fluid
-                    search
-                    options={dataCollaborateurs}
-                  />
-                  <Button
-                    className="buttonRh"
-                    size="mini"
-                    onClick={buttonRedirect}
-                  >
-                    Oké
-                  </Button>
-                </Grid.Row>
-              </Grid>
+            <Menu.Item>
+              <h5 className="informations" onClick={buttonRedirectRh}>
+                Mes informations
+              </h5>
+              <h5>Mes collaborateurs</h5>
+
+              <h5>Les collaborateurs de mon périmètre (RH)</h5>
+
+              <Dropdown
+                name="email"
+                onChange={handleChange}
+                placeholder="Collaborateur"
+                fluid
+                search
+                options={dataCollaborateurs}
+              />
+
+              <Button className="buttonRh" size="mini" onClick={buttonRedirect}>
+                Ok
+              </Button>
             </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher dimmed={visible}>
@@ -373,22 +378,11 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
                     />
                   </Grid.Column>
                   <Grid.Column>
-                    Genre
-                    <Form.Radio
-                      fluid
+                    <InputAutoCompletGenre
+                      title="Genre"
                       name="genre"
-                      label="Homme"
-                      value={informations.genre}
-                      checked={informations.genre === "homme"}
-                      onChange={handleChange}
-                    />
-                    <Form.Radio
-                      fluid
-                      name="genre"
-                      label="Femme"
-                      value={informations.genre}
-                      checked={informations.genre === "femme"}
-                      onChange={handleChange}
+                      informations={informations.genre}
+                      handleChange={handleChange}
                     />
                     <br />
                     <Form.Input
@@ -506,168 +500,175 @@ export default function Presentation({ dataFromAPI, setDataFromAPI }) {
                 <br />
                 <h3>Documents à fournir par le collaborateur (10/15)</h3>
                 <Grid columns={3} divided>
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Carte national ou passport"
-                    handleChangeFile={handleChangeFile}
-                    name={"carteIdentitePassport"}
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Carte Vital"
-                    handleChangeFile={handleChangeFile}
-                    name="carteVital"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="CV"
-                    handleChangeFile={handleChangeFile}
-                    name="cv"
-                  />
+                  <Grid.Row>
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Carte national ou passport "
+                      handleChangeFile={handleChangeFile}
+                      name={"carteIdentitePassport"}
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Carte Vital"
+                      handleChangeFile={handleChangeFile}
+                      name="carteVital"
+                    />
+                    <InputImageCv
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="CV"
+                      handleChangeFile={handleChangeFile}
+                      name="cv"
+                    />
+                  </Grid.Row>
                 </Grid>
                 <Grid columns={3} divided>
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Carnet Vaccinal"
-                    handleChangeFile={handleChangeFile}
-                    name="carnetVaccination"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Diplômes"
-                    handleChangeFile={handleChangeFile}
-                    name="diplomes"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Photo"
-                    handleChangeFile={handleChangeFile}
-                    name="photo"
-                  />
+                  <Grid.Row>
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Carnet Vaccinal"
+                      handleChangeFile={handleChangeFile}
+                      name="carnetVaccination"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Diplômes"
+                      handleChangeFile={handleChangeFile}
+                      name="diplomes"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Photo"
+                      handleChangeFile={handleChangeFile}
+                      name="photo"
+                    />
+                  </Grid.Row>
                 </Grid>
                 <Grid columns={3} divided>
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="RIB"
-                    handleChangeFile={handleChangeFile}
-                    name="RIB"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Aptitude médicale au travail"
-                    handleChangeFile={handleChangeFile}
-                    name="aptitudeMedicale"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="permisConduire"
-                    handleChangeFile={handleChangeFile}
-                    name="permisConduire"
-                  />
+                  <Grid.Row>
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="RIB"
+                      handleChangeFile={handleChangeFile}
+                      name="RIB"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Aptitude médicale au travail"
+                      handleChangeFile={handleChangeFile}
+                      name="aptitudeMedicale"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Permis de conduire"
+                      handleChangeFile={handleChangeFile}
+                      name="permisConduire"
+                    />
+                  </Grid.Row>
                 </Grid>
                 <Grid columns={3} divided>
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Assurance automobile"
-                    handleChangeFile={handleChangeFile}
-                    name="assuranceAutomobile"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Attestation assurance habitation"
-                    handleChangeFile={handleChangeFile}
-                    name="attestationAssuranceHabitation"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Autres contrats de travail en cours"
-                    handleChangeFile={handleChangeFile}
-                    name="autreContratsTravailCours"
-                  />
+                  <Grid.Row>
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Assurance automobile"
+                      handleChangeFile={handleChangeFile}
+                      name="assuranceAutomobile"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Attestation assurance habitation"
+                      handleChangeFile={handleChangeFile}
+                      name="attestationAssuranceHabitation"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Autres contrats de travail en cours"
+                      handleChangeFile={handleChangeFile}
+                      name="autreContratsTravailCours"
+                    />
+                  </Grid.Row>
                 </Grid>
                 <Grid columns={3} divided>
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Lettre de motivation"
-                    handleChangeFile={handleChangeFile}
-                    name="lettreMotivation"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Carte de séjour"
-                    handleChangeFile={handleChangeFile}
-                    name="carteSejour"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Extrait de casier judiciaire "
-                    handleChangeFile={handleChangeFile}
-                    name="casierJudiciaire"
-                  />
+                  <Grid.Row>
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Lettre de motivation"
+                      handleChangeFile={handleChangeFile}
+                      name="lettreMotivation"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Carte de séjour"
+                      handleChangeFile={handleChangeFile}
+                      name="carteSejour"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Extrait de casier judiciaire "
+                      handleChangeFile={handleChangeFile}
+                      name="casierJudiciaire"
+                    />
+                  </Grid.Row>
                 </Grid>
                 <Segment className="segmentPerso" size="small">
                   Réservé aux praticiens (3/5)
                 </Segment>
                 <Grid columns={3} divided>
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Attestion d'assurance RCP"
-                    handleChangeFile={handleChangeFile}
-                    name="RCP"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="ONCD"
-                    handleChangeFile={handleChangeFile}
-                    name="ONCD"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Attestation d’inscription au tableau du conseil de l’Ordre"
-                    handleChangeFile={handleChangeFile}
-                    name="conseildelordre"
-                  />
+                  <Grid.Row>
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Attestion d'assurance RCP"
+                      handleChangeFile={handleChangeFile}
+                      name="RCP"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="ONCD"
+                      handleChangeFile={handleChangeFile}
+                      name="ONCD"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Attestation d’inscription au tableau du conseil de l’Ordre"
+                      handleChangeFile={handleChangeFile}
+                      name="conseildelordre"
+                    />
+                  </Grid.Row>
                 </Grid>
                 <Grid columns={3} divided>
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Diplômes"
-                    handleChangeFile={handleChangeFile}
-                    name="diplomesRh"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Attestation de formation à la Radioprotection patients"
-                    handleChangeFile={handleChangeFile}
-                    name="radioProtectionPatients"
-                  />
-                  <InputImageGenerique
-                    informations={informations}
-                    setInformations={setInformations}
-                    title="Attestation de formation à la Radioprotection travailleurs"
-                    handleChangeFile={handleChangeFile}
-                    name="radioProtectionTravailleurs"
-                  />
+                  <Grid.Row>
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Attestation de formation à la Radioprotection patients"
+                      handleChangeFile={handleChangeFile}
+                      name="radioProtectionPatients"
+                    />
+                    <InputImageGenerique
+                      informations={informations}
+                      setInformations={setInformations}
+                      title="Attestation de formation à la Radioprotection travailleurs"
+                      handleChangeFile={handleChangeFile}
+                      name="radioProtectionTravailleurs"
+                    />
+                  </Grid.Row>
                 </Grid>
                 {collabo !== true ? (
                   <Button primary onClick={sendData}>

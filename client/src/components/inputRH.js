@@ -52,6 +52,8 @@ export default function InputRh({
     tempstravail: "",
   });
 
+  console.log(informations, "RH");
+
   let history = useHistory();
 
   const [updateRh, setUpdateRh] = useState();
@@ -74,7 +76,7 @@ export default function InputRh({
           )
         : "",
       emailresponsable: dataFromAPI.relations
-        ? dataFromAPI.relations[0].type
+        ? dataFromAPI.relations[0].value
         : "",
       etablissement: dataFromAPI.customSchemas.Attributs_supplementaires
         .Etablissement_digital
@@ -179,6 +181,8 @@ export default function InputRh({
       const object2 = Object.assign(updateFileCollaborateur, updateFileRh);
       const keys = Object.keys(object2);
       const data = new FormData();
+      const sendEmailFile = localStorage.getItem("name");
+      data.append("email", sendEmailFile);
       for (const i in keys) {
         data.append(keys[i], object2[keys[i]]);
       }
@@ -213,7 +217,7 @@ export default function InputRh({
         <Grid.Row>
           <Grid.Column>
             <InputAutocompletGenerique
-              url={`${config.url}/collaborateurData`}
+              url={`${config.url}/api/user`}
               title="Type de collaborateur"
               name="collaborateur"
               informations={informations}
@@ -221,17 +225,19 @@ export default function InputRh({
               handleChange={handleChange}
               disable={disable}
             />
-            <InputAutocompletGenerique
-              url={`${config.url}/emailData`}
-              title="Adresse e-mail du responsable"
+            <Form.Input
+              fluid
               name="emailresponsable"
-              informations={informations}
-              informationsRH={informationsRH}
-              handleChange={handleChange}
-              disable={disable}
+              value={
+                informations.emailresponsable || informationsRH.emailresponsable
+              }
+              onChange={handleChange}
+              label="Email Responsable"
+              placeholder="Email Responsable"
+              disabled={disable}
             />
             <InputAutocompletGenerique
-              url={`${config.url}/activiteData`}
+              url={`${config.url}/api/activities`}
               title="Activite"
               name="activite"
               informations={informations}
@@ -242,7 +248,7 @@ export default function InputRh({
           </Grid.Column>
           <Grid.Column>
             <InputAutocompletGenerique
-              url={`${config.url}/fonctionData`}
+              url={`${config.url}/api/fonction`}
               title="Fonction digitale principale"
               name="fonctiondigital"
               informations={informations}
@@ -251,7 +257,7 @@ export default function InputRh({
               disable={disable}
             />
             <InputAutocompletGenerique
-              url={`${config.url}/etablissementData`}
+              url={`${config.url}/api/etablissement`}
               title="Etablissement digital"
               name="etablissement"
               informations={informations}
@@ -349,7 +355,7 @@ export default function InputRh({
               disable={disable}
             />
             <InputAutocompletGenerique
-              url={`${config.url}/travailData`}
+              url={`${config.url}/api/tempsTravail`}
               title="Temps travail"
               name="tempstravail"
               informations={informations}
