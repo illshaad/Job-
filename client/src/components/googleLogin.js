@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Container, Image, Segment } from "semantic-ui-react";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router-dom";
@@ -10,6 +10,7 @@ export default function Google({ setDataFromAPI }) {
   //Envoie de la donnée au back//
   // Utilisation du localStorage pour sauvergarder email apres le click du button google//
   const responseGoogle = async (response) => {
+    console.log(response);
     const emailResponse = await response.profileObj.email;
     //envoie EMAIL RESPONSE  A DIMITRI//
     await axios

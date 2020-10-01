@@ -4,9 +4,6 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const multer = require("multer");
-const moment = require("moment");
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
 const apiRouter = require("./api/apiLrd");
 const cors = require("cors");
 const app = express();
@@ -66,30 +63,25 @@ app.post("/upload", async function (req, res) {
 app.post("/file", upload.any(), async function (req, res) {
   const email = req.body.email;
   const files = req.files;
-  console.log(files);
-
   const arrayUploads = [];
   for (let e in files) {
-    // const readFile = fs.createReadStream(
-    //   `./public/uploads/${email}/${files[e].filename}`
-    // );
     arrayUploads.push({
-      email: email,
-      listToUpload: [
-        {
-          fsImg: files[e].path,
-          categorie: files[e].fieldname,
-          extension: files[e].mimetype,
-        },
-      ],
+      fsImg: files[e].path,
+      categorie: files[e].fieldname,
+      extension: files[e].mimetype,
     });
   }
-  console.log(arrayUploads, "TEST");
-  console.log(arrayUploads[0].listToUpload);
-  axios.post(
-    "https://serveur-uploaddrive-dot-projet-test-doctegestio.uc.r.appspot.com/api/driveUpload",
-    { listToUpload: arrayUploads }
-  );
+  // console.log(arrayUploads, "TEST");
+  // console.log(arrayUploads[0].listToUpload);
+  axios({
+    method: "post",
+    url:
+      "https://serveur-uploaddrive-dot-projet-test-doctegestio.uc.r.appspot.com/api/driveUpload",
+    data: {
+      email: email,
+      listToUpload: arrayUploads,
+    },
+  });
   res.send("ok");
 });
 
