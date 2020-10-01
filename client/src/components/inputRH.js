@@ -188,8 +188,7 @@ export default function InputRh({
       }
       const response = await axios({
         method: "post",
-        url:
-          "https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/updateGSuiteUser",
+        url: "https://gsuite-api-dot-projet-test-doctegestio.uc.r.appspot.com/updateGSuiteUser",
         data: object,
       });
       const responseFile = await axios({

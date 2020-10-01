@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const keysTest = "AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8";
+const keysTest = "AIzaSyDrV4JRyQejPvpgYk-H4ls2IwhxQOm6xx4";
 
 //TEMPS DE TRAVAIL
 router.get("/tempsTravail", async function (req, res, next) {
@@ -54,7 +54,6 @@ router.get("/etablissement", async function (req, res, next) {
   const responseEtablissement = await axios.get(
     `https://test.api.dg.fr/establishments/digitalnames?api_key=${keysTest}`
   );
-  console.log(responseEtablissement, "test");
   const object = responseEtablissement.data.map((e) => {
     return {
       key: e.digitalName,

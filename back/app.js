@@ -15,7 +15,7 @@ const { google } = require("googleapis");
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
 
-const collaborateurModel = require("./models/collaborteurs");
+// const collaborateurModel = require("./models/collaborteurs");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -52,6 +52,8 @@ var storage = multer.diskStorage({
   },
 });
 
+const keysTest = "AIzaSyDrV4JRyQejPvpgYk-H4ls2IwhxQOm6xx4";
+
 // SAVE FILE MY LOCAL STORAGE //
 let upload = multer({ storage: storage });
 
@@ -66,14 +68,15 @@ app.post("/file", upload.any(), async function (req, res) {
   const arrayUploads = [];
   for (let e in files) {
     arrayUploads.push({
-      fsImg: files[e].path,
       categorie: files[e].fieldname,
       extension: files[e].mimetype,
+      fsImg:
+        "https://embarquer-back-dot-projet-test-doctegestio.uc.r.appspot.com/" +
+        files[e].path,
     });
   }
-  // console.log(arrayUploads, "TEST");
-  // console.log(arrayUploads[0].listToUpload);
-  axios({
+  console.log(arrayUploads, "TEST");
+  await axios({
     method: "post",
     url:
       "https://serveur-uploaddrive-dot-projet-test-doctegestio.uc.r.appspot.com/api/driveUpload",
@@ -88,22 +91,22 @@ app.post("/file", upload.any(), async function (req, res) {
 app.post("/idCollaborateur", async function (req, res) {
   const email = req.body.email;
   const responseIdCollaborateur = await axios.get(
-    `https://test.api.dg.fr/users/search?field=email_principal&value=${email}&api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8`
+    `https://test.api.dg.fr/users/search?field=email_principal&value=${email}&api_key=${keysTest}`
   );
   const idUser = responseIdCollaborateur.data.id;
   const responseIdEtablissement = await axios.get(
-    `https://test.api.dg.fr/users/${idUser}/full?api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8`
+    `https://test.api.dg.fr/users/${idUser}/full?api_key=${keysTest}`
   );
   const idEstablishment = responseIdEtablissement.data.establishment;
   const responseEtablissementSupport = await axios.get(
-    `https://test.api.dg.fr/establishments/supports/${idEstablishment}?api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8   `
+    `https://test.api.dg.fr/establishments/supports/${idEstablishment}?api_key=${keysTest}   `
   );
   const dataEtablissementSupport = responseEtablissementSupport.data;
   const arrayIdEtablissement = dataEtablissementSupport.map((e) => e.id);
   let arrayUsers = [];
   for (let i = 0; i < arrayIdEtablissement.length; i++) {
     let users = await axios.get(
-      `https://test.api.dg.fr/users/establishments/${arrayIdEtablissement[i]}?api_key=AIzaSyBJ-4UnNq3A4Xi71h83GpMSnIFFipr4bc8`
+      `https://test.api.dg.fr/users/establishments/${arrayIdEtablissement[i]}?api_key=${keysTest}`
     );
     arrayUsers.push(users.data);
   }
